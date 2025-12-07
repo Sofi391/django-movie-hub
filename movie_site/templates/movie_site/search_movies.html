@@ -1,0 +1,702 @@
+{% extends 'movie_site/base.html' %}
+
+{% block content %}
+<div class="search-container">
+    <!-- Search Hero Section -->
+    <div class="search-hero">
+        <div class="search-hero-content">
+            <h1 class="search-title">Discover Your Next Favorite</h1>
+            <p class="search-subtitle">Search through thousands of movies and TV shows by title</p>
+
+            <!-- Main Search Form -->
+            <form method="GET" action="{% url 'search_movies' %}" class="search-form-main" id="searchForm">
+                <div class="search-input-group">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="q" value="{{ query|default:'' }}" class="search-input-main"
+                           placeholder="Enter movie or TV show title..." required id="searchInput">
+                    <button type="submit" class="search-btn-main" id="searchButton">
+                        <i class="fas fa-search"></i>
+                        <span class="btn-text">Search</span>
+                        <div class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Search Tips -->
+            <div class="search-tips">
+                <div class="tips-header">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Search Tips</span>
+                </div>
+                <div class="tips-content">
+                    <p>• Search by exact title for best results</p>
+                    <p>• Try different spellings if you don't find what you're looking for</p>
+                    <p>• Include the release year for more specific results (e.g., "The Matrix 1999")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="search-loading" id="searchLoading" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner-large"></div>
+            <h3>Searching for "{{ query }}"</h3>
+            <p>Please wait while we find the best matches...</p>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results Section -->
+    {% if query and not request.GET.loading %}
+    <div class="search-results-section" id="searchResults">
+        <!-- Results Header -->
+        <div class="results-header">
+            <div class="results-info">
+                <h2 class="results-title">
+                    Search Results for: <span class="query-highlight">"{{ query }}"</span>
+                </h2>
+                <p class="results-count">{{ movies|length }} result{{ movies|length|pluralize }} found</p>
+            </div>
+
+            <!-- Results Filters -->
+            <div class="results-filters">
+                <button class="filter-btn active" data-filter="all">All Content</button>
+                <button class="filter-btn" data-filter="movie">Movies Only</button>
+                <button class="filter-btn" data-filter="tv">TV Shows Only</button>
+            </div>
+        </div>
+
+        <!-- Results Grid -->
+        {% if movies %}
+        <div class="results-grid" id="resultsGrid">
+            {% for movie in movies %}
+            <div class="search-result-card" data-type="{{ movie.type }}">
+                <div class="result-poster-container">
+                    <img src="{% if movie.poster %}{{ movie.poster }}{% else %}/static/images/placeholder-poster.jpg{% endif %}"
+                         alt="{{ movie.title }}" class="result-poster"
+                         onerror="this.src='/static/images/placeholder-poster.jpg'">
+                    <div class="result-overlay">
+                        <div class="result-actions">
+                            <!-- Add to Watchlist Form -->
+                            <form method="POST" action="{% url 'add_to_collection' %}" class="action-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="title" value="{{ movie.title }}">
+                                <input type="hidden" name="description" value="{{ movie.description|default:'' }}">
+                                <input type="hidden" name="release_date" value="{{ movie.release_date|default:'' }}">
+                                <input type="hidden" name="poster" value="{{ movie.poster|default:'' }}">
+                                <input type="hidden" name="trailer_url" value="{{ movie.trailer_url|default:'' }}">
+                                <input type="hidden" name="type" value="{{ movie.type }}">
+                                <input type="hidden" name="rating" value="{{ movie.rating|default:0 }}">
+                                <button type="submit" class="result-action-btn watchlist-btn" title="Add to Watchlist">
+                                    <i class="fas fa-clock"></i>
+                                </button>
+                            </form>
+
+                            <!-- Add to Favorites Form -->
+                            <form method="POST" action="{% url 'add_to_favorite' %}" class="action-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="title" value="{{ movie.title }}">
+                                <input type="hidden" name="description" value="{{ movie.description|default:'' }}">
+                                <input type="hidden" name="release_date" value="{{ movie.release_date|default:'' }}">
+                                <input type="hidden" name="poster" value="{{ movie.poster|default:'' }}">
+                                <input type="hidden" name="trailer_url" value="{{ movie.trailer_url|default:'' }}">
+                                <input type="hidden" name="type" value="{{ movie.type }}">
+                                <input type="hidden" name="rating" value="{{ movie.rating|default:0 }}">
+                                <button type="submit" class="result-action-btn favorite-btn" title="Add to Favorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </form>
+
+                            {% if movie.trailer_url %}
+                            <button class="result-action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ movie.trailer_url }}">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            {% endif %}
+
+                            <button class="result-action-btn info-btn" title="View Details"
+                                    data-movie='{"title": "{{ movie.title }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster|default:'' }}", "year": "{{ movie.release_date|default:'Unknown' }}", "rating": "{{ movie.rating|default:'N/A' }}", "type": "{{ movie.type }}"}'>
+                                <i class="fas fa-info"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-badge {% if movie.type == 'movie' %}movie-badge{% else %}show-badge{% endif %}">
+                        <i class="fas {% if movie.type == 'movie' %}fa-film{% else %}fa-tv{% endif %}"></i>
+                    </div>
+                </div>
+
+                <div class="result-info">
+                    <h4 class="result-title">{{ movie.title }}</h4>
+
+                    <div class="result-meta">
+                        <span class="result-type {% if movie.type == 'movie' %}type-movie{% else %}type-tv{% endif %}">
+                            {{ movie.type|title }}
+                        </span>
+                        <span class="result-rating">
+                            <i class="fas fa-star"></i>
+                            {{ movie.rating|default:"N/A" }}
+                        </span>
+                    </div>
+
+                    <p class="result-year">
+                        <i class="fas fa-calendar"></i>
+                        {{ movie.release_date|default:"Unknown year" }}
+                    </p>
+
+                    <p class="result-description">
+                        {{ movie.description|default:"No description available."|truncatewords:15 }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No Results State -->
+        <div class="no-results">
+            <div class="no-results-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>No Results Found</h3>
+            <p>We couldn't find any matches for "{{ query }}"</p>
+            <div class="no-results-suggestions">
+                <p>Try these search tips:</p>
+                <ul>
+                    <li>Check your spelling and try again</li>
+                    <li>Try the exact title of the movie or show</li>
+                    <li>Search for shorter or more general terms</li>
+                    <li>Include the release year for better accuracy</li>
+                </ul>
+            </div>
+            <div class="search-again-actions">
+                <a href="{% url 'search_movies' %}" class="back-to-search-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Search Again
+                </a>
+                <button class="try-example-btn" data-example="The Matrix">
+                    Try Example: "The Matrix"
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% elif not query %}
+    <!-- Discovery Section (When no search query) -->
+    <div class="discovery-section">
+        <!-- Popular Searches -->
+        <div class="popular-searches">
+            <div class="section-header">
+                <h2 class="section-title">Popular Searches</h2>
+                <p class="section-subtitle">Check out what others are searching for</p>
+            </div>
+
+            <div class="popular-grid">
+                <a href="?q=The Matrix" class="popular-card">
+                    <div class="popular-poster">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <span class="popular-title">The Matrix</span>
+                </a>
+                <a href="?q=Breaking Bad" class="popular-card">
+                    <div class="popular-poster">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <span class="popular-title">Breaking Bad</span>
+                </a>
+                <a href="?q=Avengers" class="popular-card">
+                    <div class="popular-poster">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <span class="popular-title">Avengers</span>
+                </a>
+                <a href="?q=Stranger Things" class="popular-card">
+                    <div class="popular-poster">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <span class="popular-title">Stranger Things</span>
+                </a>
+                <a href="?q=Inception" class="popular-card">
+                    <div class="popular-poster">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <span class="popular-title">Inception</span>
+                </a>
+                <a href="?q=Game of Thrones" class="popular-card">
+                    <div class="popular-poster">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <span class="popular-title">Game of Thrones</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Examples -->
+        <div class="search-examples">
+            <div class="examples-header">
+                <h3>Not sure what to search?</h3>
+                <p>Try these popular titles to get started</p>
+            </div>
+            <div class="examples-grid">
+                <button class="example-btn" data-query="The Dark Knight">
+                    <span class="example-text">The Dark Knight</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="example-btn" data-query="Pulp Fiction">
+                    <span class="example-text">Pulp Fiction</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="example-btn" data-query="The Shawshank Redemption">
+                    <span class="example-text">The Shawshank Redemption</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="example-btn" data-query="Friends">
+                    <span class="example-text">Friends</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="example-btn" data-query="The Office">
+                    <span class="example-text">The Office</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="example-btn" data-query="Black Mirror">
+                    <span class="example-text">Black Mirror</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Movie Details Modal -->
+<div class="modal-overlay" id="movieModal">
+    <div class="modal-content movie-modal">
+        <button class="modal-close" id="closeModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-body">
+            <div class="modal-poster">
+                <img id="modalPoster" src="" alt="" onerror="this.src='/static/images/placeholder-poster.jpg'">
+            </div>
+            <div class="modal-info">
+                <h2 id="modalTitle"></h2>
+                <div class="modal-meta">
+                    <span id="modalYear"></span>
+                    <span id="modalRating"></span>
+                    <span id="modalType"></span>
+                </div>
+                <p id="modalDescription" class="modal-description"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trailer Modal (Updated to match home page) -->
+<div class="modal-overlay" id="trailerModal">
+    <div class="modal-content trailer-modal">
+        <button class="modal-close" id="closeTrailerModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-body">
+            <div class="trailer-container">
+                <div id="youtubePlayer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript (Updated with home page trailer functionality) -->
+<script>
+// YouTube Player Functions (from home page)
+let youtubePlayer;
+
+function onYouTubeIframeAPIReady() {
+    youtubePlayer = new YT.Player('youtubePlayer', {
+        height: '100%',
+        width: '100%',
+        playerVars: {
+            'playsinline': 1,
+            'rel': 0,
+            'modestbranding': 1,
+            'autoplay': 1
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    console.log('YouTube player ready');
+}
+
+function onPlayerStateChange(event) {
+    // Handle player state changes if needed
+}
+
+function onPlayerError(event) {
+    console.error('YouTube player error:', event.data);
+    const originalUrl = document.querySelector('.trailer-btn.active')?.getAttribute('data-trailer');
+    if (originalUrl) {
+        trailerModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        alert('Failed to load trailer. Opening in YouTube...');
+        window.open(originalUrl, '_blank');
+    }
+}
+
+// Extract YouTube Video ID from various URL formats (from home page)
+function getYouTubeVideoId(url) {
+    if (!url) return null;
+
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/,
+        /youtube\.com\/watch\?.*v=([^&?#]+)/,
+        /youtu\.be\/([^&?#]+)/,
+        /youtube\.com\/embed\/([^&?#]+)/
+    ];
+
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+
+    return null;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const btnText = searchButton.querySelector('.btn-text');
+    const btnLoading = searchButton.querySelector('.btn-loading');
+    const searchLoading = document.getElementById('searchLoading');
+    const searchResults = document.getElementById('searchResults');
+
+    // Show loading state when form is submitted
+    searchForm.addEventListener('submit', function(e) {
+        const query = searchInput.value.trim();
+        if (query) {
+            // Show button loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline-block';
+            searchButton.disabled = true;
+
+            // Show full page loading if we have existing results
+            if (searchResults) {
+                searchResults.style.display = 'none';
+            }
+            searchLoading.style.display = 'block';
+
+            // Add a small delay to show the loading state
+            setTimeout(() => {
+                // The form will continue with normal submission
+            }, 100);
+        }
+    });
+
+    // Filter functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const resultCards = document.querySelectorAll('.search-result-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+
+            // Update active filter
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // Filter results
+            resultCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-type') === filter) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+
+    // Example search buttons
+    const exampleBtns = document.querySelectorAll('.example-btn');
+    const tryExampleBtn = document.querySelector('.try-example-btn');
+
+    exampleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const query = this.getAttribute('data-query');
+            searchInput.value = query;
+
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline-block';
+            searchButton.disabled = true;
+
+            // Show full page loading
+            if (searchResults) {
+                searchResults.style.display = 'none';
+            }
+            searchLoading.style.display = 'block';
+
+            // Submit the form
+            setTimeout(() => {
+                searchForm.submit();
+            }, 500);
+        });
+    });
+
+    if (tryExampleBtn) {
+        tryExampleBtn.addEventListener('click', function() {
+            const example = this.getAttribute('data-example');
+            searchInput.value = example;
+
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline-block';
+            searchButton.disabled = true;
+
+            // Show full page loading
+            if (searchResults) {
+                searchResults.style.display = 'none';
+            }
+            searchLoading.style.display = 'block';
+
+            // Submit the form
+            setTimeout(() => {
+                searchForm.submit();
+            }, 500);
+        });
+    }
+
+    // Popular search cards
+    const popularCards = document.querySelectorAll('.popular-card');
+    popularCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Show loading state on the button
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+            this.style.pointerEvents = 'none';
+
+            // Navigate after a brief delay to show loading
+            setTimeout(() => {
+                const url = this.getAttribute('href');
+                window.location.href = url;
+            }, 300);
+        });
+    });
+
+    // Movie Details Modal
+    const movieModal = document.getElementById('movieModal');
+    const closeModal = document.getElementById('closeModal');
+    const infoButtons = document.querySelectorAll('.info-btn');
+
+    infoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const movieData = JSON.parse(this.getAttribute('data-movie'));
+
+            document.getElementById('modalTitle').textContent = movieData.title;
+            document.getElementById('modalPoster').src = movieData.poster || '/static/images/placeholder-poster.jpg';
+            document.getElementById('modalYear').textContent = movieData.year;
+            document.getElementById('modalRating').textContent = `⭐ ${movieData.rating}`;
+            document.getElementById('modalType').textContent = movieData.type.toUpperCase();
+            document.getElementById('modalDescription').textContent = movieData.description;
+
+            movieModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    closeModal.addEventListener('click', function() {
+        movieModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    });
+
+    movieModal.addEventListener('click', function(e) {
+        if (e.target === movieModal) {
+            movieModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Trailer Modal with YouTube API (from home page)
+    const trailerModal = document.getElementById('trailerModal');
+    const closeTrailerModal = document.getElementById('closeTrailerModal');
+    const trailerButtons = document.querySelectorAll('.trailer-btn');
+
+    trailerButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const trailerUrl = this.getAttribute('data-trailer');
+
+            if (!trailerUrl) {
+                alert('No trailer available for this content.');
+                return;
+            }
+
+            // Mark this button as active
+            trailerButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const videoId = getYouTubeVideoId(trailerUrl);
+
+            if (videoId) {
+                if (youtubePlayer && youtubePlayer.loadVideoById) {
+                    // Use YouTube API if available
+                    youtubePlayer.loadVideoById(videoId);
+                    trailerModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    // Fallback to iframe
+                    const iframeHtml = `
+                        <iframe
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            style="width: 100%; height: 100%; border: none;"
+                        ></iframe>
+                    `;
+                    document.getElementById('youtubePlayer').innerHTML = iframeHtml;
+                    trailerModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            } else {
+                // If we can't extract video ID, open in new tab
+                console.warn('Could not extract YouTube video ID from:', trailerUrl);
+                alert('Opening trailer in YouTube...');
+                window.open(trailerUrl, '_blank');
+            }
+        });
+    });
+
+    closeTrailerModal.addEventListener('click', function() {
+        trailerModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+
+        if (youtubePlayer && youtubePlayer.stopVideo) {
+            youtubePlayer.stopVideo();
+        }
+
+        // Clear iframe content
+        document.getElementById('youtubePlayer').innerHTML = '';
+
+        // Remove active class from buttons
+        trailerButtons.forEach(btn => btn.classList.remove('active'));
+    });
+
+    trailerModal.addEventListener('click', function(e) {
+        if (e.target === trailerModal) {
+            trailerModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+
+            if (youtubePlayer && youtubePlayer.stopVideo) {
+                youtubePlayer.stopVideo();
+            }
+
+            document.getElementById('youtubePlayer').innerHTML = '';
+            trailerButtons.forEach(btn => btn.classList.remove('active'));
+        }
+    });
+
+    // Close modals with Escape key (from home page)
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (movieModal.classList.contains('active')) {
+                movieModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            if (trailerModal.classList.contains('active')) {
+                trailerModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                if (youtubePlayer && youtubePlayer.stopVideo) {
+                    youtubePlayer.stopVideo();
+                }
+                document.getElementById('youtubePlayer').innerHTML = '';
+                trailerButtons.forEach(btn => btn.classList.remove('active'));
+            }
+        }
+    });
+
+    // Search input focus effect
+    if (searchInput) {
+        searchInput.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+
+        searchInput.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    }
+
+    // Add loading animation to action buttons
+    const actionForms = document.querySelectorAll('.action-form');
+
+    actionForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button');
+            const originalHTML = button.innerHTML;
+
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 2000);
+        });
+    });
+
+    // Add intersection observer for lazy loading animations (from home page)
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '50px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe result cards for animation
+    document.querySelectorAll('.search-result-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+
+    // Auto-focus search input on page load if no query
+    {% if not query %}
+    if (searchInput) {
+        setTimeout(() => {
+            searchInput.focus();
+        }, 500);
+    }
+    {% endif %}
+});
+</script>
+
+<!-- Load YouTube IFrame API (from home page) -->
+<script src="https://www.youtube.com/iframe_api"></script>
+{% endblock %}

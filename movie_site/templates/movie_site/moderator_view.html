@@ -1,0 +1,393 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'movie_site/css/moderator_page.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="moderator-container">
+
+    <!-- Post-Deletion Confirmation Messages -->
+    <div class="moderator-message-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="moderator-message-popup moderator-alert-{{ message.tags }}">
+                    <i class="fas {% if 'success' in message.tags %}fa-check-circle{% elif 'error' in message.tags %}fa-times-circle{% else %}fa-info-circle{% endif %}"></i>
+                    {{ message }}
+                    <button type="button" class="moderator-close-btn" data-bs-dismiss="alert" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Header Section -->
+    <div class="moderator-header-section">
+        <div class="container">
+            <div class="moderator-header-content">
+                <div class="moderator-header-icon">
+                    <i class="fas fa-users-cog"></i>
+                    <div class="moderator-icon-glow moderator-warning-glow"></div>
+                </div>
+                <h1 class="moderator-title">User Content Management</h1>
+                <p class="moderator-subtitle">Monitor and manage user-submitted content across the platform</p>
+
+                <!-- Quick Stats -->
+                <div class="moderator-stats">
+                    <div class="moderator-stat-card">
+                        <div class="moderator-stat-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="moderator-stat-info">
+                            <span class="moderator-stat-number">{{ page_obj.paginator.count }}</span>
+                            <span class="moderator-stat-label">Total Entries</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="moderator-filters-section">
+        <div class="container">
+            <div class="moderator-filters-card">
+                <div class="moderator-filters-header">
+                    <h4><i class="fas fa-filter"></i> Filter Content</h4>
+                    <a href="{% url 'moderator_view' %}" class="moderator-clear-filters-btn">
+                        <i class="fas fa-times"></i>
+                        Clear Filters
+                    </a>
+                </div>
+
+                <form method="GET" class="moderator-filters-form" id="moderatorFiltersForm">
+                    <div class="moderator-filter-grid">
+                        <!-- Search Filter -->
+                        <div class="moderator-filter-group">
+                            <label class="moderator-filter-label">
+                                <i class="fas fa-search"></i>
+                                Search
+                            </label>
+                            <input type="text"
+                                   name="q"
+                                   class="moderator-filter-input"
+                                   placeholder="Search by username or media name..."
+                                   value="{{ request.GET.q }}">
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="moderator-filter-group">
+                            <label class="moderator-filter-label">
+                                <i class="fas fa-tag"></i>
+                                Status
+                            </label>
+                            <select name="status" class="moderator-filter-select">
+                                <option value="">All Statuses</option>
+                                <option value="Watchlist" {% if request.GET.status == 'Watchlist' %}selected{% endif %}>Watchlist</option>
+                                <option value="Watched" {% if request.GET.status == 'Watched' %}selected{% endif %}>Watched</option>
+                                <option value="Favorites" {% if request.GET.status == 'Favorites' %}selected{% endif %}>Favorites</option>
+                            </select>
+                        </div>
+
+                        <!-- Type Filter -->
+                        <div class="moderator-filter-group">
+                            <label class="moderator-filter-label">
+                                <i class="fas fa-film"></i>
+                                Media Type
+                            </label>
+                            <select name="type" class="moderator-filter-select">
+                                <option value="">All Types</option>
+                                <option value="movie" {% if request.GET.type == 'movie' %}selected{% endif %}>Movies</option>
+                                <option value="tv" {% if request.GET.type == 'tv' %}selected{% endif %}>TV Shows</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="moderator-filter-actions">
+                        <button type="submit" class="moderator-apply-filters-btn">
+                            <i class="fas fa-check"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="moderator-results-section">
+        <div class="container">
+            <div class="moderator-results-header">
+                <h3 class="moderator-results-title">
+                    User Media Entries
+                    {% if request.GET.q or request.GET.status or request.GET.type %}
+                    <span class="moderator-results-count">({{ page_obj.paginator.count }} results)</span>
+                    {% endif %}
+                </h3>
+            </div>
+
+            {% if page_obj %}
+            <div class="moderator-table-container">
+                <table class="moderator-table">
+                    <thead>
+                        <tr>
+                            <th class="moderator-user-column">User</th>
+                            <th class="moderator-media-column">Media</th>
+                            <th class="moderator-status-column">Status</th>
+                            <th class="moderator-rating-column">Rating</th>
+                            <th class="moderator-date-column">Added</th>
+                            <th class="moderator-actions-column">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user_media in page_obj %}
+                        <tr class="moderator-row" data-entry-id="{{ user_media.id }}">
+                            <td class="moderator-user-column">
+                                <div class="moderator-user-info">
+                                    <div class="moderator-user-avatar">
+                                        {% if user_media.user.profile.profile_pic %}
+                                            <img src="{{ user_media.user.profile.profile_pic.url }}" alt="{{ user_media.user.username }}" class="moderator-user-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="moderator-user-avatar-placeholder" style="display: none;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        {% else %}
+                                            <div class="moderator-user-avatar-placeholder">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="moderator-user-details">
+                                        <span class="moderator-username">{{ user_media.user.username }}</span>
+                                        <span class="moderator-user-email">{{ user_media.user.email }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="moderator-media-column">
+                                <div class="moderator-media-info">
+                                    <div class="moderator-media-poster-small">
+                                        {% if user_media.media.poster %}
+                                            <img src="{{ user_media.media.poster }}" alt="{{ user_media.media.name }}" class="moderator-media-poster-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="moderator-media-poster-placeholder" style="display: none;">
+                                                <i class="fas fa-film"></i>
+                                            </div>
+                                        {% else %}
+                                            <div class="moderator-media-poster-placeholder">
+                                                <i class="fas fa-film"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span class="moderator-media-type-badge moderator-{{ user_media.media.type }}-badge">
+                                            {{ user_media.media.type|upper }}
+                                        </span>
+                                    </div>
+                                    <div class="moderator-media-details">
+                                        <h5 class="moderator-media-title">{{ user_media.media.name }}</h5>
+                                        <div class="moderator-media-meta">
+                                            <span class="moderator-media-year">
+                                                {% if user_media.media.release_date %}
+                                                    {{ user_media.media.release_date|date:"Y" }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </span>
+                                            <span class="moderator-media-genre">
+                                                {% if user_media.media.genre.all %}
+                                                    {{ user_media.media.genre.first.name }}
+                                                {% else %}
+                                                    No genre
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="moderator-status-column">
+                                {% if user_media.status %}
+                                <span class="moderator-status-badge moderator-status-{{ user_media.status|lower }}">
+                                    <i class="fa-solid {% if user_media.status == 'Watchlist' %}fa-clock
+                                                   {% elif user_media.status == 'Watched' %}fa-check-circle
+                                                   {% else %}fa-heart{% endif %}"></i>
+                                    {{ user_media.get_status_display }}
+                                </span>
+                                {% else %}
+                                    <span class="moderator-status-badge moderator-status-na">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="moderator-rating-column">
+                                <div class="moderator-user-rating-wrapper">
+                                    {% if user_media.rating %}
+                                    <div class="moderator-user-rating">
+                                        <i class="fas fa-star moderator-rating-star"></i>
+                                        <span class="moderator-rating-value">{{ user_media.rating }}/10</span>
+                                    </div>
+                                    {% else %}
+                                    <span class="moderator-no-rating">N/A</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="moderator-date-column">
+                                <span class="moderator-date-added">{{ user_media.added_at|date:"M j, Y" }}</span>
+                                <span class="moderator-time-added">{{ user_media.added_at|date:"g:i A" }}</span>
+                            </td>
+                            <td class="moderator-actions-column">
+                                <div class="moderator-action-buttons">
+                                    <a href="{% url 'moderator_edit' pk=user_media.id %}" class="moderator-action-btn moderator-edit-btn" title="Edit Entry">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- Delete Button -->
+                                    <a href="{% url 'moderator_delete' usermedia_id=user_media.id %}"
+                                       class="moderator-page-delete-btn"
+                                       onclick="return confirm('Are you sure you want to delete this user media entry? This will notify the user and cannot be undone.')">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Delete Entry</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div class="moderator-pagination-container">
+                <nav aria-label="Page navigation">
+                    <ul class="moderator-pagination">
+
+                        {# Construct the filter parameters string once #}
+                        {% with q=request.GET.q|urlencode status=request.GET.status|urlencode type=request.GET.type|urlencode %}
+
+                        {% if page_obj.has_previous %}
+                        <li class="moderator-page-item">
+                            <a class="moderator-page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if type %}&type={{ type }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="moderator-page-item active">
+                                <span class="moderator-page-link">{{ num }}</span>
+                            </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="moderator-page-item">
+                                <a class="moderator-page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if type %}&type={{ type }}{% endif %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="moderator-page-item">
+                            <a class="moderator-page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if type %}&type={{ type }}{% endif %}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% endwith %}
+                    </ul>
+                </nav>
+                <div class="moderator-pagination-info">
+                    Showing {{ page_obj.start_index }} - {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+                </div>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="moderator-no-results">
+                <div class="moderator-no-results-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3>No User Media Found</h3>
+                <p>No user media entries match your current filters.</p>
+                <a href="{% url 'moderator_view' %}" class="moderator-clear-filters-btn large">
+                    <i class="fas fa-times"></i>
+                    Clear All Filters
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Popup -->
+<div class="moderator-confirm-overlay" id="moderatorDeleteConfirm">
+    <div class="moderator-confirm-box">
+        <div class="moderator-confirm-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h4>Confirm Deletion</h4>
+        <p id="moderatorConfirmText">Are you sure you want to delete this entry? This action cannot be undone.</p>
+        <div class="moderator-confirm-actions">
+            <form method="POST" action="" id="moderatorDeleteForm">
+                {% csrf_token %}
+                <button type="submit" class="moderator-confirm-btn moderator-ok-btn">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </form>
+            <button type="button" class="moderator-confirm-btn moderator-cancel-btn" id="moderatorCancelDeleteBtn">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Auto-submit filters on select change
+    document.querySelectorAll('.moderator-filter-select').forEach(select => {
+        select.addEventListener('change', () => {
+            document.getElementById('moderatorFiltersForm').submit();
+        });
+    });
+
+    // 2. Pre-Deletion Pop-up Logic
+    const confirmPopup = document.getElementById('moderatorDeleteConfirm');
+    const deleteTriggers = document.querySelectorAll('.moderator-page-delete-btn');
+    const deleteForm = document.getElementById('moderatorDeleteForm');
+    const cancelBtn = document.getElementById('moderatorCancelDeleteBtn');
+    const confirmText = document.getElementById('moderatorConfirmText');
+
+    // Show the confirmation popup when a delete button is clicked
+    deleteTriggers.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const entryId = this.getAttribute('href').split('/').filter(Boolean).pop();
+            const entryTitle = this.closest('tr').querySelector('.moderator-media-title').textContent;
+            const username = this.closest('tr').querySelector('.moderator-username').textContent;
+
+            // Set the target URL for the form submission
+            deleteForm.action = `/moderator/${entryId}/delete/`;
+
+            // Update the text in the confirmation box
+            confirmText.innerHTML = `Are you sure you want to delete <strong>"${username} - ${entryTitle}"</strong>? This action cannot be undone and will notify the user.`;
+
+            // Show the pop-up
+            confirmPopup.classList.add('active');
+        });
+    });
+
+    // Hide the confirmation popup when cancel is clicked
+    cancelBtn.addEventListener('click', function() {
+        confirmPopup.classList.remove('active');
+    });
+
+    // 3. Auto-hide post-deletion messages after 5 seconds
+    const messagePopup = document.querySelector('.moderator-message-popup');
+    if (messagePopup) {
+        setTimeout(() => {
+            messagePopup.style.opacity = '0';
+            messagePopup.style.transform = 'translateY(-20px)';
+            // Remove element after transition for clean DOM
+            setTimeout(() => messagePopup.remove(), 500);
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

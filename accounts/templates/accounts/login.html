@@ -1,0 +1,50 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-logo">MovieHub</h1>
+            <h2 class="auth-title">Sign In</h2>
+            <p class="auth-subtitle">Welcome back to your movie universe</p>
+        </div>
+
+        {% if form.errors %}
+        <div class="auth-alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Your username and password didn't match. Please try again.
+        </div>
+        {% endif %}
+
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="auth-label">Username</label>
+                <input type="text" name="username" class="auth-input"
+                       placeholder="Enter your username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="auth-label">Password</label>
+                <input type="password" name="password" class="auth-input"
+                       placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+
+            <div class="auth-links">
+                <p>
+                    New to MovieHub?
+                    <a href="{% url 'signup' %}" class="auth-link">
+                        Sign up now
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

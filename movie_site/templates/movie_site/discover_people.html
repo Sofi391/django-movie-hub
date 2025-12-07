@@ -1,0 +1,311 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="min-height: 100vh; padding: 120px 20px 60px; background: transparent; position: relative;">
+    <!-- Header Section -->
+    <div style="text-align: center; margin-bottom: 40px;">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user-friends" style="font-size: 2.5rem; color: #64b5f6; z-index: 2; position: relative;"></i>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: radial-gradient(circle, rgba(100, 181, 246, 0.3) 0%, transparent 70%); border-radius: 50%; animation: pulse 2s ease-in-out infinite;"></div>
+            </div>
+            <h1 style="margin-bottom: 15px; position: relative;">
+                <span style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #64b5f6, #42a5f5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Discover People</span>
+                <div style="width: 80px; height: 3px; background: linear-gradient(135deg, #64b5f6, #42a5f5); margin: 10px auto 0; border-radius: 2px;"></div>
+            </h1>
+            <p style="font-size: 1.1rem; color: #b0b0b0; margin-bottom: 0;">
+                Connect with other movie enthusiasts and discover their watchlists
+            </p>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div style="margin-bottom: 40px;">
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: 50px; padding: 10px 20px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;">
+                <i class="fas fa-search" style="color: #64b5f6; margin-right: 15px; font-size: 1.1rem;"></i>
+                <form method="GET" action="{% url 'discover_people' %}" style="flex: 1; display: flex; align-items: center;">
+                    <input type="text"
+                           name="search"
+                           placeholder="Search users by username..."
+                           value="{{ request.GET.search|default:'' }}"
+                           style="background: transparent; border: none; color: #ffffff; font-size: 1rem; padding: 8px 0; flex: 1; outline: none; width: 100;">
+                    <button type="submit" style="background: linear-gradient(135deg, #64b5f6, #42a5f5); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: all 0.3s ease; margin-left: 10px; flex-shrink: 0;">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Grid -->
+    <div style="max-width: 1200px; margin: 0 auto;">
+        {% if users %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px;" id="usersGrid">
+                {% for user_obj in users %}
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;"
+                     class="user-card" data-user-id="{{ user_obj.id }}">
+                    <div style="position: relative; width: 100px; height: 100px; margin: 0 auto 20px; cursor: pointer;" class="user-avatar">
+                        {% if user_obj.profile.profile_pic %}
+                            <img src="{{ user_obj.profile.profile_pic.url }}"
+                                 alt="{{ user_obj.username }}"
+                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid rgba(100, 181, 246, 0.3); transition: all 0.3s ease;">
+                        {% else %}
+                            <div style="width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #64b5f6, #42a5f5); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; border: 3px solid rgba(100, 181, 246, 0.3);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 110px; height: 110px; background: radial-gradient(circle, rgba(100, 181, 246, 0.2) 0%, transparent 70%); border-radius: 50%; opacity: 0; transition: opacity 0.3s ease;"></div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 1.3rem; font-weight: 600; color: #ffffff; margin-bottom: 15px; cursor: pointer; transition: color 0.3s ease;" class="username">{{ user_obj.username }}</h4>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <a href="{% url 'user_media' status='watchlist' type='movie' %}?user_id={{ user_obj.id }}"
+                               style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 25px; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255, 193, 7, 0.3); background: rgba(255, 193, 7, 0.1); color: #ffc107;"
+                               title="View Watchlist">
+                                <i class="fas fa-clock"></i>
+                                <span>Watchlist</span>
+                            </a>
+                            <a href="{% url 'user_media' status='watched' type='movie' %}?user_id={{ user_obj.id }}"
+                               style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 25px; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(76, 175, 80, 0.3); background: rgba(76, 175, 80, 0.1); color: #4caf50;"
+                               title="View Watched">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Watched</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div style="display: flex; justify-content: center; margin-top: 40px;">
+                <nav aria-label="User pagination">
+                    <ul style="display: flex; gap: 10px; align-items: center; list-style: none; padding: 0; margin: 0;">
+                        {% if page_obj.has_previous %}
+                        <li style="margin: 0;">
+                            <a style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;"
+                               href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i>
+                                Previous
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li style="margin: 0;">
+                                <span style="background: linear-gradient(135deg, #64b5f6, #42a5f5); border: 1px solid #64b5f6; color: white; padding: 10px 20px; border-radius: 10px; display: flex; align-items: center; gap: 8px;">{{ num }}</span>
+                            </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li style="margin: 0;">
+                                <a style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;"
+                                   href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li style="margin: 0;">
+                            <a style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;"
+                               href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                Next
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Empty State -->
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 4rem; color: #64b5f6; margin-bottom: 20px; opacity: 0.5;">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                <h3 style="color: #ffffff; margin-bottom: 15px; font-size: 1.5rem;">
+                    {% if request.GET.search %}
+                        No users found for "{{ request.GET.search }}"
+                    {% else %}
+                        No users to discover
+                    {% endif %}
+                </h3>
+                <p style="color: #b0b0b0; margin-bottom: 25px; font-size: 1.1rem;">
+                    {% if request.GET.search %}
+                        Try searching with a different username
+                    {% else %}
+                        Check back later to discover new users
+                    {% endif %}
+                </p>
+                {% if request.GET.search %}
+                <a href="{% url 'discover_people' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: #ffffff; text-decoration: none; border-radius: 25px; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <i class="fas fa-times"></i>
+                    Clear Search
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.user-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #64b5f6, #42a5f5);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(100, 181, 246, 0.3);
+}
+
+.user-card:hover::before {
+    transform: scaleX(1);
+}
+
+.user-card:hover .user-avatar div:last-child {
+    opacity: 1;
+}
+
+.user-card:hover .user-avatar img,
+.user-card:hover .user-avatar div:first-child {
+    border-color: #64b5f6;
+    transform: scale(1.05);
+}
+
+.user-card:hover .username {
+    color: #64b5f6;
+}
+
+.user-card a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-card a[style*="ffc107"]:hover {
+    background: rgba(255, 193, 7, 0.2);
+    border-color: #ffc107;
+}
+
+.user-card a[style*="4caf50"]:hover {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #4caf50;
+}
+
+.pagination a:hover {
+    background: rgba(100, 181, 246, 0.1);
+    border-color: #64b5f6;
+    color: #64b5f6;
+    transform: translateY(-2px);
+}
+
+.clear-search:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.search-box:focus-within {
+    border-color: #64b5f6;
+    box-shadow: 0 0 20px rgba(100, 181, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.search-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(100, 181, 246, 0.4);
+}
+
+@media (max-width: 768px) {
+    .user-card {
+        padding: 20px;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-buttons a {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    #usersGrid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // User card click handler
+    const userCards = document.querySelectorAll('.user-card');
+
+    userCards.forEach(card => {
+        const avatar = card.querySelector('.user-avatar');
+        const username = card.querySelector('.username');
+
+        // Make entire card clickable for watchlist (except action buttons)
+        [avatar, username].forEach(element => {
+            if (element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Redirect to user's watchlist
+                    const userId = card.getAttribute('data-user-id');
+                    if (userId) {
+                        window.location.href = `{% url 'user_media' status='watchlist' type='movie' %}?user_id=${userId}`;
+                    }
+                });
+            }
+        });
+    });
+
+    // Search form enhancement
+    const searchForm = document.querySelector('form[method="GET"]');
+    const searchInput = document.querySelector('input[name="search"]');
+    const searchBtn = document.querySelector('button[type="submit"]');
+
+    if (searchForm && searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchForm.submit();
+            }
+        });
+
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function() {
+                searchForm.submit();
+            });
+        }
+    }
+});
+</script>
+{% endblock %}

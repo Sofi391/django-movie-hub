@@ -1,0 +1,407 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="user-media-container">
+    <!-- Header Section -->
+    <div class="media-header-section">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-heart"></i>
+                <div class="icon-glow"></div>
+            </div>
+            <h1 class="section-title-modern">
+                <span class="title-text">My Favorites</span>
+                <div class="title-underline"></div>
+            </h1>
+            <p class="header-subtitle">
+                {{ current_type|title }}s you absolutely love
+            </p>
+        </div>
+
+        <!-- Type Toggle -->
+        <div class="type-toggle-container">
+            <div class="type-tabs">
+                <a href="{% url 'favorites' type='movie' %}"
+                   class="type-tab {% if current_type == 'movie' %}active{% endif %}">
+                    <i class="fas fa-film"></i>
+                    <span>Movies</span>
+                    <div class="tab-badge">{{ movie_count }}</div>
+                </a>
+                <a href="{% url 'favorites' type='tv' %}"
+                   class="type-tab {% if current_type == 'tv' %}active{% endif %}">
+                    <i class="fas fa-tv"></i>
+                    <span>TV Shows</span>
+                    <div class="tab-badge">{{ tv_count }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-overview">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-film"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ movie_count }}</span>
+                <span class="stat-label">Movies</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-tv"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ tv_count }}</span>
+                <span class="stat-label">TV Shows</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ total_count }}</span>
+                <span class="stat-label">Total Favorites</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="media-content-section">
+        {% if favorites %}
+            <!-- Grid Layout -->
+            <div class="media-grid" id="mediaGrid">
+                {% for favorite in favorites %}
+                <div class="media-card" data-media-id="{{ favorite.media.id }}">
+                    <div class="media-poster-container">
+                        <img src="{{ favorite.media.poster }}" alt="{{ favorite.media.name }}" class="media-poster"
+                             onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+                        <div class="media-overlay">
+                            <div class="action-buttons">
+                                <!-- Remove from Favorites -->
+                                <form method="POST" action="{% url 'remove_from_favorite' favorite.media.slug %}" class="action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="media_id" value="{{ favorite.media.id }}">
+                                    <button type="submit" class="action-btn remove-btn" title="Remove from Favorites">
+                                        <i class="fas fa-heart-broken"></i>
+                                    </button>
+                                </form>
+
+                                <!-- Add to Watchlist -->
+                                <form method="POST" action="{% url 'add_to_collection' %}" class="action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="title" value="{{ favorite.media.name }}">
+                                    <input type="hidden" name="description" value="{{ favorite.media.description|default:'' }}">
+                                    <input type="hidden" name="release_date" value="{{ favorite.media.release_date|date:'Y-m-d' }}">
+                                    <input type="hidden" name="poster" value="{{ favorite.media.poster }}">
+                                    <input type="hidden" name="trailer_url" value="{{ favorite.media.trailer_url|default:'' }}">
+                                    <input type="hidden" name="type" value="{{ current_type }}">
+                                    <input type="hidden" name="rating" value="{{ favorite.media.rating|default:0 }}">
+                                    <button type="submit" class="action-btn watchlist-btn" title="Add to Watchlist">
+                                        <i class="fas fa-clock"></i>
+                                    </button>
+                                </form>
+
+                                <!-- Mark as Watched -->
+                                <form method="POST" action="{% url 'mark_watched' favorite.media.slug %}" class="action-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+
+                                {% if favorite.media.trailer_url %}
+                                <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ favorite.media.trailer_url }}">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                {% endif %}
+
+                                <button class="action-btn info-btn" title="View Details"
+                                        data-media='{"title": "{{ favorite.media.name }}", "description": "{{ favorite.media.description|default:'No description available' }}", "poster": "{{ favorite.media.poster }}", "year": "{{ favorite.media.release_date|date:'Y' }}", "rating": "{{ favorite.media.rating|default:'N/A' }}", "genres": "{% for genre in favorite.media.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}", "type": "{{ current_type }}"}'>
+                                    <i class="fas fa-info"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Favorite Badge -->
+                        <div class="media-badge favorite-badge">
+                            <i class="fas fa-heart"></i>
+                        </div>
+
+                        <!-- Status Badge (if in watchlist or watched) -->
+                        {% for user_media in favorite.user.user_media.all %}
+                            {% if user_media.media.id == favorite.media.id %}
+                                <div class="status-badge {% if user_media.status == 'Watched' %}watched-badge{% else %}watchlist-badge{% endif %}">
+                                    {% if user_media.status == 'Watched' %}
+                                        <i class="fas fa-check"></i>
+                                    {% else %}
+                                        <i class="fas fa-clock"></i>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="media-info">
+                        <h4 class="media-title">{{ favorite.media.name }}</h4>
+                        <div class="media-meta">
+                            <span class="media-year">
+                                <i class="fas fa-calendar"></i>
+                                {{ favorite.media.release_date|date:"Y" }}
+                            </span>
+                            <span class="media-rating">
+                                <i class="fas fa-star"></i>
+                                {{ favorite.media.rating|default:"N/A" }}
+                            </span>
+                        </div>
+                        <div class="media-genres">
+                            {% for genre in favorite.media.genre.all %}
+                            <span class="genre-tag">{{ genre.name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- User Status -->
+                        <div class="user-media-info">
+                            {% for user_media in favorite.user.user_media.all %}
+                                {% if user_media.media.id == favorite.media.id %}
+                                    <div class="user-status">
+                                        <span class="status-indicator {% if user_media.status == 'Watched' %}watched{% else %}watchlist{% endif %}">
+                                            <i class="fas {% if user_media.status == 'Watched' %}fa-check{% else %}fa-clock{% endif %}"></i>
+                                            {{ user_media.status }}
+                                        </span>
+                                        {% if user_media.rating %}
+                                        <span class="user-rating">
+                                            <i class="fas fa-star user-rating-icon"></i>
+                                            Your Rating: {{ user_media.rating }}/10
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Edit Button -->
+                        <div class="edit-actions">
+                            <a href="{% url 'edit_user_media' favorite.media.slug %}" class="edit-link-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>No Favorite {{ current_type|title }}s Yet</h3>
+                <p>
+                    Start building your favorites collection by exploring movies and TV shows!
+                </p>
+                <a href="{% url 'search_movies' %}" class="discover-link">
+                    <i class="fas fa-search"></i>
+                    Discover {{ current_type|title }}s
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Enhanced Movie Details Modal -->
+<div class="modal-overlay" id="movieModal">
+    <div class="modal-content movie-modal">
+        <button class="modal-close" id="closeModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-body">
+            <div class="modal-poster">
+                <img id="modalPoster" src="" alt="" onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+            </div>
+            <div class="modal-info">
+                <h2 id="modalTitle"></h2>
+                <div class="modal-meta">
+                    <span id="modalYear"></span>
+                    <span id="modalRating"></span>
+                    <span id="modalType"></span>
+                </div>
+                <div class="modal-genres" id="modalGenres"></div>
+                <div class="modal-description-container">
+                    <p id="modalDescription" class="modal-description"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trailer Modal -->
+<div class="modal-overlay" id="trailerModal">
+    <div class="modal-content trailer-modal">
+        <button class="modal-close" id="closeTrailerModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-body">
+            <div class="trailer-container">
+                <div id="youtubePlayer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Same JavaScript as previous page for modals and interactions
+document.addEventListener('DOMContentLoaded', function() {
+    // Movie Details Modal
+    const movieModal = document.getElementById('movieModal');
+    const closeModal = document.getElementById('closeModal');
+    const infoButtons = document.querySelectorAll('.info-btn');
+
+    function closeMovieModal() {
+        movieModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    closeModal.addEventListener('click', closeMovieModal);
+    movieModal.addEventListener('click', function(e) {
+        if (e.target === movieModal) closeMovieModal();
+    });
+
+    infoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const mediaData = JSON.parse(this.getAttribute('data-media'));
+            document.getElementById('modalTitle').textContent = mediaData.title;
+            document.getElementById('modalPoster').src = mediaData.poster;
+            document.getElementById('modalYear').textContent = mediaData.year;
+            document.getElementById('modalRating').textContent = `⭐ ${mediaData.rating}`;
+            document.getElementById('modalType').textContent = mediaData.type.toUpperCase();
+
+            const genresElement = document.getElementById('modalGenres');
+            if (mediaData.genres && mediaData.genres.trim()) {
+                genresElement.innerHTML = mediaData.genres.split(', ').map(genre =>
+                    `<span class="genre-tag">${genre}</span>`
+                ).join('');
+                genresElement.style.display = 'flex';
+            } else {
+                genresElement.style.display = 'none';
+            }
+
+            document.getElementById('modalDescription').textContent = mediaData.description;
+            movieModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Trailer Modal
+    const trailerModal = document.getElementById('trailerModal');
+    const closeTrailerModal = document.getElementById('closeTrailerModal');
+    const trailerButtons = document.querySelectorAll('.trailer-btn');
+
+    function closeTrailerModalFunc() {
+        trailerModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        document.getElementById('youtubePlayer').innerHTML = '';
+        trailerButtons.forEach(btn => btn.classList.remove('active'));
+    }
+
+    closeTrailerModal.addEventListener('click', closeTrailerModalFunc);
+    trailerModal.addEventListener('click', function(e) {
+        if (e.target === trailerModal) closeTrailerModalFunc();
+    });
+
+    trailerButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const trailerUrl = this.getAttribute('data-trailer');
+            if (!trailerUrl) {
+                alert('No trailer available for this content.');
+                return;
+            }
+
+            trailerButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const videoId = getYouTubeVideoId(trailerUrl);
+            if (videoId) {
+                const iframeHtml = `
+                    <iframe
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        style="width: 100%; height: 100%; border: none;"
+                    ></iframe>
+                `;
+                document.getElementById('youtubePlayer').innerHTML = iframeHtml;
+                trailerModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                window.open(trailerUrl, '_blank');
+            }
+        });
+    });
+
+    // Utility function
+    function getYouTubeVideoId(url) {
+        if (!url) return null;
+        const patterns = [
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/,
+            /youtube\.com\/watch\?.*v=([^&?#]+)/,
+            /youtu\.be\/([^&?#]+)/,
+            /youtube\.com\/embed\/([^&?#]+)/
+        ];
+        for (const pattern of patterns) {
+            const match = url.match(pattern);
+            if (match && match[1]) return match[1];
+        }
+        return null;
+    }
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (movieModal.classList.contains('active')) closeMovieModal();
+            if (trailerModal.classList.contains('active')) closeTrailerModalFunc();
+        }
+    });
+
+    // Loading animations for buttons
+    const actionForms = document.querySelectorAll('.action-form');
+    actionForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 2000);
+        });
+    });
+
+    // Lazy loading animations
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '50px' });
+
+    document.querySelectorAll('.media-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+});
+</script>
+
+<!-- Load YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+{% endblock %}

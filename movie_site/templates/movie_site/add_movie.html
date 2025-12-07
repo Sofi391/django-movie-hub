@@ -1,0 +1,452 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="add-media-container">
+    <div class="add-media-wrapper">
+        <!-- Header Section -->
+        <div class="add-media-header">
+            <div class="header-icon">
+                <i class="fas fa-plus-circle"></i>
+                <div class="icon-glow"></div>
+            </div>
+            <h1 class="section-title-modern">
+                <span class="title-text">Add New Media</span>
+                <div class="title-underline"></div>
+            </h1>
+            <p class="header-subtitle">
+                Add a new movie or TV show to the MovieHub collection
+            </p>
+        </div>
+
+        <!-- Add Media Card -->
+        <div class="add-media-card">
+            <form method="POST" enctype="multipart/form-data" class="add-media-form">
+                {% csrf_token %}
+
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <i class="fas fa-info-circle"></i>
+                        <h4>Basic Information</h4>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Title *</label>
+                                <input type="text" name="name" class="form-control auth-input"
+                                       placeholder="Enter media title" required
+                                       value="{{ form.name.value|default:'' }}">
+                                {% if form.name.errors %}
+                                <div class="form-error">{{ form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Media Type *</label>
+                                <select name="type" class="form-control auth-input" required>
+                                    <option value="">Select type...</option>
+                                    <option value="movie" {% if form.type.value == 'movie' %}selected{% endif %}>Movie</option>
+                                    <option value="tv" {% if form.type.value == 'tv' %}selected{% endif %}>TV Show</option>
+                                </select>
+                                {% if form.type.errors %}
+                                <div class="form-error">{{ form.type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Details Section -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <i class="fas fa-film"></i>
+                        <h4>Media Details</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control auth-input"
+                                  placeholder="Enter media description" rows="4">{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                        <div class="form-error">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Rating (0-10)</label>
+                                <div class="rating-input-container">
+                                    <input type="number" name="rating" class="form-control auth-input rating-input"
+                                           min="0" max="10" step="0.1"
+                                           placeholder="8.5"
+                                           value="{{ form.rating.value|default:'' }}">
+                                    <div class="rating-preview" id="ratingPreview">
+                                        <div class="stars-container">
+                                            <div class="stars-background">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <div class="stars-filled" id="starsFilled"></div>
+                                        </div>
+                                        <span class="rating-value" id="ratingValue">0.0</span>
+                                    </div>
+                                </div>
+                                {% if form.rating.errors %}
+                                <div class="form-error">{{ form.rating.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-hint">
+                                    Enter a rating between 0.0 and 10.0
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Release Date</label>
+                                <input type="date" name="release_date" class="form-control auth-input"
+                                       value="{{ form.release_date.value|default:'' }}">
+                                {% if form.release_date.errors %}
+                                <div class="form-error">{{ form.release_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Trailer URL</label>
+                                <input type="url" name="trailer_url" class="form-control auth-input"
+                                       placeholder="https://youtube.com/..."
+                                       value="{{ form.trailer_url.value|default:'' }}">
+                                {% if form.trailer_url.errors %}
+                                <div class="form-error">{{ form.trailer_url.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rest of your existing form sections remain the same -->
+                <!-- Media Assets Section -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <i class="fas fa-image"></i>
+                        <h4>Media Assets</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Poster URL *</label>
+                        <input type="url" name="poster" class="form-control auth-input"
+                               placeholder="https://example.com/poster.jpg" required
+                               value="{{ form.poster.value|default:'' }}">
+                        {% if form.poster.errors %}
+                        <div class="form-error">{{ form.poster.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-hint">
+                            Enter a direct URL to the poster image (JPEG, PNG, or WebP)
+                        </div>
+                    </div>
+
+                    <!-- Poster Preview -->
+                    <div class="poster-preview-container" id="posterPreview" style="display: none;">
+                        <div class="poster-preview">
+                            <img id="posterPreviewImg" src="" alt="Poster Preview" class="poster-preview-image"
+                                 onerror="this.style.display='none'; document.getElementById('posterPreview').style.display='none';">
+                            <div class="poster-preview-overlay">
+                                <i class="fas fa-eye"></i>
+                                <span>Preview</span>
+                            </div>
+                        </div>
+                        <div class="preview-loading" id="previewLoading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading preview...</span>
+                        </div>
+                        <div class="preview-error" id="previewError" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Could not load image</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Genres Section -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <i class="fas fa-tags"></i>
+                        <h4>Genres</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Genres</label>
+                        <div class="genres-checkbox-grid">
+                            {% for genre in form.genre.field.queryset %}
+                            <div class="genre-checkbox-item">
+                                <input type="checkbox" name="genre" value="{{ genre.id }}"
+                                       id="genre_{{ genre.id }}"
+                                       {% if genre.id in form.genre.value %}checked{% endif %}>
+                                <label for="genre_{{ genre.id }}" class="genre-label">
+                                    <i class="fas fa-tag"></i>
+                                    {{ genre.name }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.genre.errors %}
+                        <div class="form-error">{{ form.genre.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-hint">
+                            Select one or more genres that describe this media
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">
+                            <i class="fas fa-plus-circle"></i>
+                            Add Media
+                        </span>
+                        <span class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Adding...
+                        </span>
+                    </button>
+
+                    <a href="{% url 'home' %}" class="cancel-btn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content success-modal">
+        <div class="modal-body text-center">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Media Added Successfully!</h3>
+            <p>Your media has been added to the MovieHub collection.</p>
+            <div class="success-actions">
+                <a href="{% url 'home' %}" class="btn-primary">Go to Home</a>
+                <button class="btn-secondary" id="addAnother">Add Another</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Rating functionality for float values (0-10)
+    const ratingInput = document.querySelector('.rating-input');
+    const ratingPreview = document.getElementById('ratingPreview');
+    const starsFilled = document.getElementById('starsFilled');
+    const ratingValue = document.getElementById('ratingValue');
+
+    function updateRatingPreview() {
+        const value = parseFloat(ratingInput.value) || 0;
+
+        if (value >= 0 && value <= 10) {
+            // Update stars (10-star system)
+            const percentage = (value / 10) * 100;
+            starsFilled.style.width = `${percentage}%`;
+
+            // Update value text
+            ratingValue.textContent = value.toFixed(1);
+
+            // Update color based on rating
+            if (value >= 8) {
+                ratingPreview.style.setProperty('--rating-color', '#10b981'); // Green for high ratings
+            } else if (value >= 6) {
+                ratingPreview.style.setProperty('--rating-color', '#d97706'); // Orange for medium ratings
+            } else if (value >= 4) {
+                ratingPreview.style.setProperty('--rating-color', '#dc2626'); // Red for low ratings
+            } else {
+                ratingPreview.style.setProperty('--rating-color', '#991b1b'); // Dark red for very low ratings
+            }
+
+            ratingPreview.style.display = 'flex';
+        } else {
+            ratingPreview.style.display = 'none';
+        }
+    }
+
+    if (ratingInput) {
+        ratingInput.addEventListener('input', updateRatingPreview);
+
+        // Initialize on page load
+        if (ratingInput.value) {
+            updateRatingPreview();
+        }
+
+        // Add validation on blur
+        ratingInput.addEventListener('blur', function() {
+            const value = parseFloat(this.value);
+            if (this.value && (value < 0 || value > 10)) {
+                this.setCustomValidity('Rating must be between 0 and 10');
+                this.reportValidity();
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+
+    // Your existing poster preview functionality
+    const posterInput = document.querySelector('input[name="poster"]');
+    const posterPreview = document.getElementById('posterPreview');
+    const posterPreviewImg = document.getElementById('posterPreviewImg');
+    const previewLoading = document.getElementById('previewLoading');
+    const previewError = document.getElementById('previewError');
+
+    function isValidImageUrl(url) {
+        return /\.(jpeg|jpg|png|webp|gif|bmp|svg)(\?.*)?$/i.test(url);
+    }
+
+    function loadImagePreview(url) {
+        if (!url || !isValidImageUrl(url)) {
+            hidePreview();
+            return;
+        }
+
+        posterPreview.style.display = 'block';
+        posterPreviewImg.style.display = 'none';
+        previewLoading.style.display = 'flex';
+        previewError.style.display = 'none';
+
+        const testImage = new Image();
+        testImage.onload = function() {
+            posterPreviewImg.src = url;
+            posterPreviewImg.style.display = 'block';
+            previewLoading.style.display = 'none';
+            previewError.style.display = 'none';
+        };
+        testImage.onerror = function() {
+            posterPreviewImg.style.display = 'none';
+            previewLoading.style.display = 'none';
+            previewError.style.display = 'flex';
+        };
+        testImage.src = url;
+    }
+
+    function hidePreview() {
+        posterPreview.style.display = 'none';
+        posterPreviewImg.style.display = 'none';
+        previewLoading.style.display = 'none';
+        previewError.style.display = 'none';
+    }
+
+    if (posterInput) {
+        let previewTimeout;
+        posterInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            clearTimeout(previewTimeout);
+            previewTimeout = setTimeout(() => {
+                loadImagePreview(url);
+            }, 500);
+        });
+
+        if (posterInput.value.trim()) {
+            loadImagePreview(posterInput.value.trim());
+        }
+
+        posterInput.addEventListener('blur', function() {
+            const url = this.value.trim();
+            clearTimeout(previewTimeout);
+            loadImagePreview(url);
+        });
+    }
+
+    // Form submission loading state
+    const form = document.querySelector('.add-media-form');
+    const submitBtn = form.querySelector('.submit-btn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+
+    form.addEventListener('submit', function(e) {
+        // Validate rating
+        const rating = parseFloat(ratingInput.value);
+        if (ratingInput.value && (rating < 0 || rating > 10)) {
+            e.preventDefault();
+            alert('Rating must be between 0 and 10');
+            ratingInput.focus();
+            return;
+        }
+
+        const posterUrl = posterInput.value.trim();
+        if (posterUrl && !isValidImageUrl(posterUrl)) {
+            e.preventDefault();
+            alert('Please enter a valid image URL (jpg, png, webp, etc.)');
+            return;
+        }
+
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline-block';
+        submitBtn.disabled = true;
+    });
+
+    // Success modal handling
+    const successModal = document.getElementById('successModal');
+    const addAnotherBtn = document.getElementById('addAnother');
+
+    if (addAnotherBtn) {
+        addAnotherBtn.addEventListener('click', function() {
+            successModal.classList.remove('active');
+            form.reset();
+            hidePreview();
+            updateRatingPreview(); // Reset rating preview
+            btnText.style.display = 'inline-block';
+            btnLoading.style.display = 'none';
+            submitBtn.disabled = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // Auto-close alerts
+    const alerts = document.querySelectorAll('.alert-danger');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 5000);
+    });
+
+    // Genre selection
+    const genreCheckboxes = document.querySelectorAll('.genre-checkbox-item input[type="checkbox"]');
+    const genreSection = document.querySelector('.form-section:last-of-type');
+    const selectAllContainer = document.createElement('div');
+    selectAllContainer.className = 'genre-select-all';
+    selectAllContainer.innerHTML = `
+        <button type="button" class="select-all-btn" id="selectAllGenres">Select All</button>
+        <button type="button" class="select-none-btn" id="selectNoneGenres">Select None</button>
+    `;
+    genreSection.querySelector('.form-group').insertBefore(selectAllContainer, genreSection.querySelector('.genres-checkbox-grid'));
+
+    document.getElementById('selectAllGenres').addEventListener('click', function() {
+        genreCheckboxes.forEach(checkbox => {
+            checkbox.checked = true;
+        });
+    });
+
+    document.getElementById('selectNoneGenres').addEventListener('click', function() {
+        genreCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    });
+});
+</script>
+{% endblock %}

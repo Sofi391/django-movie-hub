@@ -1,0 +1,107 @@
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.text import slugify
+import unidecode
+
+
+# Create your models here.
+class Genre(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True,blank=True,max_length=120)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(unidecode.unidecode(self.name))
+            slug = base_slug
+            counter = 1
+
+            # Handle duplicate slugs
+            while Genre.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Media(models.Model):
+    name = models.CharField(max_length=100)
+    release_date = models.DateField()
+    description = models.TextField(null=True)
+    poster = models.URLField(null=True)
+    trailer_url = models.URLField(null=True)
+    rating = models.FloatField(default=0)
+    type = models.CharField(max_length=100,default='movie')
+    slug = models.SlugField(unique=True,blank=True,max_length=120)
+
+    genre = models.ManyToManyField(Genre,blank=True,related_name='media')
+
+    class Meta:
+        permissions = [
+            ('edit_media','can edit media'),
+            # ('view_media','can view media'),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(unidecode.unidecode(self.name))
+            slug = base_slug
+            counter = 1
+
+            # Handle duplicate slugs
+            while Media.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='profile')
+    profile_pic = models.ImageField(default='default.jpg',upload_to='profile_pic/profile_pics',null=True,blank=True)
+    bio = models.TextField(blank=True,null=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+class UserMedia(models.Model):
+    user_choice = [
+        ('Watched', 'Watched'),
+        ('Watchlist', 'To Watch')
+    ]
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='user_media')
+    media = models.ForeignKey(Media,on_delete=models.CASCADE,related_name='user')
+    status = models.CharField(max_length=20,choices=user_choice,default='Watchlist')
+    rating = models.FloatField(default=None,null=True)
+    review = models.TextField(blank=True,null=True)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}  {self.media.name}"
+
+    class Meta:
+        unique_together = ('user','media')
+        ordering = ['-added_at']
+        permissions = [
+            ('view_user_media','can view user media'),
+            ('edit_user_media','can edit user media'),
+            ('delete_user_media','can delete user media'),
+        ]
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='favorites')
+    media = models.ForeignKey(Media,on_delete=models.CASCADE,related_name='favorites')
+    added_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.user.username}  {self.media.name}"
+
+    class Meta:
+        unique_together = ('user','media')
+        ordering = ['-added_at']

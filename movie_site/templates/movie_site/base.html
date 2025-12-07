@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieHub - Your Ultimate Movie Experience</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'movie_site/css/styles.css' %}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-glass fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <div class="brand-wrapper">
+                    <i class="fas fa-film brand-icon"></i>
+                    <span class="brand-text">MovieHub</span>
+                    <div class="brand-underline"></div>
+                </div>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon">
+                    <i class="fas fa-bars"></i>
+                </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav nav-center">
+                    <li class="nav-item">
+                        <a class="nav-link nav-modern" href="{% url 'home' %}">
+                            <div class="nav-icon-wrapper">
+                                <i class="fas fa-home"></i>
+                                <div class="nav-pulse"></div>
+                            </div>
+                            <span class="nav-label">Home</span>
+                            <div class="nav-underline"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-modern" href="{% url 'search_movies' %}">
+                            <div class="nav-icon-wrapper">
+                                <i class="fas fa-search"></i>
+                                <div class="nav-pulse"></div>
+                            </div>
+                            <span class="nav-label">Discover</span>
+                            <div class="nav-underline"></div>
+                        </a>
+                    </li>
+
+                    <!-- Role-based Navigation Buttons -->
+                    {% if user.is_authenticated %}
+                        <!-- Add Media Button - For Admins, Editors, and Moderators -->
+                        {% if user.is_staff or perms.movie_site.add_media or perms.movie_site.change_media %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-modern admin-nav-btn" href="{% url 'new_movie' %}">
+                                <div class="nav-icon-wrapper">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <div class="nav-pulse"></div>
+                                </div>
+                                <span class="nav-label">Add Media</span>
+                                <div class="nav-underline"></div>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Manage Users Button - For Moderators and Admins -->
+                        {% if perms.movie_site.view_user_media or user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-modern moderator-nav-btn" href="{% url 'moderator_view' %}">
+                                <div class="nav-icon-wrapper">
+                                    <i class="fas fa-users-cog"></i>
+                                    <div class="nav-pulse"></div>
+                                </div>
+                                <span class="nav-label">Manage Users</span>
+                                <div class="nav-underline"></div>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Content Management Button - For Editors -->
+                        {% if perms.movie_site.change_media and not user.is_staff and not perms.movie_site.view_user_media %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-modern editor-nav-btn" href="{% url 'moderator_view' %}">
+                                <div class="nav-icon-wrapper">
+                                    <i class="fas fa-edit"></i>
+                                    <div class="nav-pulse"></div>
+                                </div>
+                                <span class="nav-label">Manage Content</span>
+                                <div class="nav-underline"></div>
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+                <ul class="navbar-nav nav-end">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown modern-dropdown">
+                            <a class="nav-link dropdown-toggle profile-trigger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <div class="profile-avatar">
+                                    {% if user.profile.profile_pic %}
+                                        <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="profile-image">
+                                    {% else %}
+                                        <div class="profile-placeholder">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="profile-glow"></div>
+                                </div>
+                                <span class="username">{{ user.username }}</span>
+
+                                <!-- Dynamic Role Badge in Navbar -->
+                                <i class="fas fa-chevron-down dropdown-arrow"></i>
+                            </a>
+                            <ul class="dropdown-menu modern-dropdown-menu">
+                                <!-- Role Indicator in Dropdown -->
+                                <li>
+                                    <div class="role-indicator-dropdown">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span class="role-text">
+                                            {% if user.is_staff %}Administrator
+                                            {% elif perms.movie_site.edit_user_media %}Content Moderator
+                                            {% elif perms.movie_site.edit_media %}Content Editor
+                                            {% else %}Standard User{% endif %}
+                                        </span>
+                                    </div>
+                                </li>
+                                <li><div class="dropdown-divider"></div></li>
+
+                                <!-- Admin/Moderator/Editor Dropdown Items -->
+                                {% if user.is_staff or perms.movie_site.add_media or perms.movie_site.change_media %}
+                                <li>
+                                    <a class="dropdown-item modern-item admin-dropdown-item" href="{% url 'new_movie' %}">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span>Add New Media</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                {% if perms.movie_site.view_user_media or user.is_staff %}
+                                <li>
+                                    <a class="dropdown-item modern-item moderator-dropdown-item" href="{% url 'moderator_view' %}">
+                                        <i class="fas fa-users-cog"></i>
+                                        <span>Manage User Content</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                {% if perms.movie_site.change_media and not user.is_staff and not perms.movie_site.view_user_media %}
+                                <li>
+                                    <a class="dropdown-item modern-item editor-dropdown-item" href="{% url 'moderator_view' %}">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Edit Media Content</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                {% if user.is_staff or perms.movie_site.view_user_media or perms.movie_site.change_media %}
+                                <li><div class="dropdown-divider admin-divider"></div></li>
+                                {% endif %}
+
+                                <!-- User Dropdown Items -->
+                                <li>
+                                    <a class="dropdown-item modern-item" href="{% url 'profile' %}">
+                                        <i class="fas fa-user-edit"></i>
+                                        <span>Edit Profile</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+
+                                <!-- Discover People Link - Added here -->
+                                <li>
+                                    <a class="dropdown-item modern-item discover-people-item" href="{% url 'discover_people' %}">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>Discover People</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+
+                                <li><div class="dropdown-divider"></div></li>
+                                <li>
+                                    <a class="dropdown-item modern-item" href="{% url 'user_media' status='Watchlist' type='movie' %}">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Watchlist</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item modern-item" href="{% url 'user_media' status='Watched' type='movie' %}">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Watched</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item modern-item" href="{% url 'favorites' type='movie' %}">
+                                        <i class="fas fa-heart"></i>
+                                        <span>Favorites</span>
+                                        <div class="item-hover-effect"></div>
+                                    </a>
+                                </li>
+                                <li><div class="dropdown-divider"></div></li>
+                                <li>
+                                    <form method="POST" action="{% url 'logout' %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item modern-item logout-btn">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                            <span>Logout</span>
+                                            <div class="item-hover-effect"></div>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link auth-btn login-btn" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link auth-btn signup-btn" href="{% url 'signup' %}">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Sign Up</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Picture Overlay -->
+    <div class="profile-overlay" id="profileOverlay">
+        <div class="profile-overlay-content">
+            <button class="close-overlay" id="closeOverlay">
+                <i class="fas fa-times"></i>
+            </button>
+            {% if user.is_authenticated %}
+                <div class="expanded-profile-container">
+                    {% if user.profile.profile_pic %}
+                        <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="expanded-profile-image">
+                    {% else %}
+                        <div class="expanded-profile-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
+                    <div class="profile-info">
+                        <h3>{{ user.username }}</h3>
+                        <p class="profile-email">{{ user.email }}</p>
+
+                        {% if user.profile.bio %}
+                            <div class="profile-bio-section">
+                                <h5>About Me</h5>
+                                <p class="profile-bio">{{ user.profile.bio }}</p>
+                            </div>
+                        {% else %}
+                            <div class="profile-bio-section">
+                                <h5>About Me</h5>
+                                <p class="no-bio">No bio yet. <a href="{% url 'profile' %}" class="add-bio-link">Add one now!</a></p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileImage = document.querySelector('.profile-image, .profile-placeholder');
+            const profileOverlay = document.getElementById('profileOverlay');
+            const closeOverlay = document.getElementById('closeOverlay');
+
+            if (profileImage) {
+                profileImage.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    profileOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            closeOverlay.addEventListener('click', function() {
+                profileOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            profileOverlay.addEventListener('click', function(e) {
+                if (e.target === profileOverlay) {
+                    profileOverlay.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            const dropdowns = document.querySelectorAll('.modern-dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('show.bs.dropdown', function () {
+                    this.classList.add('showing');
+                });
+                dropdown.addEventListener('hidden.bs.dropdown', function () {
+                    this.classList.remove('showing');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

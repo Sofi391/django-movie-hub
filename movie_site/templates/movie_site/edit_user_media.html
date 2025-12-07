@@ -1,0 +1,248 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="edit-media-container">
+    <div class="edit-media-wrapper">
+        <!-- Header Section -->
+        <div class="edit-header-section">
+            <div class="header-content">
+                <div class="media-preview">
+                    <img src="{{ media.poster }}" alt="{{ media.name }}" class="edit-poster"
+                         onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+                    <div class="media-preview-info">
+                        <h1 class="section-title-modern">
+                            <span class="title-text">Edit {{ media.name }}</span>
+                            <div class="title-underline"></div>
+                        </h1>
+                        <div class="media-meta-preview">
+                            <span class="media-type-badge {% if media.type == 'movie' %}movie-badge{% else %}show-badge{% endif %}">
+                                <i class="fas {% if media.type == 'movie' %}fa-film{% else %}fa-tv{% endif %}"></i>
+                                {{ media.type|title }}
+                            </span>
+                            <span class="media-year">
+                                <i class="fas fa-calendar"></i>
+                                {{ media.release_date|date:"Y" }}
+                            </span>
+                            <span class="media-rating">
+                                <i class="fas fa-star"></i>
+                                {{ media.rating|default:"N/A" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form Section -->
+        <div class="edit-form-section">
+            <div class="edit-form-card">
+                <form method="POST" class="edit-media-form">
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+                        <!-- Status -->
+                        <div class="form-group">
+                            <div class="form-header">
+                                <i class="fas fa-bookmark"></i>
+                                <label class="form-label">Status</label>
+                            </div>
+                            <div class="select-wrapper">
+                                {{ form.status }}
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                            {% if form.status.errors %}
+                                <div class="form-error">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="form-group">
+                            <div class="form-header">
+                                <i class="fas fa-star"></i>
+                                <label class="form-label">Your Rating</label>
+                            </div>
+                            <div class="rating-input-container">
+                                {{ form.rating }}
+                                <span class="rating-hint">0-10</span>
+                            </div>
+                            {% if form.rating.errors %}
+                                <div class="form-error">{{ form.rating.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Genres -->
+                    <div class="form-group">
+                        <div class="form-header">
+                            <i class="fas fa-tags"></i>
+                            <label class="form-label">Genres</label>
+                        </div>
+                        <div class="genres-checkbox-grid">
+                            {{ form.genres }}
+                        </div>
+                        {% if form.genres.errors %}
+                            <div class="form-error">{{ form.genres.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Review -->
+                    <div class="form-group">
+                        <div class="form-header">
+                            <i class="fas fa-edit"></i>
+                            <label class="form-label">Your Review</label>
+                        </div>
+                        <div class="textarea-wrapper">
+                            {{ form.review }}
+                            <div class="char-count" id="charCount">0/1000 characters</div>
+                        </div>
+                        {% if form.review.errors %}
+                            <div class="form-error">{{ form.review.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn primary-btn">
+                            <i class="fas fa-save"></i>
+                            <span class="btn-text">Save Changes</span>
+                            <div class="btn-loading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+
+                        <a href="{% url 'user_media' status=user_media.status type=media.type %}"
+                           class="cancel-btn secondary-btn">
+                            <i class="fas fa-times"></i>
+                            <span>Cancel</span>
+                        </a>
+
+                        <form method="POST" action="{% url 'delete_user_media' media.slug %}" class="delete-form">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-btn danger-btn"
+                                    onclick="return confirm('Are you sure you want to remove {{ media.name }} from your collection?')">
+                                <i class="fas fa-trash"></i>
+                                <span>Remove</span>
+                            </button>
+                        </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Media Information Card -->
+        <div class="media-info-card">
+            <div class="info-header">
+                <i class="fas fa-info-circle"></i>
+                <h4>Media Information</h4>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-film"></i>
+                        Title
+                    </div>
+                    <div class="info-value">{{ media.name }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-tag"></i>
+                        Type
+                    </div>
+                    <div class="info-value">{{ media.type|title }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-calendar"></i>
+                        Release Date
+                    </div>
+                    <div class="info-value">{{ media.release_date|date:"F j, Y" }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-star"></i>
+                        Rating
+                    </div>
+                    <div class="info-value rating-value">
+                        <i class="fas fa-star"></i>
+                        {{ media.rating|default:"N/A" }}/10
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Genres -->
+            <div class="genres-section">
+                <h5>Current Genres</h5>
+                <div class="current-genres">
+                    {% for genre in media.genre.all %}
+                        <span class="genre-tag">{{ genre.name }}</span>
+                    {% empty %}
+                        <span class="no-genres">No genres specified</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Trailer Link -->
+            {% if media.trailer_url %}
+            <div class="trailer-section">
+                <a href="{{ media.trailer_url }}" target="_blank" class="trailer-link">
+                    <i class="fab fa-youtube"></i>
+                    Watch Trailer
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Character counter for review
+    const reviewTextarea = document.querySelector('textarea[name="review"]');
+    const charCount = document.getElementById('charCount');
+
+    if (reviewTextarea && charCount) {
+        function updateCharCount() {
+            const length = reviewTextarea.value.length;
+            charCount.textContent = `${length}/1000 characters`;
+
+            if (length > 900) {
+                charCount.style.color = '#ef4444';
+            } else {
+                charCount.style.color = 'var(--netflix-text)';
+            }
+        }
+
+        reviewTextarea.addEventListener('input', updateCharCount);
+        updateCharCount(); // Initial count
+    }
+
+    // Form submission loading state
+    const editForm = document.querySelector('.edit-media-form');
+    const saveBtn = document.querySelector('.save-btn');
+
+    if (editForm && saveBtn) {
+        editForm.addEventListener('submit', function() {
+            saveBtn.classList.add('loading');
+            saveBtn.disabled = true;
+        });
+    }
+
+    // Enhance form inputs with focus effects
+    const formInputs = document.querySelectorAll('select, input, textarea');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+});
+</script>
+{% endblock %}

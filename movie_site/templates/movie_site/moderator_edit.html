@@ -1,0 +1,320 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'movie_site/css/moderator_edit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="moderator-edit-container">
+    <div class="moderator-edit-wrapper">
+        <!-- Header Section -->
+        <div class="moderator-edit-header-section">
+            <div class="moderator-header-content">
+                <div class="moderator-media-preview">
+                    {% if object.media.poster %}
+                        <img src="{{ object.media.poster }}" alt="{{ object.media.name }}" class="moderator-edit-poster"
+                             onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+                    {% else %}
+                        <div class="moderator-poster-placeholder">
+                            <i class="fas fa-film"></i>
+                        </div>
+                    {% endif %}
+                    <div class="moderator-media-preview-info">
+                        <h1 class="moderator-section-title">
+                            <span class="moderator-title-text">Moderate User Entry</span>
+                            <div class="moderator-title-underline"></div>
+                        </h1>
+                        <div class="moderator-media-meta-preview">
+                            <span class="moderator-media-type-badge {% if object.media.type == 'movie' %}moderator-movie-badge{% else %}moderator-show-badge{% endif %}">
+                                <i class="fas {% if object.media.type == 'movie' %}fa-film{% else %}fa-tv{% endif %}"></i>
+                                {{ object.media.type|title }}
+                            </span>
+                            <span class="moderator-media-year">
+                                <i class="fas fa-calendar"></i>
+                                {% if object.media.release_date %}
+                                    {{ object.media.release_date|date:"Y" }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </span>
+                            <span class="moderator-user-info">
+                                <i class="fas fa-user"></i>
+                                {{ object.user.username }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form Section -->
+        <div class="moderator-edit-form-section">
+            <div class="moderator-edit-form-card">
+                <form method="POST" class="moderator-edit-media-form">
+                    {% csrf_token %}
+
+                    <div class="moderator-form-grid">
+                        <!-- Status -->
+                        <div class="moderator-form-group">
+                            <div class="moderator-form-header">
+                                <i class="fas fa-bookmark"></i>
+                                <label class="moderator-form-label">Status</label>
+                            </div>
+                            <div class="moderator-select-wrapper">
+                                {{ form.status }}
+                                <i class="fas fa-chevron-down moderator-select-arrow"></i>
+                            </div>
+                            {% if form.status.errors %}
+                                <div class="moderator-form-error">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="moderator-form-group">
+                            <div class="moderator-form-header">
+                                <i class="fas fa-star"></i>
+                                <label class="moderator-form-label">User Rating</label>
+                            </div>
+                            <div class="moderator-rating-input-container">
+                                {{ form.rating }}
+                                <span class="moderator-rating-hint">0-10</span>
+                            </div>
+                            {% if form.rating.errors %}
+                                <div class="moderator-form-error">{{ form.rating.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Review -->
+                    <div class="moderator-form-group">
+                        <div class="moderator-form-header">
+                            <i class="fas fa-edit"></i>
+                            <label class="moderator-form-label">User Review</label>
+                        </div>
+                        <div class="moderator-textarea-wrapper">
+                            {{ form.review }}
+                            <div class="moderator-char-count" id="moderatorCharCount">
+                                {% if form.review.value %}
+                                    {{ form.review.value|length }}/1000 characters
+                                {% else %}
+                                    0/1000 characters
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if form.review.errors %}
+                            <div class="moderator-form-error">{{ form.review.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="moderator-form-actions">
+                        <button type="submit" class="moderator-save-btn moderator-primary-btn">
+                            <i class="fas fa-save"></i>
+                            <span class="moderator-btn-text">Save Changes</span>
+                            <div class="moderator-btn-loading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+
+                        <a href="{% url 'moderator_view' %}" class="moderator-cancel-btn moderator-secondary-btn">
+                            <i class="fas fa-times"></i>
+                            <span>Cancel</span>
+                        </a>
+
+                        <a href="{% url 'moderator_delete' usermedia_id=object.id %}"
+                           class="moderator-delete-btn moderator-danger-btn"
+                           onclick="return confirm('Are you sure you want to delete this user media entry? This will notify the user and cannot be undone.')">
+                            <i class="fas fa-trash"></i>
+                            <span>Delete Entry</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- User & Media Information Card -->
+        <div class="moderator-info-card">
+            <div class="moderator-info-header">
+                <i class="fas fa-info-circle"></i>
+                <h4>Entry Information</h4>
+            </div>
+
+            <!-- User Information -->
+            <div class="moderator-user-section">
+                <h5>User Details</h5>
+                <div class="moderator-user-details-grid">
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </div>
+                        <div class="moderator-info-value">{{ object.user.username }}</div>
+                    </div>
+
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-envelope"></i>
+                            Email
+                        </div>
+                        <div class="moderator-info-value">{{ object.user.email }}</div>
+                    </div>
+
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-calendar-plus"></i>
+                            Entry Created
+                        </div>
+                        <div class="moderator-info-value">{{ object.added_at|date:"M j, Y g:i A" }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Information -->
+            <div class="moderator-media-section">
+                <h5>Media Details</h5>
+                <div class="moderator-info-grid">
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-film"></i>
+                            Title
+                        </div>
+                        <div class="moderator-info-value">{{ object.media.name }}</div>
+                    </div>
+
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-tag"></i>
+                            Type
+                        </div>
+                        <div class="moderator-info-value">{{ object.media.type|title }}</div>
+                    </div>
+
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-calendar"></i>
+                            Release Date
+                        </div>
+                        <div class="moderator-info-value">
+                            {% if object.media.release_date %}
+                                {{ object.media.release_date|date:"F j, Y" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="moderator-info-item">
+                        <div class="moderator-info-label">
+                            <i class="fas fa-star"></i>
+                            Media Rating
+                        </div>
+                        <div class="moderator-info-value moderator-rating-value">
+                            <i class="fas fa-star"></i>
+                            {{ object.media.rating|default:"N/A" }}/10
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Genres -->
+            <div class="moderator-genres-section">
+                <h5>Media Genres</h5>
+                <div class="moderator-current-genres">
+                    {% for genre in object.media.genre.all %}
+                        <span class="moderator-genre-tag">{{ genre.name }}</span>
+                    {% empty %}
+                        <span class="moderator-no-genres">No genres specified</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Notification Warning -->
+            <div class="moderator-notification-warning">
+                <div class="moderator-warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="moderator-warning-content">
+                    <strong>Notification:</strong> User will receive an email notification when changes are saved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Character counter for review
+    const reviewTextarea = document.querySelector('textarea[name="review"]');
+    const charCount = document.getElementById('moderatorCharCount');
+
+    if (reviewTextarea && charCount) {
+        function updateCharCount() {
+            const length = reviewTextarea.value.length;
+            charCount.textContent = `${length}/1000 characters`;
+
+            if (length > 900) {
+                charCount.style.color = '#ef4444';
+            } else {
+                charCount.style.color = '#b0b0b0';
+            }
+        }
+
+        reviewTextarea.addEventListener('input', updateCharCount);
+        updateCharCount(); // Initial count
+    }
+
+    // Form submission loading state
+    const editForm = document.querySelector('.moderator-edit-media-form');
+    const saveBtn = document.querySelector('.moderator-save-btn');
+
+    if (editForm && saveBtn) {
+        editForm.addEventListener('submit', function() {
+            const btnText = saveBtn.querySelector('.moderator-btn-text');
+            const btnLoading = saveBtn.querySelector('.moderator-btn-loading');
+
+            if (btnText && btnLoading) {
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-block';
+            }
+            saveBtn.disabled = true;
+            saveBtn.style.opacity = '0.7';
+        });
+    }
+
+    // Enhance form inputs with focus effects
+    const formInputs = document.querySelectorAll('.moderator-edit-media-form select, .moderator-edit-media-form input, .moderator-edit-media-form textarea');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('moderator-focused');
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('moderator-focused');
+        });
+    });
+
+    // Auto-resize textarea
+    const textarea = document.querySelector('textarea[name="review"]');
+    if (textarea) {
+        // Initial resize
+        setTimeout(() => {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }, 100);
+
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+
+    // Add focus styles to form elements on page load if they have values
+    formInputs.forEach(input => {
+        if (input.value) {
+            input.parentElement.classList.add('moderator-focused');
+        }
+    });
+});
+</script>
+{% endblock %}

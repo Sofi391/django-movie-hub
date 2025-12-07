@@ -1,0 +1,88 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-logo">MovieHub</h1>
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Start your movie journey today</p>
+        </div>
+
+        {% if form.errors %}
+        <div class="auth-alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Please correct the errors below:
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="error-item">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="error-item">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="auth-label">Username</label>
+                        <input type="text" name="username" class="auth-input"
+                               placeholder="Choose a username" required
+                               value="{{ form.username.value|default:'' }}">
+                        {% if form.username.help_text %}
+                        <div class="form-help-text">{{ form.username.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="auth-label">Email</label>
+                        <input type="email" name="email" class="auth-input"
+                               placeholder="your@email.com" required
+                               value="{{ form.email.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="auth-label">Password</label>
+                        <input type="password" name="password1" class="auth-input"
+                               placeholder="Create a password" required>
+                        {% if form.password1.help_text %}
+                        <div class="form-help-text">{{ form.password1.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="auth-label">Confirm Password</label>
+                        <input type="password" name="password2" class="auth-input"
+                               placeholder="Confirm your password" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+
+            <div class="auth-links">
+                <p>
+                    Already have an account?
+                    <a href="{% url 'login' %}" class="auth-link">
+                        Sign in
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

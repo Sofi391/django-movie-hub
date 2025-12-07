@@ -1,0 +1,304 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-update-container">
+    <div class="profile-update-wrapper">
+        <!-- Profile Update Card -->
+        <div class="profile-update-card">
+            <!-- Header Section -->
+            <div class="profile-update-header">
+                <div class="header-icon">
+                    <i class="fas fa-user-edit"></i>
+                    <div class="icon-glow"></div>
+                </div>
+                <h2 class="section-title-modern">
+                    <span class="title-text">Update Profile</span>
+                    <div class="title-underline"></div>
+                </h2>
+                <p class="header-subtitle">Customize your profile and preferences</p>
+            </div>
+
+            <!-- Current Profile Preview -->
+            <div class="profile-preview-section">
+                <div class="profile-avatar-large">
+                    {% if user.profile.profile_pic %}
+                        <img src="{{ user.profile.profile_pic.url }}" alt="Current Profile Picture"
+                             class="profile-image-large" id="currentProfileImage">
+                    {% else %}
+                        <div class="profile-placeholder-large" id="currentProfilePlaceholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
+                    <div class="avatar-glow-large"></div>
+                </div>
+                <div class="profile-preview-info">
+                    <h3 class="username">{{ user.username }}</h3>
+                    <p class="member-since">Member since {{ user.date_joined|date:"F j, Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Update Form -->
+            <form method="POST" enctype="multipart/form-data" class="profile-update-form">
+                {% csrf_token %}
+
+                <!-- Profile Picture Upload -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <i class="fas fa-camera"></i>
+                        <h4>Profile Picture</h4>
+                    </div>
+                    <div class="file-upload-container">
+                        <label class="file-upload-label" for="profile_pic_upload">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span class="upload-text" id="uploadText">Choose new profile picture</span>
+                                <span class="upload-hint">PNG, JPG up to 5MB</span>
+                            </div>
+                            <input type="file" name="profile_pic" id="profile_pic_upload"
+                                   accept="image/*" class="file-input-hidden">
+                        </label>
+                        {% if form.profile_pic.errors %}
+                            <div class="form-error">{{ form.profile_pic.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Bio Section -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <i class="fas fa-edit"></i>
+                        <h4>About Me</h4>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <textarea name="bio" id="bio" placeholder="Tell us about yourself and your movie preferences...">{% if form.bio.value %}{{ form.bio.value }}{% endif %}</textarea>
+                            <div class="input-icon">
+                                <i class="fas fa-pencil-alt"></i>
+                            </div>
+                        </div>
+                        {% if form.bio.errors %}
+                            <div class="form-error">{{ form.bio.errors }}</div>
+                        {% endif %}
+                        <div class="form-hint">Share your movie preferences, favorite genres, or what you're currently watching...</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="update-btn primary-btn" id="updateButton">
+                        <i class="fas fa-save"></i>
+                        <span class="btn-text">Update Profile</span>
+                        <div class="btn-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <a href="{% url 'home' %}" class="cancel-btn secondary-btn">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                    </a>
+                </div>
+            </form>
+
+            <!-- Account Information -->
+            <div class="account-info-section">
+                <div class="info-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h4>Account Information</h4>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </div>
+                        <div class="info-value">{{ user.username }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-envelope"></i>
+                            Email
+                        </div>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar"></i>
+                            Member Since
+                        </div>
+                        <div class="info-value">{{ user.date_joined|date:"F j, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Link to external CSS -->
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File upload functionality
+    const fileInput = document.getElementById('profile_pic_upload');
+    const uploadArea = document.getElementById('uploadArea');
+    const uploadText = document.getElementById('uploadText');
+    const currentProfileImage = document.getElementById('currentProfileImage');
+    const currentProfilePlaceholder = document.getElementById('currentProfilePlaceholder');
+
+    if (fileInput && uploadArea && uploadText) {
+        // Click on upload area triggers file input
+        uploadArea.addEventListener('click', function(e) {
+            e.preventDefault();
+            fileInput.click();
+        });
+
+        // Handle file selection
+        fileInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPEG, PNG, GIF)');
+                    this.value = '';
+                    return;
+                }
+
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                // Update UI
+                uploadText.textContent = file.name;
+                uploadArea.classList.add('active');
+
+                // Preview the selected image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create a new image element for preview
+                    const previewImage = document.createElement('img');
+                    previewImage.src = e.target.result;
+                    previewImage.className = 'profile-image-large';
+                    previewImage.alt = 'Profile Preview';
+                    previewImage.style.objectFit = 'cover';
+                    previewImage.style.borderRadius = '50%';
+                    previewImage.style.width = '100px';
+                    previewImage.style.height = '100px';
+
+                    // Replace current profile image/placeholder with preview
+                    const profileAvatar = document.querySelector('.profile-avatar-large');
+                    if (currentProfileImage) {
+                        currentProfileImage.src = e.target.result;
+                    } else if (currentProfilePlaceholder) {
+                        currentProfilePlaceholder.replaceWith(previewImage);
+                    } else {
+                        profileAvatar.insertBefore(previewImage, profileAvatar.firstChild);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('active');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            if (!this.contains(e.relatedTarget)) {
+                this.classList.remove('active');
+            }
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('active');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    }
+
+    // Form submission loading state
+    const updateForm = document.querySelector('.profile-update-form');
+    const updateBtn = document.getElementById('updateButton');
+
+    if (updateForm && updateBtn) {
+        updateForm.addEventListener('submit', function(e) {
+            // Show loading state
+            updateBtn.classList.add('loading');
+            updateBtn.disabled = true;
+
+            // Re-enable after 5 seconds in case of error
+            setTimeout(() => {
+                updateBtn.classList.remove('loading');
+                updateBtn.disabled = false;
+            }, 5000);
+        });
+    }
+
+    // Add focus effects to textarea
+    const textarea = document.getElementById('bio');
+    if (textarea) {
+        // Set initial styles
+        textarea.style.background = 'rgba(255, 255, 255, 0.05)';
+        textarea.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+        textarea.style.color = 'var(--netflix-white)';
+
+        textarea.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--netflix-red)';
+            this.style.boxShadow = '0 0 0 3px rgba(229, 9, 20, 0.1)';
+        });
+
+        textarea.addEventListener('blur', function() {
+            this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            this.style.boxShadow = 'none';
+        });
+    }
+
+    // Ensure the form has proper enctype for file uploads
+    const form = document.querySelector('.profile-update-form');
+    if (form) {
+        form.setAttribute('enctype', 'multipart/form-data');
+    }
+
+    // Character counter for bio
+    const bioTextarea = document.getElementById('bio');
+    if (bioTextarea) {
+        const charCount = document.createElement('div');
+        charCount.className = 'char-count';
+        charCount.style.color = 'var(--netflix-text)';
+        charCount.style.fontSize = '0.8rem';
+        charCount.style.marginTop = '5px';
+        charCount.style.textAlign = 'right';
+        charCount.style.opacity = '0.7';
+
+        bioTextarea.parentNode.appendChild(charCount);
+
+        function updateCharCount() {
+            const length = bioTextarea.value.length;
+            charCount.textContent = `${length}/500 characters`;
+
+            if (length > 450) {
+                charCount.style.color = '#ef4444';
+            } else {
+                charCount.style.color = 'var(--netflix-text)';
+            }
+        }
+
+        bioTextarea.addEventListener('input', updateCharCount);
+        updateCharCount(); // Initial count
+    }
+});
+</script>
+{% endblock %}

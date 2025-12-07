@@ -1,0 +1,845 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="user-media-container user-watch-page">
+    <!-- Header Section -->
+    <div class="media-header-section">
+        <div class="header-content">
+            <div class="header-icon">
+                {% if current_status == 'Watchlist' %}
+                    <i class="fas fa-clock"></i>
+                {% else %}
+                    <i class="fas fa-check-circle"></i>
+                {% endif %}
+                <div class="icon-glow"></div>
+            </div>
+            <h1 class="section-title-modern">
+                <span class="title-text">
+                    {% if current_status == 'Watchlist' %}My Watchlist{% else %}Watched{% endif %}
+                </span>
+                <div class="title-underline"></div>
+            </h1>
+            <p class="header-subtitle">
+                {% if current_status == 'Watchlist' %}
+                    Your saved {{ current_type }}s to watch later
+                {% else %}
+                    {{ current_type }}s you've completed watching
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Type Toggle -->
+        <div class="type-toggle-container">
+            <div class="type-tabs">
+                <a href="{% url 'user_media' status=current_status type='movie' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}"
+                   class="type-tab {% if current_type == 'movie' %}active{% endif %}">
+                    <i class="fas fa-film"></i>
+                    <span>Movies</span>
+                    <div class="tab-badge">{{ movie_count }}</div>
+                </a>
+                <a href="{% url 'user_media' status=current_status type='tv' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}"
+                   class="type-tab {% if current_type == 'tv' %}active{% endif %}">
+                    <i class="fas fa-tv"></i>
+                    <span>TV Shows</span>
+                    <div class="tab-badge">{{ tv_count }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-overview">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-film"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ movie_count }}</span>
+                <span class="stat-label">Movies</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-tv"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ tv_count }}</span>
+                <span class="stat-label">TV Shows</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ total_count }}</span>
+                <span class="stat-label">Total</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search Section -->
+    <div class="user-watch-filters-section">
+        <div class="user-watch-filters-container">
+            <!-- Search Box -->
+            <div class="user-watch-search-filter">
+                <div class="user-watch-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="userWatchSearchInput" placeholder="Search {{ current_type }}s..."
+                           value="{{ request.GET.query|default:'' }}">
+                    <button type="button" id="userWatchSearchBtn" class="user-watch-search-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="user-watch-filter-controls">
+                <!-- Genre Filter -->
+                <div class="user-watch-filter-group">
+                    <label class="user-watch-filter-label">
+                        <i class="fas fa-tags"></i>
+                        Genres
+                    </label>
+                    <select class="user-watch-filter-select" id="userWatchGenreFilter">
+                        <option value="">All Genres</option>
+                        <option value="action" {% if request.GET.genres == 'action' %}selected{% endif %}>Action</option>
+                        <option value="comedy" {% if request.GET.genres == 'comedy' %}selected{% endif %}>Comedy</option>
+                        <option value="drama" {% if request.GET.genres == 'drama' %}selected{% endif %}>Drama</option>
+                        <option value="horror" {% if request.GET.genres == 'horror' %}selected{% endif %}>Horror</option>
+                        <option value="sci-fi" {% if request.GET.genres == 'sci-fi' %}selected{% endif %}>Sci-Fi</option>
+                        <option value="romance" {% if request.GET.genres == 'romance' %}selected{% endif %}>Romance</option>
+                        <option value="thriller" {% if request.GET.genres == 'thriller' %}selected{% endif %}>Thriller</option>
+                        <option value="animation" {% if request.GET.genres == 'animation' %}selected{% endif %}>Animation</option>
+                        <option value="documentary" {% if request.GET.genres == 'documentary' %}selected{% endif %}>Documentary</option>
+                    </select>
+                </div>
+
+                <!-- Rating Filter -->
+                <div class="user-watch-filter-group">
+                    <label class="user-watch-filter-label">
+                        <i class="fas fa-star"></i>
+                        Min Rating
+                    </label>
+                    <select class="user-watch-filter-select" id="userWatchRatingFilter">
+                        <option value="">Any Rating</option>
+                        <option value="9" {% if request.GET.rating == '9' %}selected{% endif %}>9.0+</option>
+                        <option value="8" {% if request.GET.rating == '8' %}selected{% endif %}>8.0+</option>
+                        <option value="7" {% if request.GET.rating == '7' %}selected{% endif %}>7.0+</option>
+                        <option value="6" {% if request.GET.rating == '6' %}selected{% endif %}>6.0+</option>
+                        <option value="5" {% if request.GET.rating == '5' %}selected{% endif %}>5.0+</option>
+                    </select>
+                </div>
+
+                <!-- Sort Filter -->
+                <div class="user-watch-filter-group">
+                    <label class="user-watch-filter-label">
+                        <i class="fas fa-sort"></i>
+                        Sort By
+                    </label>
+                    <select class="user-watch-filter-select" id="userWatchSortFilter">
+                        <option value="newest" {% if not request.GET.older and not request.GET.sort or request.GET.sort == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if request.GET.older == 'true' %}selected{% endif %}>Oldest First</option>
+                        <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                        <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filters -->
+            <div class="user-watch-active-filters" id="userWatchActiveFilters">
+                <!-- Active filters will be displayed here -->
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="user-watch-filter-actions">
+                <button type="button" id="userWatchApplyFilters" class="user-watch-apply-filters-btn">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+                <button type="button" id="userWatchClearFilters" class="user-watch-clear-filters-btn">
+                    <i class="fas fa-times"></i>
+                    Clear All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Info (Remove after testing) -->
+    <div class="filter-debug-info" style="display: none;">
+        <strong>Debug Info:</strong><br>
+        Query: "{{ request.GET.query|default:'None' }}"<br>
+        Genres: "{{ request.GET.genres|default:'None' }}"<br>
+        Rating: "{{ request.GET.rating|default:'None' }}"<br>
+        Older: "{{ request.GET.older|default:'None' }}"
+    </div>
+
+    <!-- Content Section -->
+    <div class="media-content-section">
+        {% if user_media %}
+            <!-- Grid Layout -->
+            <div class="media-grid" id="userWatchMediaGrid">
+                {% for user in user_media %}
+                <div class="media-card user-watch-media-card" data-media-id="{{ user.media.id }}"
+                     data-rating="{{ user.media.rating|default:0 }}"
+                     data-added="{{ user.added_at|date:'U' }}"
+                     data-name="{{ user.media.name }}"
+                     data-genres="{% for genre in user.media.genre.all %}{{ genre.slug }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                    <div class="media-poster-container">
+                        <img src="{{ user.media.poster }}" alt="{{ user.media.name }}" class="media-poster"
+                             onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+                        <div class="media-overlay">
+                            <div class="action-buttons user-watch-action-buttons">
+                                <!-- Remove from current list -->
+                                <form method="POST" action="{% url 'delete_user_media' user.media.slug %}" class="user-watch-action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="media_id" value="{{ user.media.id }}">
+                                    <input type="hidden" name="status" value="{{ current_status }}">
+                                    <input type="hidden" name="type" value="{{ current_type }}">
+                                    <button type="submit" class="user-watch-action-btn user-watch-remove-btn" title="Remove from {% if current_status == 'Watchlist' %}Watchlist{% else %}Watched{% endif %}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+
+                                <!-- Toggle between Watchlist/Watched -->
+                                {% if current_status == 'Watchlist' %}
+                                    <form method="POST" action="{% url 'mark_watched' user.media.slug %}" class="user-watch-action-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="user-watch-action-btn user-watch-watched-btn" title="Mark as Watched">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                {% else %}
+                                    <form method="POST" action="{% url 'mark_watchlist' user.media.slug %}" class="user-watch-action-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="user-watch-action-btn user-watch-watchlist-btn" title="Mark as Watchlist">
+                                        <i class="fas fa-clock"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+
+                                <!-- Add to Favorites -->
+                                <form method="POST" action="{% url 'add_to_favorite' %}" class="user-watch-action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="title" value="{{ user.media.name }}">
+                                    <input type="hidden" name="description" value="{{ user.media.description|default:'' }}">
+                                    <input type="hidden" name="release_date" value="{{ user.media.release_date|date:'Y-m-d' }}">
+                                    <input type="hidden" name="poster" value="{{ user.media.poster }}">
+                                    <input type="hidden" name="trailer_url" value="{{ user.media.trailer_url|default:'' }}">
+                                    <input type="hidden" name="type" value="{{ current_type }}">
+                                    <input type="hidden" name="rating" value="{{ user.media.rating|default:0 }}">
+                                    <button type="submit" class="user-watch-action-btn user-watch-favorite-btn" title="Add to Favorites">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </form>
+
+                                {% if user.media.trailer_url %}
+                                <button class="user-watch-action-btn user-watch-trailer-btn" title="Watch Trailer" data-trailer="{{ user.media.trailer_url }}">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                {% endif %}
+
+                                <button class="user-watch-action-btn user-watch-info-btn" title="View Details"
+                                        data-media='{"title": "{{ user.media.name }}", "description": "{{ user.media.description|default:'No description available' }}", "poster": "{{ user.media.poster }}", "year": "{{ user.media.release_date|date:'Y' }}", "rating": "{{ user.media.rating|default:'N/A' }}", "genres": "{% for genre in user.media.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}", "user_rating": "{{ user.rating|default:'Not rated' }}", "user_review": "{{ user.review|default:'' }}", "type": "{{ current_type }}"}'>
+                                    <i class="fas fa-info"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="media-badge {% if current_type == 'movie' %}movie-badge{% else %}show-badge{% endif %}">
+                            <i class="fas {% if current_type == 'movie' %}fa-film{% else %}fa-tv{% endif %}"></i>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="status-badge {% if current_status == 'Watchlist' %}watchlist-badge{% else %}watched-badge{% endif %}">
+                            {% if current_status == 'Watchlist' %}
+                                <i class="fas fa-clock"></i>
+                            {% else %}
+                                <i class="fas fa-check"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="media-info">
+                        <h4 class="media-title">{{ user.media.name }}</h4>
+                        <div class="media-meta">
+                            <span class="media-year">
+                                <i class="fas fa-calendar"></i>
+                                {{ user.media.release_date|date:"Y" }}
+                            </span>
+                            <span class="media-rating">
+                                <i class="fas fa-star"></i>
+                                {{ user.media.rating|default:"N/A" }}
+                            </span>
+                        </div>
+                        <div class="media-genres">
+                            {% for genre in user.media.genre.all %}
+                            <span class="genre-tag">{{ genre.name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- User Rating & Review -->
+                        {% if user.rating or user.review %}
+                        <div class="user-media-info">
+                            {% if user.rating %}
+                            <div class="user-rating">
+                                <i class="fas fa-star user-rating-icon"></i>
+                                <span>Your Rating: {{ user.rating }}/10</span>
+                            </div>
+                            {% endif %}
+                            {% if user.review %}
+                            <div class="user-review">
+                                <p class="review-text">{{ user.review|truncatewords:15 }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Edit Button -->
+                        <div class="edit-actions">
+                            <a href="{% url 'edit_user_media' user.media.slug %}" class="edit-link-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    {% if current_status == 'Watchlist' %}
+                        <i class="fas fa-clock"></i>
+                    {% else %}
+                        <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                </div>
+                <h3>No {{ current_type }}s in Your {{ current_status }}</h3>
+                <p>
+                    {% if current_status == 'Watchlist' %}
+                        Start building your watchlist by exploring movies and TV shows!
+                    {% else %}
+                        Mark some {{ current_type }}s as watched to see them here!
+                    {% endif %}
+                </p>
+                <a href="{% url 'search_movies' %}" class="discover-link">
+                    <i class="fas fa-search"></i>
+                    Discover {{ current_type|title }}s
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Enhanced Movie Details Modal - Smaller & Better Positioned -->
+<div class="modal-overlay" id="movieModal">
+    <div class="modal-content movie-modal">
+        <button class="modal-close" id="closeModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-body">
+            <div class="modal-poster">
+                <img id="modalPoster" src="" alt="" onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+            </div>
+            <div class="modal-info">
+                <h2 id="modalTitle"></h2>
+                <div class="modal-meta">
+                    <span id="modalYear"></span>
+                    <span id="modalRating"></span>
+                    <span id="modalType"></span>
+                </div>
+                <div class="modal-genres" id="modalGenres"></div>
+                <div class="modal-description-container">
+                    <p id="modalDescription" class="modal-description"></p>
+                </div>
+
+                <!-- User Review Section -->
+                <div class="user-review-section" id="userReviewSection" style="display: none;">
+                    <div class="section-divider"></div>
+                    <h4>Your Review</h4>
+                    <div class="user-rating-display" id="userRatingDisplay"></div>
+                    <p id="userReviewText" class="user-review-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trailer Modal -->
+<div class="modal-overlay" id="trailerModal">
+    <div class="modal-content trailer-modal">
+        <button class="modal-close" id="closeTrailerModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-body">
+            <div class="trailer-container">
+                <div id="youtubePlayer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// YouTube Player Functions
+let youtubePlayer;
+
+function onYouTubeIframeAPIReady() {
+    youtubePlayer = new YT.Player('youtubePlayer', {
+        height: '100%',
+        width: '100%',
+        playerVars: {
+            'playsinline': 1,
+            'rel': 0,
+            'modestbranding': 1,
+            'autoplay': 1
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    console.log('YouTube player ready');
+}
+
+function onPlayerStateChange(event) {
+    // Handle player state changes if needed
+}
+
+function onPlayerError(event) {
+    console.error('YouTube player error:', event.data);
+    const originalUrl = document.querySelector('.user-watch-trailer-btn.active')?.getAttribute('data-trailer');
+    if (originalUrl) {
+        trailerModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        alert('Failed to load trailer. Opening in YouTube...');
+        window.open(originalUrl, '_blank');
+    }
+}
+
+// Extract YouTube Video ID from various URL formats
+function getYouTubeVideoId(url) {
+    if (!url) return null;
+
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/,
+        /youtube\.com\/watch\?.*v=([^&?#]+)/,
+        /youtu\.be\/([^&?#]+)/,
+        /youtube\.com\/embed\/([^&?#]+)/
+    ];
+
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+
+    return null;
+}
+
+// Filtering and Search Functionality
+function initializeFilters() {
+    const searchInput = document.getElementById('userWatchSearchInput');
+    const searchBtn = document.getElementById('userWatchSearchBtn');
+    const genreFilter = document.getElementById('userWatchGenreFilter');
+    const ratingFilter = document.getElementById('userWatchRatingFilter');
+    const sortFilter = document.getElementById('userWatchSortFilter');
+    const applyFiltersBtn = document.getElementById('userWatchApplyFilters');
+    const clearFiltersBtn = document.getElementById('userWatchClearFilters');
+    const activeFilters = document.getElementById('userWatchActiveFilters');
+
+    // Get current URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentFilters = {
+        query: urlParams.get('query') || '',
+        genres: urlParams.get('genres') || '',
+        rating: urlParams.get('rating') || '',
+        older: urlParams.get('older') || ''
+    };
+
+    // Initialize filter values from URL
+    function setInitialFilterValues() {
+        searchInput.value = currentFilters.query;
+
+        if (currentFilters.genres) {
+            genreFilter.value = currentFilters.genres;
+        }
+
+        if (currentFilters.rating) {
+            ratingFilter.value = currentFilters.rating;
+        }
+
+        // Handle sort filter
+        if (currentFilters.older === 'true') {
+            sortFilter.value = 'oldest';
+        } else {
+            // Check if there's a sort parameter
+            const sortParam = urlParams.get('sort');
+            if (sortParam && ['newest', 'oldest', 'rating', 'name'].includes(sortParam)) {
+                sortFilter.value = sortParam;
+            } else {
+                sortFilter.value = 'newest';
+            }
+        }
+
+        updateActiveFiltersDisplay();
+    }
+
+    // Update active filters display
+    function updateActiveFiltersDisplay() {
+        activeFilters.innerHTML = '';
+        const filters = [];
+
+        if (currentFilters.query) {
+            filters.push({
+                key: 'query',
+                label: `Search: "${currentFilters.query}"`,
+                value: currentFilters.query
+            });
+        }
+
+        if (currentFilters.genres) {
+            const genreName = genreFilter.options[genreFilter.selectedIndex].text;
+            filters.push({
+                key: 'genres',
+                label: `Genre: ${genreName}`,
+                value: currentFilters.genres
+            });
+        }
+
+        if (currentFilters.rating) {
+            filters.push({
+                key: 'rating',
+                label: `Rating: ${currentFilters.rating}+`,
+                value: currentFilters.rating
+            });
+        }
+
+        if (currentFilters.older === 'true') {
+            filters.push({
+                key: 'older',
+                label: 'Sort: Oldest First',
+                value: 'true'
+            });
+        } else if (sortFilter.value !== 'newest') {
+            const sortName = sortFilter.options[sortFilter.selectedIndex].text;
+            filters.push({
+                key: 'sort',
+                label: `Sort: ${sortName}`,
+                value: sortFilter.value
+            });
+        }
+
+        filters.forEach(filter => {
+            const filterBadge = document.createElement('div');
+            filterBadge.className = 'user-watch-filter-badge';
+            filterBadge.innerHTML = `
+                ${filter.label}
+                <button type="button" class="user-watch-remove-filter" data-key="${filter.key}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            activeFilters.appendChild(filterBadge);
+        });
+
+        // Add event listeners to remove buttons
+        document.querySelectorAll('.user-watch-remove-filter').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const key = this.getAttribute('data-key');
+                removeFilter(key);
+            });
+        });
+    }
+
+    // Remove specific filter
+    function removeFilter(key) {
+        currentFilters[key] = '';
+
+        // Update filter controls
+        if (key === 'query') searchInput.value = '';
+        if (key === 'genres') genreFilter.value = '';
+        if (key === 'rating') ratingFilter.value = '';
+        if (key === 'older' || key === 'sort') sortFilter.value = 'newest';
+
+        applyFilters();
+    }
+
+    // Apply filters and reload page
+    function applyFilters() {
+        const params = new URLSearchParams();
+
+        // Add active filters
+        if (currentFilters.query) params.set('query', currentFilters.query);
+        if (currentFilters.genres) params.set('genres', currentFilters.genres);
+        if (currentFilters.rating) params.set('rating', currentFilters.rating);
+
+        // Handle sort options
+        if (sortFilter.value === 'oldest') {
+            params.set('older', 'true');
+        } else if (sortFilter.value !== 'newest') {
+            params.set('sort', sortFilter.value);
+        }
+
+        // Get current URL without query parameters
+        const baseUrl = window.location.pathname;
+        const queryString = params.toString();
+        window.location.href = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }
+
+    // Clear all filters
+    function clearAllFilters() {
+        currentFilters.query = '';
+        currentFilters.genres = '';
+        currentFilters.rating = '';
+        currentFilters.older = '';
+
+        searchInput.value = '';
+        genreFilter.value = '';
+        ratingFilter.value = '';
+        sortFilter.value = 'newest';
+
+        applyFilters();
+    }
+
+    // Event listeners for filters
+    searchBtn.addEventListener('click', function() {
+        currentFilters.query = searchInput.value.trim();
+        applyFilters();
+    });
+
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            currentFilters.query = searchInput.value.trim();
+            applyFilters();
+        }
+    });
+
+    applyFiltersBtn.addEventListener('click', function() {
+        currentFilters.genres = genreFilter.value;
+        currentFilters.rating = ratingFilter.value;
+
+        // Handle sort filter
+        if (sortFilter.value === 'oldest') {
+            currentFilters.older = 'true';
+        } else {
+            currentFilters.older = '';
+        }
+
+        applyFilters();
+    });
+
+    clearFiltersBtn.addEventListener('click', clearAllFilters);
+
+    // Initialize filters on page load
+    setInitialFilterValues();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize filters
+    initializeFilters();
+
+    // Enhanced Movie Details Modal
+    const movieModal = document.getElementById('movieModal');
+    const closeModal = document.getElementById('closeModal');
+    const infoButtons = document.querySelectorAll('.user-watch-info-btn');
+    const userReviewSection = document.getElementById('userReviewSection');
+    const userRatingDisplay = document.getElementById('userRatingDisplay');
+    const userReviewText = document.getElementById('userReviewText');
+
+    // Fix: Proper modal close functionality
+    function closeMovieModal() {
+        movieModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    closeModal.addEventListener('click', closeMovieModal);
+
+    movieModal.addEventListener('click', function(e) {
+        if (e.target === movieModal) {
+            closeMovieModal();
+        }
+    });
+
+    infoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const mediaData = JSON.parse(this.getAttribute('data-media'));
+
+            document.getElementById('modalTitle').textContent = mediaData.title;
+            document.getElementById('modalPoster').src = mediaData.poster;
+            document.getElementById('modalYear').textContent = mediaData.year;
+            document.getElementById('modalRating').textContent = `⭐ ${mediaData.rating}`;
+            document.getElementById('modalType').textContent = mediaData.type.toUpperCase();
+
+            // Display genres
+            const genresElement = document.getElementById('modalGenres');
+            if (mediaData.genres && mediaData.genres.trim()) {
+                genresElement.innerHTML = mediaData.genres.split(', ').map(genre =>
+                    `<span class="genre-tag">${genre}</span>`
+                ).join('');
+                genresElement.style.display = 'flex';
+            } else {
+                genresElement.style.display = 'none';
+            }
+
+            document.getElementById('modalDescription').textContent = mediaData.description;
+
+            // Display user review if available
+            if (mediaData.user_rating && mediaData.user_rating !== 'Not rated') {
+                userRatingDisplay.innerHTML = `<strong>Your Rating:</strong> ${mediaData.user_rating}/10`;
+                userRatingDisplay.style.display = 'block';
+            } else {
+                userRatingDisplay.style.display = 'none';
+            }
+
+            if (mediaData.user_review && mediaData.user_review.trim()) {
+                userReviewText.textContent = mediaData.user_review;
+                userReviewSection.style.display = 'block';
+            } else {
+                userReviewSection.style.display = 'none';
+            }
+
+            movieModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Trailer Modal with YouTube API
+    const trailerModal = document.getElementById('trailerModal');
+    const closeTrailerModal = document.getElementById('closeTrailerModal');
+    const trailerButtons = document.querySelectorAll('.user-watch-trailer-btn');
+
+    // Fix: Proper trailer modal close functionality
+    function closeTrailerModalFunc() {
+        trailerModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+
+        if (youtubePlayer && youtubePlayer.stopVideo) {
+            youtubePlayer.stopVideo();
+        }
+
+        // Clear iframe content
+        document.getElementById('youtubePlayer').innerHTML = '';
+
+        // Remove active class from buttons
+        trailerButtons.forEach(btn => btn.classList.remove('active'));
+    }
+
+    closeTrailerModal.addEventListener('click', closeTrailerModalFunc);
+
+    trailerModal.addEventListener('click', function(e) {
+        if (e.target === trailerModal) {
+            closeTrailerModalFunc();
+        }
+    });
+
+    trailerButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const trailerUrl = this.getAttribute('data-trailer');
+
+            if (!trailerUrl) {
+                alert('No trailer available for this content.');
+                return;
+            }
+
+            // Mark this button as active
+            trailerButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const videoId = getYouTubeVideoId(trailerUrl);
+
+            if (videoId) {
+                if (youtubePlayer && youtubePlayer.loadVideoById) {
+                    // Use YouTube API if available
+                    youtubePlayer.loadVideoById(videoId);
+                    trailerModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    // Fallback to iframe
+                    const iframeHtml = `
+                        <iframe
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            style="width: 100%; height: 100%; border: none;"
+                        ></iframe>
+                    `;
+                    document.getElementById('youtubePlayer').innerHTML = iframeHtml;
+                    trailerModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            } else {
+                // If we can't extract video ID, open in new tab
+                console.warn('Could not extract YouTube video ID from:', trailerUrl);
+                alert('Opening trailer in YouTube...');
+                window.open(trailerUrl, '_blank');
+            }
+        });
+    });
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (movieModal.classList.contains('active')) {
+                closeMovieModal();
+            }
+            if (trailerModal.classList.contains('active')) {
+                closeTrailerModalFunc();
+            }
+        }
+    });
+
+    // Add loading animation to action buttons
+    const actionForms = document.querySelectorAll('.user-watch-action-form');
+
+    actionForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button');
+            const originalHTML = button.innerHTML;
+
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            // Revert after 2 seconds (in case of error)
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 2000);
+        });
+    });
+
+    // Add intersection observer for lazy loading animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '50px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe media cards for animation
+    document.querySelectorAll('.user-watch-media-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+});
+</script>
+
+<!-- Load YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+{% endblock %}

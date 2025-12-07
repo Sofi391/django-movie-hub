@@ -1,0 +1,247 @@
+{% extends 'movie_site/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <div class="delete-confirmation-wrapper">
+        <!-- Header Section -->
+        <div class="delete-header-section">
+            <div class="header-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="icon-glow warning-glow"></div>
+            </div>
+            <h1 class="section-title-modern">
+                <span class="title-text">Confirm Deletion</span>
+                <div class="title-underline warning-underline"></div>
+            </h1>
+            <p class="header-subtitle">
+                This action cannot be undone
+            </p>
+        </div>
+
+        <!-- Media Preview Card -->
+        <div class="media-preview-card">
+            <div class="media-preview-content">
+                <div class="preview-poster">
+                    <img src="{{ media.poster }}" alt="{{ media.name }}" class="preview-image"
+                         onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
+                    <div class="preview-overlay">
+                        <div class="preview-badge {% if media.type == 'movie' %}movie-badge{% else %}show-badge{% endif %}">
+                            <i class="fas {% if media.type == 'movie' %}fa-film{% else %}fa-tv{% endif %}"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-info">
+                    <h2 class="preview-title">{{ media.name }}</h2>
+
+                    <div class="preview-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ media.release_date|date:"Y" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span>{{ media.rating|default:"N/A" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>{{ media.type|title }}</span>
+                        </div>
+                    </div>
+
+                    <div class="preview-genres">
+                        {% for genre in media.genre.all %}
+                        <span class="genre-tag">{{ genre.name }}</span>
+                        {% endfor %}
+                    </div>
+
+                    {% if media.description %}
+                    <div class="preview-description">
+                        <p>{{ media.description|truncatewords:30 }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Statistics Section -->
+                    <div class="media-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ media.user_media.count }}</span>
+                            <span class="stat-label">Users Have This</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">{{ media.favorite_set.count }}</span>
+                            <span class="stat-label">Favorites</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Section -->
+        <div class="warning-section">
+            <div class="warning-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Warning: This action is permanent</h3>
+            </div>
+
+            <div class="warning-content">
+                <div class="warning-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <strong>{{ media.user_media.count }} users</strong> have this media in their collections
+                    </div>
+                </div>
+                <div class="warning-item">
+                    <i class="fas fa-heart"></i>
+                    <div>
+                        <strong>{{ media.favorite_set.count }} users</strong> have marked this as favorite
+                    </div>
+                </div>
+                <div class="warning-item">
+                    <i class="fas fa-history"></i>
+                    <div>
+                        All associated user data will be permanently deleted
+                    </div>
+                </div>
+                <div class="warning-item">
+                    <i class="fas fa-undo"></i>
+                    <div>
+                        This action <strong>cannot be undone</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Actions -->
+        <div class="confirmation-actions">
+            <form method="POST" class="delete-form">
+                {% csrf_token %}
+                <div class="action-buttons">
+                    <button type="submit" class="confirm-delete-btn">
+                        <span class="btn-text">
+                            <i class="fas fa-trash"></i>
+                            Yes, Delete Permanently
+                        </span>
+                        <span class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Deleting...
+                        </span>
+                    </button>
+
+                    <a href="{% url 'home' %}" class="cancel-btn">
+                        <i class="fas fa-times"></i>
+                        Cancel & Go Back
+                    </a>
+                </div>
+
+                <!-- Additional Confirmation -->
+                <div class="final-confirmation">
+                    <label class="confirmation-checkbox">
+                        <input type="checkbox" id="finalConfirm" required>
+                        <span class="checkmark"></span>
+                        <span class="confirmation-text">
+                            I understand this will permanently delete "{{ media.name }}" and all associated data
+                        </span>
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!-- Alternative Actions -->
+        <div class="alternative-actions">
+            <p>Not sure? Consider these alternatives:</p>
+            <div class="alternative-buttons">
+                <a href="{% url 'edit_movie' media.slug %}" class="alternative-btn edit-alternative">
+                    <i class="fas fa-edit"></i>
+                    Edit Instead
+                </a>
+                <a href="{% url 'home' %}" class="alternative-btn home-alternative">
+                    <i class="fas fa-home"></i>
+                    Go to Home
+                </a>
+                <a href="{% url 'search_movies' %}" class="alternative-btn search-alternative">
+                    <i class="fas fa-search"></i>
+                    Browse Content
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal (for AJAX implementation) -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content success-modal">
+        <div class="modal-body text-center">
+            <div class="success-icon deleted-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Media Deleted Successfully</h3>
+            <p>"{{ media.name }}" has been permanently removed from the database.</p>
+            <div class="success-actions">
+                <a href="{% url 'home' %}" class="btn-primary">Go to Home</a>
+                <a href="{% url 'new_movie' %}" class="btn-secondary">Add New Media</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteForm = document.querySelector('.delete-form');
+    const confirmBtn = document.querySelector('.confirm-delete-btn');
+    const finalConfirm = document.getElementById('finalConfirm');
+    const btnText = confirmBtn.querySelector('.btn-text');
+    const btnLoading = confirmBtn.querySelector('.btn-loading');
+
+    // Enable/disable delete button based on checkbox
+    finalConfirm.addEventListener('change', function() {
+        confirmBtn.disabled = !this.checked;
+    });
+
+    // Initial state
+    confirmBtn.disabled = true;
+
+    // Form submission
+    deleteForm.addEventListener('submit', function(e) {
+        if (!finalConfirm.checked) {
+            e.preventDefault();
+            alert('Please confirm that you understand this action is permanent.');
+            return;
+        }
+
+        // Show loading state
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline-block';
+        confirmBtn.disabled = true;
+    });
+
+    // Add some drama to the delete button
+    confirmBtn.addEventListener('mouseenter', function() {
+        if (!this.disabled) {
+            this.style.transform = 'scale(1.02)';
+        }
+    });
+
+    confirmBtn.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+    });
+
+    // Add confirmation dialog for extra safety
+    deleteForm.addEventListener('submit', function(e) {
+        if (!finalConfirm.checked) {
+            e.preventDefault();
+            return;
+        }
+
+        const extraConfirm = confirm('FINAL WARNING: This will permanently delete "' + '{{ media.name }}' + '". This action cannot be undone. Click OK to proceed with deletion.');
+
+        if (!extraConfirm) {
+            e.preventDefault();
+            btnText.style.display = 'inline-block';
+            btnLoading.style.display = 'none';
+            confirmBtn.disabled = false;
+        }
+    });
+});
+</script>
+{% endblock %}
