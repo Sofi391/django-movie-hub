@@ -7,7 +7,7 @@
     <div class="media-header-section">
         <div class="header-content">
             <div class="header-icon">
-                {% if current_status == 'Watchlist' %}
+                {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
                     <i class="fas fa-clock"></i>
                 {% else %}
                     <i class="fas fa-check-circle"></i>
@@ -16,15 +16,23 @@
             </div>
             <h1 class="section-title-modern">
                 <span class="title-text">
-                    {% if current_status == 'Watchlist' %}My Watchlist{% else %}Watched{% endif %}
+                    {% if is_own_list %}
+                        {% if current_status == 'watchlist' or current_status == 'Watchlist' %}My Watchlist{% else %}Watched{% endif %}
+                    {% else %}
+                        {{ target_user.username }}'s {% if current_status == 'watchlist' or current_status == 'Watchlist' %}Watchlist{% else %}Watched{% endif %}
+                    {% endif %}
                 </span>
                 <div class="title-underline"></div>
             </h1>
             <p class="header-subtitle">
-                {% if current_status == 'Watchlist' %}
-                    Your saved {{ current_type }}s to watch later
+                {% if is_own_list %}
+                    {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
+                        Your saved {{ current_type }}s to watch later
+                    {% else %}
+                        {{ current_type }}s you've completed watching
+                    {% endif %}
                 {% else %}
-                    {{ current_type }}s you've completed watching
+                    {{ target_user.username }}'s {{ current_status|title }} {{ current_type }}s
                 {% endif %}
             </p>
         </div>
@@ -32,13 +40,13 @@
         <!-- Type Toggle -->
         <div class="type-toggle-container">
             <div class="type-tabs">
-                <a href="{% url 'user_media' status=current_status type='movie' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}"
+                <a href="{% url 'user_media' status=current_status type='movie' %}{% if is_own_list and request.GET.urlencode %}?{{ request.GET.urlencode }}{% elif not is_own_list and request.GET.user_id %}?user_id={{ request.GET.user_id }}{% endif %}"
                    class="type-tab {% if current_type == 'movie' %}active{% endif %}">
                     <i class="fas fa-film"></i>
                     <span>Movies</span>
                     <div class="tab-badge">{{ movie_count }}</div>
                 </a>
-                <a href="{% url 'user_media' status=current_status type='tv' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}"
+                <a href="{% url 'user_media' status=current_status type='tv' %}{% if is_own_list and request.GET.urlencode %}?{{ request.GET.urlencode }}{% elif not is_own_list and request.GET.user_id %}?user_id={{ request.GET.user_id }}{% endif %}"
                    class="type-tab {% if current_type == 'tv' %}active{% endif %}">
                     <i class="fas fa-tv"></i>
                     <span>TV Shows</span>
@@ -79,7 +87,8 @@
         </div>
     </div>
 
-    <!-- Filters and Search Section -->
+    <!-- Filters and Search Section - ONLY SHOW FOR OWN LIST -->
+    {% if is_own_list %}
     <div class="user-watch-filters-section">
         <div class="user-watch-filters-container">
             <!-- Search Box -->
@@ -165,53 +174,46 @@
             </div>
         </div>
     </div>
-
-    <!-- Debug Info (Remove after testing) -->
-    <div class="filter-debug-info" style="display: none;">
-        <strong>Debug Info:</strong><br>
-        Query: "{{ request.GET.query|default:'None' }}"<br>
-        Genres: "{{ request.GET.genres|default:'None' }}"<br>
-        Rating: "{{ request.GET.rating|default:'None' }}"<br>
-        Older: "{{ request.GET.older|default:'None' }}"
-    </div>
+    {% endif %}
 
     <!-- Content Section -->
     <div class="media-content-section">
         {% if user_media %}
             <!-- Grid Layout -->
             <div class="media-grid" id="userWatchMediaGrid">
-                {% for user in user_media %}
-                <div class="media-card user-watch-media-card" data-media-id="{{ user.media.id }}"
-                     data-rating="{{ user.media.rating|default:0 }}"
-                     data-added="{{ user.added_at|date:'U' }}"
-                     data-name="{{ user.media.name }}"
-                     data-genres="{% for genre in user.media.genre.all %}{{ genre.slug }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                {% for user_media_item in user_media %}
+                <div class="media-card user-watch-media-card" data-media-id="{{ user_media_item.media.id }}"
+                     data-rating="{{ user_media_item.media.rating|default:0 }}"
+                     data-added="{{ user_media_item.added_at|date:'U' }}"
+                     data-name="{{ user_media_item.media.name }}"
+                     data-genres="{% for genre in user_media_item.media.genre.all %}{{ genre.slug }}{% if not forloop.last %},{% endif %}{% endfor %}">
                     <div class="media-poster-container">
-                        <img src="{{ user.media.poster }}" alt="{{ user.media.name }}" class="media-poster"
+                        <img src="{{ user_media_item.media.poster }}" alt="{{ user_media_item.media.name }}" class="media-poster"
                              onerror="this.src='{% static 'images/placeholder-poster.jpg' %}'">
                         <div class="media-overlay">
                             <div class="action-buttons user-watch-action-buttons">
-                                <!-- Remove from current list -->
-                                <form method="POST" action="{% url 'delete_user_media' user.media.slug %}" class="user-watch-action-form">
+                                <!-- Remove from current list - ONLY SHOW FOR OWN LIST -->
+                                {% if is_own_list %}
+                                <form method="POST" action="{% url 'delete_user_media' user_media_item.media.slug %}" class="user-watch-action-form">
                                     {% csrf_token %}
-                                    <input type="hidden" name="media_id" value="{{ user.media.id }}">
+                                    <input type="hidden" name="media_id" value="{{ user_media_item.media.id }}">
                                     <input type="hidden" name="status" value="{{ current_status }}">
                                     <input type="hidden" name="type" value="{{ current_type }}">
-                                    <button type="submit" class="user-watch-action-btn user-watch-remove-btn" title="Remove from {% if current_status == 'Watchlist' %}Watchlist{% else %}Watched{% endif %}">
+                                    <button type="submit" class="user-watch-action-btn user-watch-remove-btn" title="Remove from {% if current_status == 'watchlist' or current_status == 'Watchlist' %}Watchlist{% else %}Watched{% endif %}">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </form>
 
-                                <!-- Toggle between Watchlist/Watched -->
-                                {% if current_status == 'Watchlist' %}
-                                    <form method="POST" action="{% url 'mark_watched' user.media.slug %}" class="user-watch-action-form">
+                                <!-- Toggle between Watchlist/Watched - ONLY SHOW FOR OWN LIST -->
+                                {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
+                                    <form method="POST" action="{% url 'mark_watched' user_media_item.media.slug %}" class="user-watch-action-form">
                                     {% csrf_token %}
                                     <button type="submit" class="user-watch-action-btn user-watch-watched-btn" title="Mark as Watched">
                                         <i class="fas fa-check"></i>
                                     </button>
                                 </form>
                                 {% else %}
-                                    <form method="POST" action="{% url 'mark_watchlist' user.media.slug %}" class="user-watch-action-form">
+                                    <form method="POST" action="{% url 'mark_watchlist' user_media_item.media.slug %}" class="user-watch-action-form">
                                     {% csrf_token %}
                                     <button type="submit" class="user-watch-action-btn user-watch-watchlist-btn" title="Mark as Watchlist">
                                         <i class="fas fa-clock"></i>
@@ -219,29 +221,32 @@
                                 </form>
                                 {% endif %}
 
-                                <!-- Add to Favorites -->
+                                <!-- Add to Favorites - ONLY SHOW FOR OWN LIST -->
                                 <form method="POST" action="{% url 'add_to_favorite' %}" class="user-watch-action-form">
                                     {% csrf_token %}
-                                    <input type="hidden" name="title" value="{{ user.media.name }}">
-                                    <input type="hidden" name="description" value="{{ user.media.description|default:'' }}">
-                                    <input type="hidden" name="release_date" value="{{ user.media.release_date|date:'Y-m-d' }}">
-                                    <input type="hidden" name="poster" value="{{ user.media.poster }}">
-                                    <input type="hidden" name="trailer_url" value="{{ user.media.trailer_url|default:'' }}">
+                                    <input type="hidden" name="title" value="{{ user_media_item.media.name }}">
+                                    <input type="hidden" name="description" value="{{ user_media_item.media.description|default:'' }}">
+                                    <input type="hidden" name="release_date" value="{{ user_media_item.media.release_date|date:'Y-m-d' }}">
+                                    <input type="hidden" name="poster" value="{{ user_media_item.media.poster }}">
+                                    <input type="hidden" name="trailer_url" value="{{ user_media_item.media.trailer_url|default:'' }}">
                                     <input type="hidden" name="type" value="{{ current_type }}">
-                                    <input type="hidden" name="rating" value="{{ user.media.rating|default:0 }}">
+                                    <input type="hidden" name="rating" value="{{ user_media_item.media.rating|default:0 }}">
                                     <button type="submit" class="user-watch-action-btn user-watch-favorite-btn" title="Add to Favorites">
                                         <i class="fas fa-heart"></i>
                                     </button>
                                 </form>
+                                {% endif %}
 
-                                {% if user.media.trailer_url %}
-                                <button class="user-watch-action-btn user-watch-trailer-btn" title="Watch Trailer" data-trailer="{{ user.media.trailer_url }}">
+                                <!-- Trailer button - Show for everyone -->
+                                {% if user_media_item.media.trailer_url %}
+                                <button class="user-watch-action-btn user-watch-trailer-btn" title="Watch Trailer" data-trailer="{{ user_media_item.media.trailer_url }}">
                                     <i class="fas fa-play"></i>
                                 </button>
                                 {% endif %}
 
+                                <!-- Info button - Show for everyone -->
                                 <button class="user-watch-action-btn user-watch-info-btn" title="View Details"
-                                        data-media='{"title": "{{ user.media.name }}", "description": "{{ user.media.description|default:'No description available' }}", "poster": "{{ user.media.poster }}", "year": "{{ user.media.release_date|date:'Y' }}", "rating": "{{ user.media.rating|default:'N/A' }}", "genres": "{% for genre in user.media.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}", "user_rating": "{{ user.rating|default:'Not rated' }}", "user_review": "{{ user.review|default:'' }}", "type": "{{ current_type }}"}'>
+                                        data-media='{"title": "{{ user_media_item.media.name }}", "description": "{{ user_media_item.media.description|default:'No description available' }}", "poster": "{{ user_media_item.media.poster }}", "year": "{{ user_media_item.media.release_date|date:'Y' }}", "rating": "{{ user_media_item.media.rating|default:'N/A' }}", "genres": "{% for genre in user_media_item.media.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}", "user_rating": "{{ user_media_item.rating|default:'Not rated' }}", "user_review": "{{ user_media_item.review|default:'' }}", "type": "{{ current_type }}"}'>
                                     <i class="fas fa-info"></i>
                                 </button>
                             </div>
@@ -251,8 +256,8 @@
                         </div>
 
                         <!-- Status Badge -->
-                        <div class="status-badge {% if current_status == 'Watchlist' %}watchlist-badge{% else %}watched-badge{% endif %}">
-                            {% if current_status == 'Watchlist' %}
+                        <div class="status-badge {% if current_status == 'watchlist' or current_status == 'Watchlist' %}watchlist-badge{% else %}watched-badge{% endif %}">
+                            {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
                                 <i class="fas fa-clock"></i>
                             {% else %}
                                 <i class="fas fa-check"></i>
@@ -261,73 +266,142 @@
                     </div>
 
                     <div class="media-info">
-                        <h4 class="media-title">{{ user.media.name }}</h4>
+                        <h4 class="media-title">{{ user_media_item.media.name }}</h4>
                         <div class="media-meta">
                             <span class="media-year">
                                 <i class="fas fa-calendar"></i>
-                                {{ user.media.release_date|date:"Y" }}
+                                {{ user_media_item.media.release_date|date:"Y" }}
                             </span>
                             <span class="media-rating">
                                 <i class="fas fa-star"></i>
-                                {{ user.media.rating|default:"N/A" }}
+                                {{ user_media_item.media.rating|default:"N/A" }}
                             </span>
                         </div>
                         <div class="media-genres">
-                            {% for genre in user.media.genre.all %}
+                            {% for genre in user_media_item.media.genre.all %}
                             <span class="genre-tag">{{ genre.name }}</span>
                             {% endfor %}
                         </div>
 
                         <!-- User Rating & Review -->
-                        {% if user.rating or user.review %}
+                        {% if user_media_item.rating or user_media_item.review %}
                         <div class="user-media-info">
-                            {% if user.rating %}
+                            {% if user_media_item.rating %}
                             <div class="user-rating">
                                 <i class="fas fa-star user-rating-icon"></i>
-                                <span>Your Rating: {{ user.rating }}/10</span>
+                                <span>{% if is_own_list %}Your{% else %}{{ target_user.username }}'s{% endif %} Rating: {{ user_media_item.rating }}/10</span>
                             </div>
                             {% endif %}
-                            {% if user.review %}
+                            {% if user_media_item.review %}
                             <div class="user-review">
-                                <p class="review-text">{{ user.review|truncatewords:15 }}</p>
+                                <p class="review-text">{{ user_media_item.review|truncatewords:15 }}</p>
                             </div>
                             {% endif %}
                         </div>
                         {% endif %}
 
-                        <!-- Edit Button -->
+                        <!-- Edit Button - ONLY SHOW FOR OWN LIST -->
+                        {% if is_own_list %}
                         <div class="edit-actions">
-                            <a href="{% url 'edit_user_media' user.media.slug %}" class="edit-link-btn">
+                            <a href="{% url 'edit_user_media' user_media_item.media.slug %}" class="edit-link-btn">
                                 <i class="fas fa-edit"></i>
                                 Edit Details
                             </a>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
             </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div class="pagination-container">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if is_own_list %}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}{% elif request.GET.user_id %}&user_id={{ request.GET.user_id }}{% endif %}">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if is_own_list %}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}{% elif request.GET.user_id %}&user_id={{ request.GET.user_id }}{% endif %}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if is_own_list %}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}{% elif request.GET.user_id %}&user_id={{ request.GET.user_id }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if is_own_list %}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}{% elif request.GET.user_id %}&user_id={{ request.GET.user_id }}{% endif %}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if is_own_list %}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}{% elif request.GET.user_id %}&user_id={{ request.GET.user_id }}{% endif %}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                <div class="pagination-info">
+                    Showing {{ page_obj.start_index }} - {{ page_obj.end_index }} of {{ paginator.count }} items
+                </div>
+            </div>
+            {% endif %}
+
         {% else %}
             <!-- Empty State -->
             <div class="empty-state">
                 <div class="empty-icon">
-                    {% if current_status == 'Watchlist' %}
+                    {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
                         <i class="fas fa-clock"></i>
                     {% else %}
                         <i class="fas fa-check-circle"></i>
                     {% endif %}
                 </div>
-                <h3>No {{ current_type }}s in Your {{ current_status }}</h3>
-                <p>
-                    {% if current_status == 'Watchlist' %}
-                        Start building your watchlist by exploring movies and TV shows!
+                <h3>
+                    {% if is_own_list %}
+                        No {{ current_type }}s in Your {{ current_status|title }}
                     {% else %}
-                        Mark some {{ current_type }}s as watched to see them here!
+                        No {{ current_type }}s in {{ target_user.username }}'s {{ current_status|title }}
+                    {% endif %}
+                </h3>
+                <p>
+                    {% if is_own_list %}
+                        {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
+                            Start building your watchlist by exploring movies and TV shows!
+                        {% else %}
+                            Mark some {{ current_type }}s as watched to see them here!
+                        {% endif %}
+                    {% else %}
+                        {% if current_status == 'watchlist' or current_status == 'Watchlist' %}
+                            {{ target_user.username }} hasn't added any {{ current_type }}s to their watchlist yet.
+                        {% else %}
+                            {{ target_user.username }} hasn't marked any {{ current_type }}s as watched yet.
+                        {% endif %}
                     {% endif %}
                 </p>
+                {% if is_own_list %}
                 <a href="{% url 'search_movies' %}" class="discover-link">
                     <i class="fas fa-search"></i>
                     Discover {{ current_type|title }}s
                 </a>
+                {% endif %}
             </div>
         {% endif %}
     </div>
@@ -358,7 +432,13 @@
                 <!-- User Review Section -->
                 <div class="user-review-section" id="userReviewSection" style="display: none;">
                     <div class="section-divider"></div>
-                    <h4>Your Review</h4>
+                    <h4>
+                        {% if is_own_list %}
+                            Your Review
+                        {% else %}
+                            {{ target_user.username }}'s Review
+                        {% endif %}
+                    </h4>
                     <div class="user-rating-display" id="userRatingDisplay"></div>
                     <p id="userReviewText" class="user-review-text"></p>
                 </div>
@@ -380,6 +460,83 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Pagination Styles */
+.pagination-container {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.pagination {
+    display: inline-flex;
+    gap: 5px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+.page-item .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #b0b0b0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.page-item .page-link:hover {
+    background: rgba(100, 181, 246, 0.1);
+    border-color: #64b5f6;
+    color: #64b5f6;
+    transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, #64b5f6, #42a5f5);
+    border-color: #64b5f6;
+    color: white;
+    font-weight: 600;
+}
+
+.page-item.disabled .page-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.pagination-info {
+    color: #b0b0b0;
+    font-size: 0.9rem;
+}
+
+/* Back to Discover Link */
+.back-to-discover-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: rgba(100, 181, 246, 0.1);
+    color: #64b5f6;
+    text-decoration: none;
+    border-radius: 20px;
+    border: 1px solid rgba(100, 181, 246, 0.3);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.back-to-discover-link:hover {
+    background: rgba(100, 181, 246, 0.2);
+    transform: translateY(-2px);
+}
+</style>
 
 <script>
 // YouTube Player Functions
@@ -443,8 +600,13 @@ function getYouTubeVideoId(url) {
     return null;
 }
 
-// Filtering and Search Functionality
+// Filtering and Search Functionality - ONLY INITIALIZE FOR OWN LIST
 function initializeFilters() {
+    // Only initialize filters if viewing own list
+    {% if not is_own_list %}
+        return;
+    {% endif %}
+
     const searchInput = document.getElementById('userWatchSearchInput');
     const searchBtn = document.getElementById('userWatchSearchBtn');
     const genreFilter = document.getElementById('userWatchGenreFilter');
@@ -465,26 +627,28 @@ function initializeFilters() {
 
     // Initialize filter values from URL
     function setInitialFilterValues() {
-        searchInput.value = currentFilters.query;
+        if (searchInput) searchInput.value = currentFilters.query;
 
-        if (currentFilters.genres) {
+        if (genreFilter && currentFilters.genres) {
             genreFilter.value = currentFilters.genres;
         }
 
-        if (currentFilters.rating) {
+        if (ratingFilter && currentFilters.rating) {
             ratingFilter.value = currentFilters.rating;
         }
 
         // Handle sort filter
-        if (currentFilters.older === 'true') {
-            sortFilter.value = 'oldest';
-        } else {
-            // Check if there's a sort parameter
-            const sortParam = urlParams.get('sort');
-            if (sortParam && ['newest', 'oldest', 'rating', 'name'].includes(sortParam)) {
-                sortFilter.value = sortParam;
+        if (sortFilter) {
+            if (currentFilters.older === 'true') {
+                sortFilter.value = 'oldest';
             } else {
-                sortFilter.value = 'newest';
+                // Check if there's a sort parameter
+                const sortParam = urlParams.get('sort');
+                if (sortParam && ['newest', 'oldest', 'rating', 'name'].includes(sortParam)) {
+                    sortFilter.value = sortParam;
+                } else {
+                    sortFilter.value = 'newest';
+                }
             }
         }
 
@@ -493,6 +657,8 @@ function initializeFilters() {
 
     // Update active filters display
     function updateActiveFiltersDisplay() {
+        if (!activeFilters) return;
+
         activeFilters.innerHTML = '';
         const filters = [];
 
@@ -504,8 +670,8 @@ function initializeFilters() {
             });
         }
 
-        if (currentFilters.genres) {
-            const genreName = genreFilter.options[genreFilter.selectedIndex].text;
+        if (currentFilters.genres && genreFilter) {
+            const genreName = genreFilter.options[genreFilter.selectedIndex]?.text || currentFilters.genres;
             filters.push({
                 key: 'genres',
                 label: `Genre: ${genreName}`,
@@ -527,8 +693,8 @@ function initializeFilters() {
                 label: 'Sort: Oldest First',
                 value: 'true'
             });
-        } else if (sortFilter.value !== 'newest') {
-            const sortName = sortFilter.options[sortFilter.selectedIndex].text;
+        } else if (sortFilter && sortFilter.value !== 'newest') {
+            const sortName = sortFilter.options[sortFilter.selectedIndex]?.text || sortFilter.value;
             filters.push({
                 key: 'sort',
                 label: `Sort: ${sortName}`,
@@ -562,10 +728,10 @@ function initializeFilters() {
         currentFilters[key] = '';
 
         // Update filter controls
-        if (key === 'query') searchInput.value = '';
-        if (key === 'genres') genreFilter.value = '';
-        if (key === 'rating') ratingFilter.value = '';
-        if (key === 'older' || key === 'sort') sortFilter.value = 'newest';
+        if (key === 'query' && searchInput) searchInput.value = '';
+        if (key === 'genres' && genreFilter) genreFilter.value = '';
+        if (key === 'rating' && ratingFilter) ratingFilter.value = '';
+        if ((key === 'older' || key === 'sort') && sortFilter) sortFilter.value = 'newest';
 
         applyFilters();
     }
@@ -580,9 +746,9 @@ function initializeFilters() {
         if (currentFilters.rating) params.set('rating', currentFilters.rating);
 
         // Handle sort options
-        if (sortFilter.value === 'oldest') {
+        if (sortFilter && sortFilter.value === 'oldest') {
             params.set('older', 'true');
-        } else if (sortFilter.value !== 'newest') {
+        } else if (sortFilter && sortFilter.value !== 'newest') {
             params.set('sort', sortFilter.value);
         }
 
@@ -599,49 +765,59 @@ function initializeFilters() {
         currentFilters.rating = '';
         currentFilters.older = '';
 
-        searchInput.value = '';
-        genreFilter.value = '';
-        ratingFilter.value = '';
-        sortFilter.value = 'newest';
+        if (searchInput) searchInput.value = '';
+        if (genreFilter) genreFilter.value = '';
+        if (ratingFilter) ratingFilter.value = '';
+        if (sortFilter) sortFilter.value = 'newest';
 
         applyFilters();
     }
 
-    // Event listeners for filters
-    searchBtn.addEventListener('click', function() {
-        currentFilters.query = searchInput.value.trim();
-        applyFilters();
-    });
-
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
+    // Event listeners for filters - only if elements exist
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function() {
             currentFilters.query = searchInput.value.trim();
             applyFilters();
-        }
-    });
+        });
+    }
 
-    applyFiltersBtn.addEventListener('click', function() {
-        currentFilters.genres = genreFilter.value;
-        currentFilters.rating = ratingFilter.value;
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                currentFilters.query = searchInput.value.trim();
+                applyFilters();
+            }
+        });
+    }
 
-        // Handle sort filter
-        if (sortFilter.value === 'oldest') {
-            currentFilters.older = 'true';
-        } else {
-            currentFilters.older = '';
-        }
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', function() {
+            if (genreFilter) currentFilters.genres = genreFilter.value;
+            if (ratingFilter) currentFilters.rating = ratingFilter.value;
 
-        applyFilters();
-    });
+            // Handle sort filter
+            if (sortFilter) {
+                if (sortFilter.value === 'oldest') {
+                    currentFilters.older = 'true';
+                } else {
+                    currentFilters.older = '';
+                }
+            }
 
-    clearFiltersBtn.addEventListener('click', clearAllFilters);
+            applyFilters();
+        });
+    }
+
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', clearAllFilters);
+    }
 
     // Initialize filters on page load
     setInitialFilterValues();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize filters
+    // Initialize filters (only for own list)
     initializeFilters();
 
     // Enhanced Movie Details Modal
@@ -691,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Display user review if available
             if (mediaData.user_rating && mediaData.user_rating !== 'Not rated') {
-                userRatingDisplay.innerHTML = `<strong>Your Rating:</strong> ${mediaData.user_rating}/10`;
+                userRatingDisplay.innerHTML = `<strong>{% if is_own_list %}Your{% else %}{{ target_user.username }}'s{% endif %} Rating:</strong> ${mediaData.user_rating}/10`;
                 userRatingDisplay.style.display = 'block';
             } else {
                 userRatingDisplay.style.display = 'none';
@@ -795,7 +971,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add loading animation to action buttons
+    // Add loading animation to action buttons - ONLY FOR OWN LIST
+    {% if is_own_list %}
     const actionForms = document.querySelectorAll('.user-watch-action-form');
 
     actionForms.forEach(form => {
@@ -813,6 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         });
     });
+    {% endif %}
 
     // Add intersection observer for lazy loading animations
     const observerOptions = {

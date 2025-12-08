@@ -4,37 +4,53 @@
 {% block content %}
 <div style="min-height: 100vh; padding: 120px 20px 60px; background: transparent; position: relative;">
     <!-- Header Section -->
-    <div style="text-align: center; margin-bottom: 40px;">
+    <div style="text-align: center; margin-bottom: 60px;">
         <div style="max-width: 600px; margin: 0 auto;">
-            <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                <i class="fas fa-user-friends" style="font-size: 2.5rem; color: #64b5f6; z-index: 2; position: relative;"></i>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: radial-gradient(circle, rgba(100, 181, 246, 0.3) 0%, transparent 70%); border-radius: 50%; animation: pulse 2s ease-in-out infinite;"></div>
+            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center;">
+                <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #64b5f6, #42a5f5); border-radius: 50%; opacity: 0.1; animation: pulse 3s ease-in-out infinite;"></div>
+                <i class="fas fa-user-friends" style="font-size: 2.8rem; color: #64b5f6; z-index: 2; position: relative;"></i>
             </div>
             <h1 style="margin-bottom: 15px; position: relative;">
-                <span style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #64b5f6, #42a5f5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Discover People</span>
-                <div style="width: 80px; height: 3px; background: linear-gradient(135deg, #64b5f6, #42a5f5); margin: 10px auto 0; border-radius: 2px;"></div>
+                <span style="font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, #64b5f6, #42a5f5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px;">Discover People</span>
+                <div style="width: 60px; height: 4px; background: linear-gradient(135deg, #64b5f6, #42a5f5); margin: 15px auto 0; border-radius: 2px;"></div>
             </h1>
-            <p style="font-size: 1.1rem; color: #b0b0b0; margin-bottom: 0;">
-                Connect with other movie enthusiasts and discover their watchlists
+            <p style="font-size: 1.15rem; color: #b0b0b0; margin-bottom: 0; line-height: 1.5;">
+                Explore movie enthusiasts and their collections
             </p>
         </div>
     </div>
 
     <!-- Search Section -->
-    <div style="margin-bottom: 40px;">
+    <div style="margin-bottom: 50px;">
         <div style="max-width: 500px; margin: 0 auto;">
-            <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: 50px; padding: 10px 20px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;">
-                <i class="fas fa-search" style="color: #64b5f6; margin-right: 15px; font-size: 1.1rem;"></i>
-                <form method="GET" action="{% url 'discover_people' %}" style="flex: 1; display: flex; align-items: center;">
-                    <input type="text"
-                           name="search"
-                           placeholder="Search users by username..."
-                           value="{{ request.GET.search|default:'' }}"
-                           style="background: transparent; border: none; color: #ffffff; font-size: 1rem; padding: 8px 0; flex: 1; outline: none; width: 100;">
-                    <button type="submit" style="background: linear-gradient(135deg, #64b5f6, #42a5f5); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: all 0.3s ease; margin-left: 10px; flex-shrink: 0;">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </form>
+            <div style="position: relative;">
+                <div style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: 50px; padding: 12px 25px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); transition: all 0.3s ease;"
+                     class="search-container">
+                    <i class="fas fa-search" style="color: #64b5f6; margin-right: 15px; font-size: 1.1rem;"></i>
+                    <form method="GET" action="{% url 'discover_people' %}" style="flex: 1; display: flex; align-items: center;">
+                        <input type="text"
+                               name="search"
+                               placeholder="Search users by username..."
+                               value="{{ request.GET.search|default:'' }}"
+                               style="background: transparent; border: none; color: #ffffff; font-size: 1.05rem; padding: 8px 0; flex: 1; outline: none; width: 100%;">
+                        {% if request.GET.search %}
+                        <button type="button" onclick="window.location.href='{% url 'discover_people' %}'"
+                                style="background: transparent; border: none; color: #ff6b6b; margin-right: 10px; cursor: pointer; font-size: 1.1rem; padding: 5px;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        {% endif %}
+                        <button type="submit" style="background: linear-gradient(135deg, #64b5f6, #42a5f5); border: none; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: all 0.3s ease; margin-left: 10px; flex-shrink: 0;">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+                {% if request.GET.search %}
+                <div style="text-align: center; margin-top: 15px;">
+                    <span style="color: #64b5f6; font-size: 0.9rem;">
+                        Searching for "{{ request.GET.search }}"
+                    </span>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -42,37 +58,64 @@
     <!-- Users Grid -->
     <div style="max-width: 1200px; margin: 0 auto;">
         {% if users %}
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px;" id="usersGrid">
+            <!-- Results Info -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 0 10px;">
+                <div style="color: #64b5f6; font-size: 0.95rem; font-weight: 500;">
+                    Found {{ paginator.count }} user{{ paginator.count|pluralize }}
+                </div>
+                {% if is_paginated %}
+                <div style="color: #b0b0b0; font-size: 0.9rem;">
+                    Page {{ page_obj.number }} of {{ paginator.num_pages }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Users Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;" id="usersGrid">
                 {% for user_obj in users %}
-                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;"
+                <div style="background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)); border-radius: 20px; padding: 30px; text-align: center; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;"
                      class="user-card" data-user-id="{{ user_obj.id }}">
-                    <div style="position: relative; width: 100px; height: 100px; margin: 0 auto 20px; cursor: pointer;" class="user-avatar">
+
+                    <!-- Background Glow -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 0%, rgba(100, 181, 246, 0.05), transparent 70%); opacity: 0; transition: opacity 0.4s ease; pointer-events: none;"></div>
+
+                    <!-- User Avatar -->
+                    <div style="position: relative; width: 110px; height: 110px; margin: 0 auto 25px; cursor: pointer;" class="user-avatar">
                         {% if user_obj.profile.profile_pic %}
                             <img src="{{ user_obj.profile.profile_pic.url }}"
                                  alt="{{ user_obj.username }}"
-                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid rgba(100, 181, 246, 0.3); transition: all 0.3s ease;">
+                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid rgba(100, 181, 246, 0.2); transition: all 0.4s ease;">
                         {% else %}
-                            <div style="width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #64b5f6, #42a5f5); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; border: 3px solid rgba(100, 181, 246, 0.3);">
+                            <div style="width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #64b5f6, #42a5f5); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.2rem; border: 3px solid rgba(100, 181, 246, 0.2); transition: all 0.4s ease;">
                                 <i class="fas fa-user"></i>
                             </div>
                         {% endif %}
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 110px; height: 110px; background: radial-gradient(circle, rgba(100, 181, 246, 0.2) 0%, transparent 70%); border-radius: 50%; opacity: 0; transition: opacity 0.3s ease;"></div>
+                        <!-- Avatar Ring -->
+                        <div style="position: absolute; inset: -3px; border: 2px solid transparent; border-radius: 50%; background: linear-gradient(135deg, #64b5f6, #42a5f5) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.4s ease;"></div>
                     </div>
 
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 1.3rem; font-weight: 600; color: #ffffff; margin-bottom: 15px; cursor: pointer; transition: color 0.3s ease;" class="username">{{ user_obj.username }}</h4>
+                    <!-- User Info -->
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="font-size: 1.4rem; font-weight: 700; color: #ffffff; margin-bottom: 20px; cursor: pointer; transition: color 0.3s ease; letter-spacing: -0.3px;" class="username">
+                            {{ user_obj.username }}
+                            {% if user_obj == request.user %}
+                            <span style="font-size: 0.75rem; color: #64b5f6; margin-left: 6px; background: rgba(100, 181, 246, 0.1); padding: 2px 8px; border-radius: 12px; font-weight: 500;">You</span>
+                            {% endif %}
+                        </h4>
 
                         <!-- Action Buttons -->
-                        <div style="display: flex; gap: 10px; justify-content: center;">
+                        <div style="display: flex; gap: 12px; justify-content: center;">
                             <a href="{% url 'user_media' status='watchlist' type='movie' %}?user_id={{ user_obj.id }}"
-                               style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 25px; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255, 193, 7, 0.3); background: rgba(255, 193, 7, 0.1); color: #ffc107;"
-                               title="View Watchlist">
+                               style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 25px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); min-width: 110px; justify-content: center;"
+                               title="View Watchlist"
+                               class="action-btn">
                                 <i class="fas fa-clock"></i>
                                 <span>Watchlist</span>
                             </a>
                             <a href="{% url 'user_media' status='watched' type='movie' %}?user_id={{ user_obj.id }}"
-                               style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 25px; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(76, 175, 80, 0.3); background: rgba(76, 175, 80, 0.1); color: #4caf50;"
-                               title="View Watched">
+                               style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 25px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; background: rgba(76, 175, 80, 0.1); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.2); min-width: 110px; justify-content: center;"
+                               title="View Watched"
+                               class="action-btn">
                                 <i class="fas fa-check-circle"></i>
                                 <span>Watched</span>
                             </a>
@@ -84,27 +127,29 @@
 
             <!-- Pagination -->
             {% if is_paginated %}
-            <div style="display: flex; justify-content: center; margin-top: 40px;">
+            <div style="display: flex; justify-content: center; margin-top: 50px;">
                 <nav aria-label="User pagination">
-                    <ul style="display: flex; gap: 10px; align-items: center; list-style: none; padding: 0; margin: 0;">
+                    <ul style="display: flex; gap: 8px; align-items: center; list-style: none; padding: 0; margin: 0;">
                         {% if page_obj.has_previous %}
-                        <li style="margin: 0;">
-                            <a style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;"
+                        <li>
+                            <a style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; text-decoration: none; border-radius: 10px; transition: all 0.3s ease; font-size: 0.9rem; font-weight: 500;"
                                href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                 <i class="fas fa-chevron-left"></i>
-                                Previous
+                                <span>Prev</span>
                             </a>
                         </li>
                         {% endif %}
 
                         {% for num in page_obj.paginator.page_range %}
                             {% if page_obj.number == num %}
-                            <li style="margin: 0;">
-                                <span style="background: linear-gradient(135deg, #64b5f6, #42a5f5); border: 1px solid #64b5f6; color: white; padding: 10px 20px; border-radius: 10px; display: flex; align-items: center; gap: 8px;">{{ num }}</span>
+                            <li>
+                                <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; background: linear-gradient(135deg, #64b5f6, #42a5f5); color: white; border-radius: 10px; font-weight: 600; font-size: 0.95rem;">
+                                    {{ num }}
+                                </span>
                             </li>
                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                            <li style="margin: 0;">
-                                <a style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;"
+                            <li>
+                                <a style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; text-decoration: none; border-radius: 10px; transition: all 0.3s ease; font-size: 0.95rem;"
                                    href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
                                     {{ num }}
                                 </a>
@@ -113,10 +158,10 @@
                         {% endfor %}
 
                         {% if page_obj.has_next %}
-                        <li style="margin: 0;">
-                            <a style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;"
+                        <li>
+                            <a style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #b0b0b0; text-decoration: none; border-radius: 10px; transition: all 0.3s ease; font-size: 0.9rem; font-weight: 500;"
                                href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
-                                Next
+                                <span>Next</span>
                                 <i class="fas fa-chevron-right"></i>
                             </a>
                         </li>
@@ -128,28 +173,29 @@
 
         {% else %}
             <!-- Empty State -->
-            <div style="text-align: center; padding: 60px 20px;">
-                <div style="font-size: 4rem; color: #64b5f6; margin-bottom: 20px; opacity: 0.5;">
+            <div style="text-align: center; padding: 80px 20px;">
+                <div style="font-size: 5rem; color: #64b5f6; margin-bottom: 25px; opacity: 0.2;">
                     <i class="fas fa-user-slash"></i>
                 </div>
-                <h3 style="color: #ffffff; margin-bottom: 15px; font-size: 1.5rem;">
+                <h3 style="color: #ffffff; margin-bottom: 15px; font-size: 1.6rem; font-weight: 600;">
                     {% if request.GET.search %}
-                        No users found for "{{ request.GET.search }}"
+                        No users found
                     {% else %}
-                        No users to discover
+                        No users to discover yet
                     {% endif %}
                 </h3>
-                <p style="color: #b0b0b0; margin-bottom: 25px; font-size: 1.1rem;">
+                <p style="color: #b0b0b0; margin-bottom: 30px; font-size: 1.05rem; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5;">
                     {% if request.GET.search %}
-                        Try searching with a different username
+                        Try a different search term
                     {% else %}
-                        Check back later to discover new users
+                        Check back later for new members
                     {% endif %}
                 </p>
                 {% if request.GET.search %}
-                <a href="{% url 'discover_people' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: #ffffff; text-decoration: none; border-radius: 25px; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <i class="fas fa-times"></i>
-                    Clear Search
+                <a href="{% url 'discover_people' %}"
+                   style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 25px; background: rgba(100, 181, 246, 0.1); color: #64b5f6; text-decoration: none; border-radius: 25px; transition: all 0.3s ease; font-size: 0.95rem; border: 1px solid rgba(100, 181, 246, 0.2);">
+                    <i class="fas fa-users"></i>
+                    View All Users
                 </a>
                 {% endif %}
             </div>
@@ -159,39 +205,45 @@
 
 <style>
 @keyframes pulse {
-    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+    0%, 100% { opacity: 0.1; transform: scale(1); }
+    50% { opacity: 0.15; transform: scale(1.05); }
 }
 
-.user-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(135deg, #64b5f6, #42a5f5);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes subtleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.user-card {
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: calc(var(--card-index, 0) * 0.05s);
+    opacity: 0;
 }
 
 .user-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-8px);
     border-color: rgba(100, 181, 246, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-.user-card:hover::before {
-    transform: scaleX(1);
-}
-
-.user-card:hover .user-avatar div:last-child {
+.user-card:hover .user-avatar > div:last-child {
     opacity: 1;
 }
 
 .user-card:hover .user-avatar img,
-.user-card:hover .user-avatar div:first-child {
-    border-color: #64b5f6;
+.user-card:hover .user-avatar > div:first-child {
+    border-color: rgba(100, 181, 246, 0.4);
     transform: scale(1.05);
 }
 
@@ -199,86 +251,137 @@
     color: #64b5f6;
 }
 
-.user-card a:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+.user-card:hover > div:first-child {
+    opacity: 1;
 }
 
-.user-card a[style*="ffc107"]:hover {
-    background: rgba(255, 193, 7, 0.2);
-    border-color: #ffc107;
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.user-card a[style*="4caf50"]:hover {
-    background: rgba(76, 175, 80, 0.2);
-    border-color: #4caf50;
+.action-btn[style*="ffc107"]:hover {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: rgba(255, 193, 7, 0.4) !important;
+}
+
+.action-btn[style*="4caf50"]:hover {
+    background: rgba(76, 175, 80, 0.2) !important;
+    border-color: rgba(76, 175, 80, 0.4) !important;
 }
 
 .pagination a:hover {
-    background: rgba(100, 181, 246, 0.1);
-    border-color: #64b5f6;
-    color: #64b5f6;
+    background: rgba(100, 181, 246, 0.1) !important;
+    border-color: #64b5f6 !important;
+    color: #64b5f6 !important;
     transform: translateY(-2px);
 }
 
-.clear-search:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.search-box:focus-within {
+.search-container:focus-within {
     border-color: #64b5f6;
-    box-shadow: 0 0 20px rgba(100, 181, 246, 0.3);
+    box-shadow: 0 0 25px rgba(100, 181, 246, 0.2);
     transform: translateY(-2px);
 }
 
 .search-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(100, 181, 246, 0.4);
+    transform: scale(1.05) rotate(5deg);
+}
+
+/* Header icon animation */
+.header-icon-container {
+    animation: subtleFloat 4s ease-in-out infinite;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(100, 181, 246, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 181, 246, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 1100px) {
+    #usersGrid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
 }
 
 @media (max-width: 768px) {
     .user-card {
-        padding: 20px;
+        padding: 25px;
     }
 
     .user-avatar {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .action-btn {
+        min-width: 100px !important;
+        padding: 9px 18px !important;
+    }
+
+    h1 span {
+        font-size: 2.4rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #usersGrid {
+        grid-template-columns: 1fr;
+        max-width: 350px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .action-buttons {
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
     }
 
-    .action-buttons a {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    #usersGrid {
-        grid-template-columns: 1fr;
+    .action-btn {
+        width: 100%;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // User card click handler
+    // Add animation delays to user cards
     const userCards = document.querySelectorAll('.user-card');
+    userCards.forEach((card, index) => {
+        card.style.setProperty('--card-index', index);
+    });
 
+    // User card click handler
     userCards.forEach(card => {
         const avatar = card.querySelector('.user-avatar');
         const username = card.querySelector('.username');
 
-        // Make entire card clickable for watchlist (except action buttons)
         [avatar, username].forEach(element => {
             if (element) {
                 element.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Redirect to user's watchlist
                     const userId = card.getAttribute('data-user-id');
                     if (userId) {
                         window.location.href = `{% url 'user_media' status='watchlist' type='movie' %}?user_id=${userId}`;
@@ -294,18 +397,57 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchBtn = document.querySelector('button[type="submit"]');
 
     if (searchForm && searchInput) {
+        // Auto-focus on search input
+        setTimeout(() => {
+            searchInput.focus();
+        }, 300);
+
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 searchForm.submit();
             }
         });
 
         if (searchBtn) {
-            searchBtn.addEventListener('click', function() {
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 searchForm.submit();
             });
         }
     }
+
+    // Add subtle hover effect to cards
+    userCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Add smooth loading animation for images
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.5s ease';
+
+        // Check if image is already loaded
+        if (img.complete) {
+            img.style.opacity = '1';
+        } else {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+
+            // Fallback in case load event doesn't fire
+            setTimeout(() => {
+                img.style.opacity = '1';
+            }, 1000);
+        }
+    });
 });
 </script>
 {% endblock %}

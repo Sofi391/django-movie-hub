@@ -536,40 +536,45 @@ class UserMediaListView(LoginRequiredMixin, ListView):
     model = UserMedia
     template_name = 'movie_site/user_watches.html'
     context_object_name = 'user_media'
+    paginate_by = 12
 
     STATUS_MAP = {
         'watched': 'Watched',
         'watchlist': 'Watchlist',
     }
 
+    def get_target_user(self):
+        """Helper method to get the target user (either current user or viewed user)"""
+        user_id = self.request.GET.get('user_id')
+        if user_id:
+            try:
+                return User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return self.request.user
+        return self.request.user
+
     def get_queryset(self):
         # Get status and type from URL parameters
         status_param = self.kwargs.get('status')
         media_type = self.kwargs.get('type')
 
+        # Get filter parameters from GET request
+        genres = self.request.GET.get('genres')
+        rating = self.request.GET.get('rating')
+        older = self.request.GET.get('older')
+        search = self.request.GET.get('query')
 
-        # Get filter parameters from GET request (query parameters) - FIXED: using .get() method
-        genres = self.request.GET.get('genres')  # FIXED: .get() not ()
-        rating = self.request.GET.get('rating')  # FIXED: .get() not ()
-        older = self.request.GET.get('older')  # FIXED: .get() not ()
-        search = self.request.GET.get('query')  # FIXED: .get() not ()
-        user_id = self.request.GET.get('user_id')
+        # Get the target user
+        target_user = self.get_target_user()
 
         # Normalize status
         status = self.STATUS_MAP.get(status_param.lower()) if status_param else None
 
-        if user_id is not None:
-            queryset = UserMedia.objects.filter(
-                user__id=user_id,
-                status=status,
-                media__type=media_type
-            ).order_by('-added_at').select_related('media')
-        else:
-            queryset = UserMedia.objects.filter(
-                user=self.request.user,
-                status=status,
-                media__type=media_type
-            ).order_by('-added_at').select_related('media')
+        queryset = UserMedia.objects.filter(
+            user=target_user,
+            status=status,
+            media__type=media_type
+        ).order_by('-added_at').select_related('media')
 
         # GENRE filter
         if genres:
@@ -598,26 +603,24 @@ class UserMediaListView(LoginRequiredMixin, ListView):
             )
 
         return queryset
-        # return UserMedia.objects.filter(
-        #     user=self.request.user,
-        #     status=status,
-        #     media__type=media_type
-        # ).select_related('media')  # This will optimize database queries
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         status = self.kwargs.get('status')
         media_type = self.kwargs.get('type')
 
+        # Get the target user for counts
+        target_user = self.get_target_user()
+
         # Add counts for the tab badges
         context['movie_count'] = UserMedia.objects.filter(
-            user=self.request.user,
+            user=target_user,
             status=status,
             media__type='movie'
         ).count()
 
         context['tv_count'] = UserMedia.objects.filter(
-            user=self.request.user,
+            user=target_user,
             status=status,
             media__type='tv'
         ).count()
@@ -626,7 +629,12 @@ class UserMediaListView(LoginRequiredMixin, ListView):
         context['current_type'] = media_type
         context['total_count'] = context['movie_count'] + context['tv_count']
 
+        # Add the target user to context (useful for template to show whose list it is)
+        context['target_user'] = target_user
+        context['is_own_list'] = (target_user == self.request.user)
+
         return context
+
 
 
 class DiscoverPeople(LoginRequiredMixin, ListView):
@@ -637,7 +645,10 @@ class DiscoverPeople(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         search = self.request.GET.get('search','')
-        queryset = User.objects.exclude(id=self.request.user.id)
+        queryset = User.objects.exclude(
+            Q(id=self.request.user.id) |
+            Q(id=1)
+        )
 
         if search:
             queryset = queryset.filter(username__icontains=search)
