@@ -106,13 +106,9 @@
                         <li class="nav-item dropdown modern-dropdown">
                             <a class="nav-link dropdown-toggle profile-trigger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 <div class="profile-avatar">
-                                    {% if user.profile.profile_pic %}
-                                        <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="profile-image">
-                                    {% else %}
                                         <div class="profile-placeholder">
                                             <i class="fas fa-user"></i>
                                         </div>
-                                    {% endif %}
                                     <div class="profile-glow"></div>
                                 </div>
                                 <span class="username">{{ user.username }}</span>
@@ -250,13 +246,9 @@
             </button>
             {% if user.is_authenticated %}
                 <div class="expanded-profile-container">
-                    {% if user.profile.profile_pic %}
-                        <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="expanded-profile-image">
-                    {% else %}
                         <div class="expanded-profile-placeholder">
                             <i class="fas fa-user"></i>
                         </div>
-                    {% endif %}
                     <div class="profile-info">
                         <h3>{{ user.username }}</h3>
                         <p class="profile-email">{{ user.email }}</p>

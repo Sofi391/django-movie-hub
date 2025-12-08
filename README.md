@@ -4,7 +4,7 @@
 [![Django](https://img.shields.io/badge/Django-5.x-green)](https://www.djangoproject.com/) 
 [![Render](https://img.shields.io/badge/Live%20Demo-Render-brightgreen)](https://your-render-url.onrender.com)
 
-**Live Demo:** [https://your-render-url.onrender.com](https://your-render-url.onrender.com)
+**Live Demo:** [https://movie-hub-a4gn.onrender.com](https://movie-hub-a4gn.onrender.com)
 
 A Django web application that allows users to **discover, track, and interact with movies and TV shows**. Users can search for any movie or show, check IMDb ratings, view trailers, and manage their watchlists, favorites, and watched content. Admins, editors, and moderators have special permissions to manage content, while all users can explore what others are watching.
 
@@ -56,7 +56,7 @@ This project was inspired by my love for movies and my desire to track the movie
 
 ## 🚀 Deployment
 
-The project is live on Render: [https://your-render-url.onrender.com](https://your-render-url.onrender.com)
+The project is live on Render: [https://movie-hub-a4gn.onrender.com](https://movie-hub-a4gn.onrender.com)
 
 ---
 
