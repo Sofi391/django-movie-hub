@@ -213,7 +213,10 @@ class ModeratorEdit(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
         message = f"Dear {self.object.user.username}, your media '{self.object.media.name}' was edited by a moderator."
         from_email = f"MovieHub<{settings.EMAIL_HOST_USER}>"
         recipient_list = [self.object.user.email]
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        try:
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        except Exception as e:
+            print(f"Failed to send email to {self.object.user.email}: {e}")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -225,13 +228,16 @@ class ModeratorEdit(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
 def delete_user_content(request,usermedia_id):
     user_media = get_object_or_404(UserMedia,id=usermedia_id)
 
-    subject = "Your media entry was updated"
+    subject = "Your media entry was deleted"
     message = f"Dear {user_media.user.username}, your media '{user_media.media.name}' was deleted by a moderator."
     from_email = f"MovieHub<{settings.EMAIL_HOST_USER}>"
     recipient_list = [user_media.user.email]
 
     user_media.delete()
-    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+    try:
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+    except Exception as e:
+        print(f"Failed to send email to {self.object.user.email}: {e}")
     return redirect('moderator_view')
 
 

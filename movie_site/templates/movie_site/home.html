@@ -8,9 +8,13 @@
         <div class="welcome-content">
             <div class="welcome-header">
                 <div class="welcome-avatar">
+                        {% if user.profile.profile_pic %}
+                        <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="welcome-profile-pic">
+                    {% else %}
                         <div class="welcome-profile-placeholder">
                             <i class="fas fa-user"></i>
                         </div>
+                    {% endif %}
                     <div class="avatar-glow"></div>
                 </div>
                 <div class="welcome-text">

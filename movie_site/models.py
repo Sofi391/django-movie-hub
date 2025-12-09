@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 import unidecode
+from cloudinary.models import CloudinaryField
 
 
 # Create your models here.
@@ -64,7 +65,7 @@ class Media(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='profile')
-    profile_pic = models.ImageField(default='default.jpg',upload_to='profile_pic/profile_pics',null=True,blank=True)
+    profile_pic = CloudinaryField('image', default='default_zhxju7.png', blank=True, null=True)
     bio = models.TextField(blank=True,null=True)
 
     def __str__(self):
