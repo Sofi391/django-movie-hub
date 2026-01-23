@@ -9488,3 +9488,58 @@ textarea.auth-input {
     }
 }
   /* --- END USER MEDIA INFO FIX (SMALLER SIZE) --- */
+
+
+  /* Add these styles to your existing styles.css file */
+
+/* Watched button specific styles for search page */
+.result-action-btn.watched-btn {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(76, 175, 80, 0.25));
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+}
+
+.result-action-btn.watched-btn:hover {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    border-color: #4caf50;
+    color: white;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+}
+
+.result-action-btn.watched-btn i {
+    color: inherit;
+}
+
+/* Adjust action buttons container for 4 buttons (was 3) */
+.result-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+}
+
+/* Loading animation for watched button */
+.result-action-btn.watched-btn.loading i {
+    animation: fa-spin 1s infinite linear;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .result-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .result-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        padding: 6px;
+    }
+}
+
+

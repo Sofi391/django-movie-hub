@@ -167,6 +167,14 @@
                                             </button>
                                         </form>
 
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' movie.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+
                                         {% if movie.trailer_url %}
                                         <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ movie.trailer_url }}">
                                             <i class="fas fa-play"></i>
@@ -289,6 +297,14 @@
                                             <input type="hidden" name="rating" value="{{ movie.rating|default:0 }}">
                                             <button type="submit" class="action-btn favorite-btn" title="Add to Favorites">
                                                 <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' movie.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
                                             </button>
                                         </form>
 
@@ -417,6 +433,14 @@
                                             </button>
                                         </form>
 
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' movie.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+
                                         {% if movie.trailer_url %}
                                         <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ movie.trailer_url }}">
                                             <i class="fas fa-play"></i>
@@ -539,6 +563,14 @@
                                             <input type="hidden" name="rating" value="{{ movie.rating|default:0 }}">
                                             <button type="submit" class="action-btn favorite-btn" title="Add to Favorites">
                                                 <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' movie.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
                                             </button>
                                         </form>
 
@@ -670,6 +702,14 @@
                                             </button>
                                         </form>
 
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' show.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+
                                         {% if show.trailer_url %}
                                         <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ show.trailer_url }}">
                                             <i class="fas fa-play"></i>
@@ -792,6 +832,14 @@
                                             <input type="hidden" name="rating" value="{{ show.rating|default:0 }}">
                                             <button type="submit" class="action-btn favorite-btn" title="Add to Favorites">
                                                 <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' show.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
                                             </button>
                                         </form>
 
@@ -920,6 +968,14 @@
                                             </button>
                                         </form>
 
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' show.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+
                                         {% if show.trailer_url %}
                                         <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ show.trailer_url }}">
                                             <i class="fas fa-play"></i>
@@ -1045,6 +1101,14 @@
                                             </button>
                                         </form>
 
+                                        <!-- Add to Watched Form - NEW BUTTON -->
+                                        <form method="POST" action="{% url 'mark_watched' show.slug %}" class="action-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn watched-btn" title="Mark as Watched">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+
                                         {% if show.trailer_url %}
                                         <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ show.trailer_url }}">
                                             <i class="fas fa-play"></i>
@@ -1137,6 +1201,59 @@
         </div>
     </div>
 </div>
+
+<!-- Add CSS for watched button in homepage -->
+<style>
+    /* Watched button specific styles for homepage */
+    .action-btn.watched-btn {
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(76, 175, 80, 0.25));
+        border: 1px solid rgba(76, 175, 80, 0.3);
+        color: #4caf50;
+    }
+
+    .action-btn.watched-btn:hover {
+        background: linear-gradient(135deg, #4caf50, #388e3c);
+        border-color: #4caf50;
+        color: white;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+    }
+
+    .action-btn.watched-btn i {
+        color: inherit;
+    }
+
+    /* Adjust action buttons container for 5 buttons (was 4) */
+    .action-buttons {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* Loading animation for watched button */
+    .action-btn.watched-btn.loading i {
+        animation: fa-spin 1s infinite linear;
+    }
+
+    /* Responsive adjustments for mobile */
+    @media (max-width: 768px) {
+        .action-buttons {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            padding: 8px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .action-buttons {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            padding: 6px;
+        }
+    }
+</style>
 
 <script>
 // YouTube Player Functions
@@ -1254,20 +1371,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add loading animation to action buttons
+    // Add loading animation to all action buttons (including new watched button)
     const actionForms = document.querySelectorAll('.action-form');
 
     actionForms.forEach(form => {
         form.addEventListener('submit', function(e) {
             const button = this.querySelector('button');
             const originalHTML = button.innerHTML;
+            const originalClass = button.className;
 
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.className = originalClass + ' loading';
             button.disabled = true;
 
-            // Revert after 2 seconds (in case of error)
+            // Re-enable button after 2 seconds (in case of error)
             setTimeout(() => {
                 button.innerHTML = originalHTML;
+                button.className = originalClass;
                 button.disabled = false;
             }, 2000);
         });

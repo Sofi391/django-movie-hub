@@ -5,7 +5,8 @@ from .views import (Home, AddMovie, EditMovie, DeleteMovie,
                     UserMediaListView, FavoriteListView,update_user_media,
                     delete_user_media,UpdateProfile,add_to_favorite,remove_from_fav,
                     mark_as_watched,mark_as_watchlist,ModeratorViews,ModeratorEdit,
-                    delete_user_content,DiscoverPeople,get_user_badges,get_badge_count,check_new_badges)
+                    delete_user_content,DiscoverPeople,get_user_badges,
+                    get_badge_count,check_new_badges,add_to_watched)
 
 urlpatterns = [
     path('',Home.as_view(),name='home'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('search/',search_movies,name='search_movies'),
 
     path('add_to_collection/',add_to_collection,name='add_to_collection'),
+    path('add_to_watched/',add_to_watched,name='add_to_watched'),
     path('add_to_favorite/',add_to_favorite,name='add_to_favorite'),
     path('my/favorites/<str:type>/',FavoriteListView.as_view(),name='favorites'),
     path('my/<str:status>/<str:type>/',UserMediaListView.as_view(),name='user_media'),

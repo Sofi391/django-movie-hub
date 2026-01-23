@@ -839,6 +839,43 @@ def add_to_collection(request):
 
 
 @login_required
+def add_to_watched(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(['POST'])
+
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    release_date = request.POST.get('release_date')
+    poster = request.POST.get('poster')
+    trailer_url = request.POST.get('trailer_url')
+    media_type = request.POST.get('type')
+    rating = request.POST.get('rating')
+
+    if title and release_date:
+        media_added, created = Media.objects.get_or_create(
+            name=title,
+            defaults={
+                'description': description or '',
+                'release_date': release_date,
+                'poster': poster or '',
+                'trailer_url': trailer_url or '',
+                'type': media_type,
+                'rating': rating,
+            }
+        )
+
+        UserMedia.objects.get_or_create(
+            user=request.user,
+            media=media_added,
+            defaults={'status': 'Watchlist'}
+        )
+
+        return redirect('user_media', status='Watched', type=media_type)
+
+    return redirect('search_movies')
+
+
+@login_required
 def add_to_favorite(request):
     if request.method != "POST":
         return HttpResponseNotAllowed(['POST'])
