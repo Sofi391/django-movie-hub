@@ -867,7 +867,7 @@ def add_to_watched(request):
         UserMedia.objects.get_or_create(
             user=request.user,
             media=media_added,
-            defaults={'status': 'Watchlist'}
+            defaults={'status': 'Watched'}
         )
 
         return redirect('user_media', status='Watched', type=media_type)
