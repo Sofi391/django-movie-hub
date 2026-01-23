@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Media, UserMedia, Genre, Favorite,Profile
+from .models import Media, UserMedia, Genre, Favorite,Profile,UserBadge,Badge,Question,UserQuizAttempt
 
 
 # Register your models here.
@@ -31,3 +31,24 @@ class FavoriteAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'bio')
     search_fields = ('user', 'bio')
+
+@admin.register(UserBadge)
+class UserBadgeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'badge')
+    search_fields = ('user', 'badge')
+
+@admin.register(Badge)
+class BadgeAdmin(admin.ModelAdmin):
+    list_display = ('name','description','slug','threshold')
+    search_fields = ('name','slug')
+
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('text', 'option_a', 'option_b', 'option_c','option_d','correct_option')
+    search_fields = ('text',)
+
+@admin.register(UserQuizAttempt)
+class UserQuizAttemptAdmin(admin.ModelAdmin):
+    list_display = ('user', 'score','taken_at')
+    search_fields = ('user', 'score')

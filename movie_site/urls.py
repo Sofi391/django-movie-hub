@@ -1,10 +1,11 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from .views import (Home, AddMovie, EditMovie, DeleteMovie,
                     search_movies, add_to_collection,
                     UserMediaListView, FavoriteListView,update_user_media,
                     delete_user_media,UpdateProfile,add_to_favorite,remove_from_fav,
                     mark_as_watched,mark_as_watchlist,ModeratorViews,ModeratorEdit,
-                    delete_user_content,DiscoverPeople)
+                    delete_user_content,DiscoverPeople,get_user_badges,get_badge_count,check_new_badges)
 
 urlpatterns = [
     path('',Home.as_view(),name='home'),
@@ -34,4 +35,10 @@ urlpatterns = [
     path('profile/update/',UpdateProfile.as_view(),name='profile'),
 
     path('discover/people',DiscoverPeople.as_view(),name='discover_people'),
+
+    path('badges/get-user-badges/', get_user_badges, name='get_user_badges'),
+    path('badges/check-new-badges/', check_new_badges, name='check_new_badges'),
+    path('badges/get-badge-count/', get_badge_count, name='get_badge_count'),
+
+    path('notifications/',TemplateView.as_view(template_name='movie_site/notifications.html'),name='notifications'),
 ]

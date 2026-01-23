@@ -1,6 +1,6 @@
-from django.db.models import Q
+from django.db.models import Q, ExpressionWrapper,F,FloatField
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Media,UserMedia,Genre,Favorite,Profile
+from .models import Media,UserMedia,Genre,Favorite,Profile,UserBadge,Badge,Question,UserQuizAttempt
 from django.views.generic import ListView,UpdateView,DeleteView,CreateView
 from django.urls import reverse_lazy
 from django.conf import settings
@@ -10,14 +10,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin,Pe
 from .forms import UserMediaEditForm
 from django.http import HttpResponseNotAllowed
 from django.core.mail import send_mail
-import asyncio
-import aiohttp
+import random
+from django.http import JsonResponse
 from django.core.cache import cache
-from asgiref.sync import sync_to_async
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
+
 
 
 # Create your views here.
@@ -30,35 +30,78 @@ class Home(ListView):
         context = super().get_context_data(**kwargs)
 
         # Basic queries
-        context['movies'] = Media.objects.filter(type='movie')[:50]
-        context['shows'] = Media.objects.filter(type='tv')[:50]
+        movies = Media.objects.filter(type='movie')
+        tv = Media.objects.filter(type='tv')
+
+        #Today's List
+        today_seed = timezone.now().date().toordinal()
+        random.seed(today_seed)
+
+        daily_movie_pool = movies.filter(
+            rating__gte=6.5,
+            release_date__isnull=False
+        ).order_by('-release_date')[:300]
+
+        movie_ids = list(daily_movie_pool.values_list('id', flat=True))
+        random.shuffle(movie_ids)
+
+        daily_movie_ids = movie_ids[:12]
+
+        context['daily_movies'] = Media.objects.filter(
+            id__in=daily_movie_ids
+        )
+        daily_tv_pool = tv.filter(
+            rating__gte=6.5,
+            release_date__isnull=False
+        ).order_by('-release_date')[:300]
+
+        tv_ids = list(daily_tv_pool.values_list('id', flat=True))
+        random.shuffle(tv_ids)
+
+        daily_tv_ids = tv_ids[:12]
+
+        context['daily_shows'] = Media.objects.filter(
+            id__in=daily_tv_ids
+        )
 
         # Popular by rating
-        context['popular_movies'] = Media.objects.filter(type='movie').order_by('-rating')[:15]
-        context['popular_shows'] = Media.objects.filter(type='tv').order_by('-rating')[:15]
+        context['popular_movies'] = movies.exclude(id__in=daily_movie_ids).order_by('-rating')[:15]
+        context['popular_shows'] = tv.exclude(id__in=daily_tv_ids).order_by('-rating')[:15]
+
+        #Latest movies/tvs
+        context['latest_movies'] = movies.exclude(id__in=daily_movie_ids).order_by('-release_date')[:10]
+        context['latest_shows'] = tv.exclude(id__in=daily_tv_ids).order_by('-release_date')[:10]
 
         # Get trending movies (most added to collections in last 30 days)
-        trending_movies = Media.objects.filter(
+        trending_movies = Media.objects.exclude(id__in=daily_movie_ids).filter(
             type='movie',
-            user__added_at__gte=timezone.now() - timedelta(days=30)
+            user__added_at__gte=timezone.now() - timedelta(days=7)
         ).annotate(
-            recent_additions=Count('user')
-        ).order_by('-recent_additions', '-rating')[:10]
+            recent_additions=Count('user',distinct=True),
+            score=ExpressionWrapper(
+                F('recent_additions') * 0.85 + F('rating') * 0.15,
+                output_field=FloatField()
+            )
+        ).order_by('-score')[:10]
 
         # Get trending TV shows (most added to collections in last 30 days)
-        trending_shows = Media.objects.filter(
+        trending_shows = Media.objects.exclude(id__in=daily_tv_ids).filter(
             type='tv',
-            user__added_at__gte=timezone.now() - timedelta(days=30)
+            user__added_at__gte=timezone.now() - timedelta(days=7)
         ).annotate(
-            recent_additions=Count('user')
-        ).order_by('-recent_additions', '-rating')[:10]
+            recent_additions=Count('user',distinct=True),
+            score= ExpressionWrapper(
+                F('recent_additions')*0.85 + F('rating') * 0.15,
+                output_field= FloatField()
+            )
+        ).order_by('-score')[:10]
 
         # If no trending content (no user activity in last 30 days), fallback to highest rated
-        if not trending_movies:
-            trending_movies = Media.objects.filter(type='movie').order_by('-rating')[:10]
+        if not trending_movies.exists():
+            trending_movies = movies.exclude(id__in=movie_ids).order_by('-rating')[:10]
 
-        if not trending_shows:
-            trending_shows = Media.objects.filter(type='tv').order_by('-rating')[:10]
+        if not trending_shows.exists():
+            trending_shows = tv.exclude(id__in=tv_ids).order_by('-rating')[:10]
 
         context['trending_movies'] = trending_movies
         context['trending_shows'] = trending_shows
@@ -227,6 +270,7 @@ class ModeratorEdit(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
 @permission_required('movie_site.delete_user_media',raise_exception=True)
 def delete_user_content(request,usermedia_id):
     user_media = get_object_or_404(UserMedia,id=usermedia_id)
+    user_email = user_media.user.email
 
     subject = "Your media entry was deleted"
     message = f"Dear {user_media.user.username}, your media '{user_media.media.name}' was deleted by a moderator."
@@ -237,7 +281,7 @@ def delete_user_content(request,usermedia_id):
     try:
         send_mail(subject, message, from_email, recipient_list, fail_silently=False)
     except Exception as e:
-        print(f"Failed to send email to {self.object.user.email}: {e}")
+        print(f"Failed to send email to {user_email}: {e}")
     return redirect('moderator_view')
 
 
@@ -275,7 +319,71 @@ def mark_as_watched(request, media_slug):
     if not created:
         user_media.status = 'Watched'
         user_media.save()
+        add_badges(request.user)
     return redirect('user_media', type=media_type,status='Watched')
+
+
+@login_required
+def get_user_badges(request):
+    badges = UserBadge.objects.filter(user=request.user).select_related('badge')
+    badge_list = []
+
+    for user_badge in badges:
+        badge_list.append({
+            'id': user_badge.badge.id,
+            'name': user_badge.badge.name,
+            'description': user_badge.badge.description,
+            'slug': user_badge.badge.slug,
+            'threshold': user_badge.badge.threshold,
+            'awarded_at': user_badge.awarded_at.strftime('%Y-%m-%d %H:%M:%S')
+        })
+
+    return JsonResponse({
+        'success': True,
+        'badges': badge_list
+    })
+
+
+@login_required
+def check_new_badges(request):
+    recent_badges = UserBadge.objects.filter(
+        user=request.user,
+        awarded_at__gte=timezone.now() - timedelta(hours=24)
+    ).select_related('badge')
+
+    new_badges = []
+    for user_badge in recent_badges:
+        new_badges.append({
+            'id': user_badge.badge.id,
+            'name': user_badge.badge.name,
+            'description': user_badge.badge.description,
+            'slug': user_badge.badge.slug
+        })
+
+    return JsonResponse({
+        'success': True,
+        'new_badges': new_badges
+    })
+
+
+@login_required
+def get_badge_count(request):
+    count = UserBadge.objects.filter(user=request.user).count()
+    return JsonResponse({
+        'success': True,
+        'count': count
+    })
+
+
+def add_badges(user):
+    watched_count = UserMedia.objects.filter(user=user,status='Watched').count()
+
+    earned_badges = UserBadge.objects.filter(user=user).values_list('badge_id',flat=True)
+    badges_to_earn = Badge.objects.exclude(id__in=earned_badges).order_by('threshold')
+
+    for badge in badges_to_earn:
+        if watched_count >= badge.threshold:
+            UserBadge.objects.get_or_create(user=user,badge=badge)
 
 
 @login_required
@@ -653,7 +761,7 @@ class DiscoverPeople(LoginRequiredMixin, ListView):
         search = self.request.GET.get('search','')
         queryset = User.objects.exclude(
             Q(id=self.request.user.id) |
-            Q(id=1)
+            Q(username='adminsofi')
         )
 
         if search:
@@ -764,3 +872,26 @@ def add_to_favorite(request):
         return redirect('favorites', type=media_type)
 
     return redirect('search_movies')
+
+#
+#
+# def weekly_rotation():
+#     if timezone.now().weekday() == 6:
+#         Question.objects.update(is_active=False)
+#
+#         weekly_questions = Question.objects.order_by('?')[:100]
+#         Question.objects.filter(
+#             id__in=weekly_questions.values_list('id',flat=True)
+#         ).update(is_active=True)
+#
+#
+#
+# class QuizQuestionsListView(LoginRequiredMixin,ListView):
+#     model = Question
+#     template_name = 'movie_site/quiz.html'
+#     context_object_name = 'questions'
+#
+#     def get_queryset(self):
+#         return Question.objects.filter(is_active=True).order_by('?')[:10]
+
+

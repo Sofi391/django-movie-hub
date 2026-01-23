@@ -10,10 +10,994 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'movie_site/css/styles.css' %}">
     <link rel="icon" href="{% static 'movie_site/img/fav.ico' %}">
+    <style>
+        /* Badge System Styles - Improved and More Mature */
+        .badge-unlock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.97);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .badge-unlock-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .badge-unlock-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            padding: 15px;
+            animation: containerSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .badge-content {
+            background: linear-gradient(135deg,
+                rgba(20, 20, 20, 0.98) 0%,
+                rgba(30, 30, 30, 0.98) 100%);
+            border-radius: 20px;
+            padding: 30px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(229, 9, 20, 0.3),
+                rgba(59, 130, 246, 0.3),
+                rgba(139, 92, 246, 0.3),
+                transparent);
+        }
+
+        .badge-close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-size: 0.9rem;
+        }
+
+        .badge-close-btn:hover {
+            background: #e50914;
+            transform: rotate(90deg);
+            border-color: #e50914;
+        }
+
+        /* Main Badge Animation Container */
+        .badge-icon-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px;
+        }
+
+        /* Elegant pulse effect around badge */
+        .badge-pulse-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(229, 9, 20, 0.15);
+            animation: pulseRing 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .badge-pulse-ring:nth-child(2) {
+            animation-delay: 0.5s;
+            border-color: rgba(59, 130, 246, 0.15);
+        }
+
+        .badge-pulse-ring:nth-child(3) {
+            animation-delay: 1s;
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        /* Badge itself with sophisticated animations */
+        .badge-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,
+                rgba(229, 9, 20, 0.1) 0%,
+                rgba(59, 130, 246, 0.1) 50%,
+                rgba(139, 92, 246, 0.1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: badgeGlow 4s ease-in-out infinite,
+                       badgeRotate 20s linear infinite;
+            box-shadow:
+                0 0 60px rgba(229, 9, 20, 0.15),
+                0 0 30px rgba(59, 130, 246, 0.1),
+                0 0 15px rgba(139, 92, 246, 0.1),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+        }
+
+        .badge-image {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+            animation: badgeFloat 6s ease-in-out infinite;
+        }
+
+        /* Subtle sparkles */
+        .badge-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            filter: blur(0.5px);
+            animation: sparkleTwinkle 3s ease-in-out infinite;
+        }
+
+        .sparkle-1 { top: 20px; left: 50%; animation-delay: 0s; }
+        .sparkle-2 { top: 50%; right: 20px; animation-delay: 0.7s; }
+        .sparkle-3 { bottom: 20px; left: 50%; animation-delay: 1.4s; }
+        .sparkle-4 { top: 50%; left: 20px; animation-delay: 2.1s; }
+        .sparkle-5 { top: 40px; right: 40px; animation-delay: 0.3s; }
+        .sparkle-6 { bottom: 40px; left: 40px; animation-delay: 1.1s; }
+
+        /* Text Content */
+        .badge-text {
+            margin-bottom: 25px;
+        }
+
+        .badge-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b6b, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-name {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .badge-description {
+            color: #d1d5db;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            max-height: 2.8em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .badge-awarded-date {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .badge-stats {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.9rem;
+        }
+
+        .badge-count {
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .badge-actions {
+            margin-top: 20px;
+        }
+
+        .badge-dismiss-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #e50914 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-dismiss-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(229, 9, 20, 0.25);
+        }
+
+        .badge-dismiss-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .badge-dismiss-btn:hover i {
+            transform: translateY(2px);
+        }
+
+        /* Badge Modal */
+        .badge-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .badge-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .badge-modal-container {
+            background: rgba(20, 20, 20, 0.98);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 70vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .badge-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .badge-modal-title {
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .badge-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .badge-modal-close:hover {
+            opacity: 1;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .badge-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .badge-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-4px);
+            border-color: rgba(229, 9, 20, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-item.selected {
+            background: rgba(229, 9, 20, 0.15);
+            border-color: rgba(229, 9, 20, 0.5);
+        }
+
+        .badge-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .badge-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .badge-item-name {
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .badge-item-description {
+            color: #9ca3af;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            max-height: 2.6em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .badge-item-date {
+            color: #6b7280;
+            font-size: 0.7rem;
+            font-style: italic;
+        }
+
+        /* Fix for dropdown responsiveness */
+        .modern-dropdown-menu {
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #e50914 rgba(255, 255, 255, 0.1);
+            /* Ensure dropdown fits on screen */
+            max-width: 280px;
+            min-width: 220px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar-thumb {
+            background: #e50914;
+            border-radius: 3px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar-thumb:hover {
+            background: #ff0a16;
+        }
+
+        /* Better badge count display in dropdown */
+        .badge-count-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .badge-count-text {
+            font-size: 0.75rem;
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        .badge-count-number {
+            background: rgba(229, 9, 20, 0.2);
+            color: #ffd700;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(229, 9, 20, 0.3);
+        }
+
+        /* Notification Icon Styles */
+        .notification-container {
+            position: relative;
+            margin-right: 15px;
+        }
+
+        .notification-icon-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .notification-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #e50914;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(20, 20, 20, 0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            animation: badgePulse 2s infinite;
+        }
+
+        @keyframes badgePulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(229, 9, 20, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(229, 9, 20, 0);
+            }
+        }
+
+        /* CRITICAL MOBILE FIXES - UPDATED */
+        @media (max-width: 991.98px) {
+            /* Make the entire navbar collapse scrollable */
+            .navbar-collapse {
+                background: rgba(20, 20, 20, 0.98);
+                backdrop-filter: blur(10px);
+                border-radius: 10px;
+                margin-top: 10px;
+                padding: 15px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                /* Make it scrollable */
+                max-height: 70vh !important;
+                overflow-y: auto !important;
+                overflow-x: hidden;
+            }
+
+            /* Fix for mobile navbar toggler state */
+            .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon i {
+                transform: rotate(90deg);
+                transition: transform 0.3s ease;
+            }
+
+            .navbar-toggler[aria-expanded="false"] .navbar-toggler-icon i {
+                transform: rotate(0deg);
+                transition: transform 0.3s ease;
+            }
+
+            /* Custom scrollbar for mobile navbar */
+            .navbar-collapse::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            .navbar-collapse::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+            }
+
+            .navbar-collapse::-webkit-scrollbar-thumb {
+                background: #e50914;
+                border-radius: 10px;
+            }
+
+            /* Stack nav items vertically on mobile */
+            .navbar-nav {
+                flex-direction: column !important;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            /* Fix for nav-center section */
+            .nav-center {
+                margin-bottom: 15px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding-bottom: 15px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+
+            /* Fix for nav-end section */
+            .nav-end {
+                margin-top: 15px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                padding-bottom: 10px;
+            }
+
+            /* Fix individual nav items */
+            .nav-item {
+                margin-bottom: 5px;
+                width: 100%;
+            }
+
+            /* Fix dropdown on mobile */
+            .modern-dropdown .dropdown-menu {
+                position: static !important;
+                float: none;
+                width: 100%;
+                margin-top: 10px;
+                transform: none !important;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(30, 30, 30, 0.98);
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            /* Ensure profile dropdown is properly styled */
+            .profile-trigger {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            /* Fix dropdown toggles to work properly on mobile */
+            .modern-dropdown {
+                width: 100%;
+                position: relative;
+            }
+
+            /* Override Bootstrap's display property for mobile dropdowns */
+            #navbarNav.show {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            /* Make sure dropdown doesn't overflow screen */
+            .dropdown-menu.modern-dropdown-menu {
+                max-height: 300px;
+                overflow-y: auto;
+                margin-bottom: 15px;
+            }
+
+            /* Add smooth transition for navbar collapse */
+            .navbar-collapse {
+                transition: all 0.3s ease-in-out;
+            }
+
+            /* Fix auth buttons to be visible */
+            .auth-btn {
+                width: 100%;
+                margin: 5px 0;
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: flex !important;
+            }
+
+            /* Ensure all nav links are properly sized */
+            .nav-link.nav-modern,
+            .nav-link.auth-btn {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 12px 15px;
+                border-radius: 8px;
+                margin: 2px 0;
+                transition: all 0.2s ease;
+            }
+
+            .nav-link.nav-modern:hover,
+            .nav-link.auth-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            /* Adjust badge count for mobile */
+            .badge-count-indicator {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            /* Make profile dropdown items more touch-friendly */
+            .dropdown-item.modern-item {
+                padding: 12px 15px;
+                margin: 2px 0;
+                border-radius: 6px;
+            }
+
+            /* Notification icon adjustments for mobile */
+            .notification-container {
+                margin-right: 0;
+                margin-left: auto;
+                margin-bottom: 10px;
+            }
+
+            .notification-icon-btn {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 12px 15px;
+            }
+        }
+
+        /* Desktop-specific improvements */
+        @media (min-width: 992px) {
+            /* Hide mobile-specific fixes on desktop */
+            .navbar-collapse {
+                max-height: none !important;
+                overflow-y: visible !important;
+            }
+
+            .modern-dropdown-menu {
+                position: absolute !important;
+                max-width: 260px;
+            }
+
+            /* Ensure dropdown doesn't get cut off */
+            .nav-end .dropdown-menu {
+                left: auto;
+                right: 0;
+            }
+
+            /* Better spacing for desktop nav items */
+            .navbar-nav.nav-center {
+                gap: 10px;
+            }
+        }
+
+        /* Additional improvements for very small screens */
+        @media (max-width: 576px) {
+            .navbar-collapse {
+                max-height: 60vh !important;
+                padding: 10px;
+            }
+
+            .nav-link.nav-modern,
+            .nav-link.auth-btn,
+            .dropdown-item.modern-item {
+                padding: 10px 12px;
+                font-size: 0.95rem;
+            }
+
+            .brand-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* New Animations - More Sophisticated */
+        @keyframes containerSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulseRing {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% {
+                box-shadow:
+                    0 0 60px rgba(229, 9, 20, 0.15),
+                    0 0 30px rgba(59, 130, 246, 0.1),
+                    0 0 15px rgba(139, 92, 246, 0.1),
+                    inset 0 0 20px rgba(255, 255, 255, 0.05);
+            }
+            50% {
+                box-shadow:
+                    0 0 80px rgba(229, 9, 20, 0.2),
+                    0 0 40px rgba(59, 130, 246, 0.15),
+                    0 0 20px rgba(139, 92, 246, 0.15),
+                    inset 0 0 30px rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        @keyframes badgeRotate {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes badgeFloat {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-8px) scale(1.02);
+            }
+        }
+
+        @keyframes sparkleTwinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .badge-unlock-container {
+                max-width: 90%;
+                padding: 10px;
+            }
+
+            .badge-content {
+                padding: 25px 20px;
+            }
+
+            .badge-icon-container {
+                width: 150px;
+                height: 150px;
+            }
+
+            .badge-circle {
+                width: 120px;
+                height: 120px;
+            }
+
+            .badge-image {
+                width: 85px;
+                height: 85px;
+            }
+
+            .badge-title {
+                font-size: 1.6rem;
+            }
+
+            .badge-name {
+                font-size: 1.3rem;
+            }
+
+            .badges-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .badge-modal-container {
+                max-height: 75vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .badge-icon-container {
+                width: 130px;
+                height: 130px;
+            }
+
+            .badge-circle {
+                width: 100px;
+                height: 100px;
+            }
+
+            .badge-image {
+                width: 70px;
+                height: 70px;
+            }
+
+            .badge-title {
+                font-size: 1.4rem;
+            }
+
+            .badge-name {
+                font-size: 1.2rem;
+            }
+
+            .badge-description {
+                font-size: 0.95rem;
+            }
+
+            .badges-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .badge-item img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .badge-modal-container {
+                max-height: 80vh;
+                padding: 20px;
+            }
+
+            /* Mobile navbar fixes */
+            .navbar-toggler {
+                padding: 5px 10px;
+            }
+
+            .brand-text {
+                font-size: 1.2rem;
+            }
+
+            /* Smaller dropdown on very small screens */
+            .modern-dropdown-menu {
+                max-width: 100%;
+                min-width: 100%;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .brand-text {
+                font-size: 1.1rem;
+            }
+
+            .navbar-toggler {
+                padding: 4px 8px;
+            }
+
+            .badge-modal-container {
+                padding: 15px;
+            }
+
+            .badges-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Animated Background -->
     <div class="animated-bg"></div>
+
+    <!-- Badge Unlock Overlay -->
+    <div id="badgeUnlockOverlay" class="badge-unlock-overlay">
+        <div class="badge-unlock-container">
+            <div class="badge-content">
+                <button class="badge-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+
+                <div class="badge-icon-container">
+                    <!-- Pulse rings -->
+                    <div class="badge-pulse-ring"></div>
+                    <div class="badge-pulse-ring"></div>
+                    <div class="badge-pulse-ring"></div>
+
+                    <!-- Main badge circle -->
+                    <div class="badge-circle">
+                        <img class="badge-image" src="" alt="Badge">
+                    </div>
+
+                    <!-- Subtle sparkles -->
+                    <div class="badge-sparkle sparkle-1"></div>
+                    <div class="badge-sparkle sparkle-2"></div>
+                    <div class="badge-sparkle sparkle-3"></div>
+                    <div class="badge-sparkle sparkle-4"></div>
+                    <div class="badge-sparkle sparkle-5"></div>
+                    <div class="badge-sparkle sparkle-6"></div>
+                </div>
+
+                <div class="badge-text">
+                    <h2 class="badge-title">🎉 Badge Unlocked!</h2>
+                    <h3 class="badge-name"></h3>
+                    <p class="badge-description"></p>
+                    <p class="badge-awarded-date"></p>
+                    <div class="badge-stats">
+                        <span class="badge-count">0</span> badges collected
+                    </div>
+                </div>
+
+                <div class="badge-actions">
+                    <button class="badge-dismiss-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badge Modal (All Badges) -->
+    <div id="badgeModal" class="badge-modal-overlay">
+        <div class="badge-modal-container">
+            <div class="badge-modal-header">
+                <h2 class="badge-modal-title">🏆 Your Badges</h2>
+                <button class="badge-modal-close" id="closeBadgeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="badges-grid" id="allBadgesGrid">
+                <!-- Badges will be loaded here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-glass fixed-top">
@@ -26,14 +1010,14 @@
                 </div>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">
                     <i class="fas fa-bars"></i>
                 </span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav nav-center">
+                <ul class="navbar-nav nav-center mx-auto">
                     <li class="nav-item">
                         <a class="nav-link nav-modern" href="{% url 'home' %}">
                             <div class="nav-icon-wrapper">
@@ -55,12 +1039,12 @@
                         </a>
                     </li>
 
-                    <!-- Role-based Navigation Buttons -->
+                    <!-- Role-based Navigation Buttons - KEPT IN NAV -->
                     {% if user.is_authenticated %}
                         <!-- Add Media Button - For Admins, Editors, and Moderators -->
                         {% if user.is_staff or perms.movie_site.add_media or perms.movie_site.change_media %}
-                        <li class="nav-item">
-                            <a class="nav-link nav-modern admin-nav-btn" href="{% url 'new_movie' %}">
+                        <li class="nav-item admin-nav-btn">
+                            <a class="nav-link nav-modern" href="{% url 'new_movie' %}">
                                 <div class="nav-icon-wrapper">
                                     <i class="fas fa-plus-circle"></i>
                                     <div class="nav-pulse"></div>
@@ -73,8 +1057,8 @@
 
                         <!-- Manage Users Button - For Moderators and Admins -->
                         {% if perms.movie_site.view_user_media or user.is_staff %}
-                        <li class="nav-item">
-                            <a class="nav-link nav-modern moderator-nav-btn" href="{% url 'moderator_view' %}">
+                        <li class="nav-item moderator-nav-btn">
+                            <a class="nav-link nav-modern" href="{% url 'moderator_view' %}">
                                 <div class="nav-icon-wrapper">
                                     <i class="fas fa-users-cog"></i>
                                     <div class="nav-pulse"></div>
@@ -87,8 +1071,8 @@
 
                         <!-- Content Management Button - For Editors -->
                         {% if perms.movie_site.change_media and not user.is_staff and not perms.movie_site.view_user_media %}
-                        <li class="nav-item">
-                            <a class="nav-link nav-modern editor-nav-btn" href="{% url 'moderator_view' %}">
+                        <li class="nav-item editor-nav-btn">
+                            <a class="nav-link nav-modern" href="{% url 'moderator_view' %}">
                                 <div class="nav-icon-wrapper">
                                     <i class="fas fa-edit"></i>
                                     <div class="nav-pulse"></div>
@@ -101,10 +1085,18 @@
                     {% endif %}
                 </ul>
 
-                <ul class="navbar-nav nav-end">
+                <ul class="navbar-nav nav-end ms-auto">
                     {% if user.is_authenticated %}
+                        <!-- Notification Icon -->
+                        <li class="nav-item notification-container">
+                            <a href="{% url 'notifications' %}" class="notification-icon-btn">
+                                <i class="fas fa-envelope"></i>
+                                <span class="notification-badge"></span>
+                            </a>
+                        </li>
+
                         <li class="nav-item dropdown modern-dropdown">
-                            <a class="nav-link dropdown-toggle profile-trigger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <a class="nav-link dropdown-toggle profile-trigger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="profile-avatar">
                                     {% if user.profile.profile_pic %}
                                         <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="profile-image">
@@ -116,12 +1108,10 @@
                                     <div class="profile-glow"></div>
                                 </div>
                                 <span class="username">{{ user.username }}</span>
-
-                                <!-- Dynamic Role Badge in Navbar -->
                                 <i class="fas fa-chevron-down dropdown-arrow"></i>
                             </a>
-                            <ul class="dropdown-menu modern-dropdown-menu">
-                                <!-- Role Indicator in Dropdown -->
+                            <ul class="dropdown-menu modern-dropdown-menu" aria-labelledby="navbarDropdown">
+                                <!-- Role Indicator -->
                                 <li>
                                     <div class="role-indicator-dropdown">
                                         <i class="fas fa-shield-alt"></i>
@@ -135,40 +1125,20 @@
                                 </li>
                                 <li><div class="dropdown-divider"></div></li>
 
-                                <!-- Admin/Moderator/Editor Dropdown Items -->
-                                {% if user.is_staff or perms.movie_site.add_media or perms.movie_site.change_media %}
+                                <!-- Badges Section with improved count display -->
                                 <li>
-                                    <a class="dropdown-item modern-item admin-dropdown-item" href="{% url 'new_movie' %}">
-                                        <i class="fas fa-plus-circle"></i>
-                                        <span>Add New Media</span>
-                                        <div class="item-hover-effect"></div>
+                                    <a class="dropdown-item modern-item badge-dropdown-item" href="#" id="viewAllBadgesBtn">
+                                        <i class="fas fa-trophy" style="color: #ffd700;"></i>
+                                        <div class="badge-count-indicator">
+                                            <span class="badge-dropdown-name">Your Badges</span>
+                                            <span class="badge-count-number">
+                                                <span id="badgeCount">0</span>
+                                            </span>
+                                        </div>
                                     </a>
                                 </li>
-                                {% endif %}
 
-                                {% if perms.movie_site.view_user_media or user.is_staff %}
-                                <li>
-                                    <a class="dropdown-item modern-item moderator-dropdown-item" href="{% url 'moderator_view' %}">
-                                        <i class="fas fa-users-cog"></i>
-                                        <span>Manage User Content</span>
-                                        <div class="item-hover-effect"></div>
-                                    </a>
-                                </li>
-                                {% endif %}
-
-                                {% if perms.movie_site.change_media and not user.is_staff and not perms.movie_site.view_user_media %}
-                                <li>
-                                    <a class="dropdown-item modern-item editor-dropdown-item" href="{% url 'moderator_view' %}">
-                                        <i class="fas fa-edit"></i>
-                                        <span>Edit Media Content</span>
-                                        <div class="item-hover-effect"></div>
-                                    </a>
-                                </li>
-                                {% endif %}
-
-                                {% if user.is_staff or perms.movie_site.view_user_media or perms.movie_site.change_media %}
-                                <li><div class="dropdown-divider admin-divider"></div></li>
-                                {% endif %}
+                                <!-- REMOVED DUPLICATE ADMIN BUTTONS FROM DROPDOWN -->
 
                                 <!-- User Dropdown Items -->
                                 <li>
@@ -179,7 +1149,7 @@
                                     </a>
                                 </li>
 
-                                <!-- Discover People Link - Added here -->
+                                <!-- Discover People Link -->
                                 <li>
                                     <a class="dropdown-item modern-item discover-people-item" href="{% url 'discover_people' %}">
                                         <i class="fas fa-user-friends"></i>
@@ -218,12 +1188,13 @@
                                             <i class="fas fa-sign-out-alt"></i>
                                             <span>Logout</span>
                                             <div class="item-hover-effect"></div>
-                                        </button>
+                                    </button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
                     {% else %}
+                        <!-- Ensure login buttons are properly displayed -->
                         <li class="nav-item">
                             <a class="nav-link auth-btn login-btn" href="{% url 'login' %}">
                                 <i class="fas fa-sign-in-alt"></i>
@@ -250,13 +1221,13 @@
             </button>
             {% if user.is_authenticated %}
                 <div class="expanded-profile-container">
-                        {% if user.profile.profile_pic %}
+                    {% if user.profile.profile_pic %}
                         <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="expanded-profile-image">
-                        {% else %}
-                            <div class="expanded-profile-placeholder">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        {% endif %}
+                    {% else %}
+                        <div class="expanded-profile-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
                     <div class="profile-info">
                         <h3>{{ user.username }}</h3>
                         <p class="profile-email">{{ user.email }}</p>
@@ -286,7 +1257,309 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Badge System JavaScript
         document.addEventListener('DOMContentLoaded', function() {
+            const badgeOverlay = document.getElementById('badgeUnlockOverlay');
+            const badgeModal = document.getElementById('badgeModal');
+            const badgeImage = document.querySelector('.badge-image');
+            const badgeName = document.querySelector('.badge-name');
+            const badgeDescription = document.querySelector('.badge-description');
+            const badgeAwardedDate = document.querySelector('.badge-awarded-date');
+            const badgeCount = document.querySelector('.badge-count');
+            const badgeCountNav = document.getElementById('badgeCount');
+            const badgeCloseBtn = document.querySelector('.badge-close-btn');
+            const badgeDismissBtn = document.querySelector('.badge-dismiss-btn');
+            const viewAllBadgesBtn = document.getElementById('viewAllBadgesBtn');
+            const closeBadgeModalBtn = document.getElementById('closeBadgeModal');
+            const allBadgesGrid = document.getElementById('allBadgesGrid');
+
+            // Badge folder path
+            const badgeImageBasePath = '/static/movie_site/badge/';
+
+            // Track shown badges in current session
+            let shownBadges = JSON.parse(localStorage.getItem('shownBadges') || '[]');
+            let userBadges = []; // Store all user badges
+            let currentBadgeTitle = "🎉 Badge Unlocked!"; // Track current title state
+
+            // Load badges on page load
+            if ({% if user.is_authenticated %}true{% else %}false{% endif %}) {
+                loadUserBadges();
+
+                // Check for new badges periodically (every 30 seconds)
+                setInterval(checkForNewBadges, 30000);
+            }
+
+            // Function to load user badges
+            function loadUserBadges() {
+                fetch('/badges/get-user-badges/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            userBadges = data.badges;
+                            updateBadgeCount(data.badges.length);
+                            displayAllBadges(data.badges);
+                            checkForUnshownBadges(data.badges);
+                        }
+                    })
+                    .catch(error => console.error('Error loading badges:', error));
+            }
+
+            // Function to check for new badges
+            function checkForNewBadges() {
+                fetch('/badges/check-new-badges/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.new_badges.length > 0) {
+                            data.new_badges.forEach(badge => {
+                                showBadgeUnlockAnimation(badge);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error checking for new badges:', error));
+            }
+
+            // Function to show badge unlock animation
+            function showBadgeUnlockAnimation(badge) {
+                // Check if already shown
+                if (shownBadges.includes(badge.id)) return;
+
+                // Add to shown badges
+                shownBadges.push(badge.id);
+                localStorage.setItem('shownBadges', JSON.stringify(shownBadges));
+
+                // Update overlay content
+                const imagePath = `${badgeImageBasePath}${badge.slug}.png`;
+                badgeImage.src = imagePath;
+                badgeImage.alt = badge.name;
+                badgeName.textContent = badge.name;
+                badgeDescription.textContent = badge.description;
+
+                // Add awarded date if available
+                if (badge.awarded_at) {
+                    const date = new Date(badge.awarded_at);
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    badgeAwardedDate.textContent = `Awarded on ${formattedDate}`;
+                } else {
+                    badgeAwardedDate.textContent = '';
+                }
+
+                // Get updated badge count
+                fetch('/badges/get-badge-count/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            badgeCount.textContent = data.count;
+                            updateBadgeCount(data.count);
+                        }
+                    });
+
+                // Set title to unlock mode
+                currentBadgeTitle = "🎉 Badge Unlocked!";
+                document.querySelector('.badge-title').textContent = currentBadgeTitle;
+
+                // Show overlay
+                badgeOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Function to show badge preview animation
+            function showBadgePreviewAnimation(badge) {
+                // Update overlay content
+                const imagePath = `${badgeImageBasePath}${badge.slug}.png`;
+                badgeImage.src = imagePath;
+                badgeImage.alt = badge.name;
+                badgeName.textContent = badge.name;
+                badgeDescription.textContent = badge.description;
+
+                // Add awarded date if available
+                if (badge.awarded_at) {
+                    const date = new Date(badge.awarded_at);
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    badgeAwardedDate.textContent = `Awarded on ${formattedDate}`;
+                } else {
+                    badgeAwardedDate.textContent = '';
+                }
+
+                // Update badge count with current total
+                badgeCount.textContent = userBadges.length;
+
+                // Set title to details mode
+                currentBadgeTitle = "🏆 Badge Details";
+                document.querySelector('.badge-title').textContent = currentBadgeTitle;
+
+                // Show overlay
+                badgeOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Function to check for unshown badges
+            function checkForUnshownBadges(badges) {
+                badges.forEach(badge => {
+                    if (!shownBadges.includes(badge.id)) {
+                        showBadgeUnlockAnimation(badge);
+                    }
+                });
+            }
+
+            // Function to update badge count
+            function updateBadgeCount(count) {
+                if (badgeCountNav) {
+                    badgeCountNav.textContent = count;
+                }
+            }
+
+            // Function to format date for badge items
+            function formatBadgeDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+            }
+
+            // Function to display all badges in modal
+            function displayAllBadges(badges) {
+                if (!allBadgesGrid) return;
+
+                allBadgesGrid.innerHTML = '';
+
+                // Sort by award date (newest first)
+                badges.sort((a, b) => new Date(b.awarded_at) - new Date(a.awarded_at));
+
+                badges.forEach(badge => {
+                    const badgeItem = document.createElement('div');
+                    const imagePath = `${badgeImageBasePath}${badge.slug}.png`;
+                    badgeItem.className = 'badge-item';
+                    badgeItem.innerHTML = `
+                        <img src="${imagePath}"
+                             alt="${badge.name}"
+                             class="badge-item-image"
+                             onerror="this.src='/static/movie_site/badge/default_badge.png';">
+                        <div class="badge-item-name">${badge.name}</div>
+                        <div class="badge-item-description">${badge.description}</div>
+                        <div class="badge-item-date">${formatBadgeDate(badge.awarded_at)}</div>
+                    `;
+
+                    // Add click event to show badge animation
+                    badgeItem.addEventListener('click', function() {
+                        showBadgePreviewAnimation(badge);
+
+                        // Highlight selected badge
+                        document.querySelectorAll('.badge-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        badgeItem.classList.add('selected');
+                    });
+
+                    allBadgesGrid.appendChild(badgeItem);
+                });
+            }
+
+            // Function to show all badges modal
+            function showAllBadgesModal() {
+                badgeModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Function to close badge overlay
+            function closeBadgeOverlay() {
+                badgeOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+
+                // Reset title if it was changed
+                if (currentBadgeTitle !== "🎉 Badge Unlocked!") {
+                    setTimeout(() => {
+                        document.querySelector('.badge-title').textContent = "🎉 Badge Unlocked!";
+                    }, 300);
+                }
+            }
+
+            // Function to close badge modal
+            function closeBadgeModal() {
+                badgeModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            // Event Listeners
+            if (badgeCloseBtn) {
+                badgeCloseBtn.addEventListener('click', closeBadgeOverlay);
+            }
+
+            if (badgeDismissBtn) {
+                badgeDismissBtn.addEventListener('click', closeBadgeOverlay);
+            }
+
+            // Close overlay on background click
+            badgeOverlay.addEventListener('click', function(e) {
+                if (e.target === badgeOverlay) {
+                    closeBadgeOverlay();
+                }
+            });
+
+            // Close modal on background click
+            badgeModal.addEventListener('click', function(e) {
+                if (e.target === badgeModal) {
+                    closeBadgeModal();
+                }
+            });
+
+            // View all badges button
+            if (viewAllBadgesBtn) {
+                viewAllBadgesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showAllBadgesModal();
+                });
+            }
+
+            // Close badge modal button
+            if (closeBadgeModalBtn) {
+                closeBadgeModalBtn.addEventListener('click', closeBadgeModal);
+            }
+
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (badgeOverlay.classList.contains('active')) {
+                        closeBadgeOverlay();
+                    }
+                    if (badgeModal.classList.contains('active')) {
+                        closeBadgeModal();
+                    }
+                }
+            });
+
+            // Listen for badge unlock events from other pages
+            window.addEventListener('badgeUnlocked', function(e) {
+                if (e.detail && e.detail.badge) {
+                    showBadgeUnlockAnimation(e.detail.badge);
+                }
+            });
+
+            // Trigger badge unlock for testing
+            window.testBadgeUnlock = function() {
+                const testBadge = {
+                    id: Date.now(),
+                    name: "Movie Lover",
+                    description: "Added 10 movies to watchlist. This is a longer description to test text truncation.",
+                    slug: "movie_lover",
+                    awarded_at: new Date().toISOString()
+                };
+                showBadgeUnlockAnimation(testBadge);
+            };
+        });
+
+        // Updated JavaScript for mobile navigation fixes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Original profile overlay code
             const profileImage = document.querySelector('.profile-image, .profile-placeholder');
             const profileOverlay = document.getElementById('profileOverlay');
             const closeOverlay = document.getElementById('closeOverlay');
@@ -312,17 +1585,121 @@
                 }
             });
 
+            // Mobile dropdown handling - UPDATED VERSION
+            const isMobile = window.innerWidth <= 991.98;
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.getElementById('navbarNav');
+
+            if (navbarToggler && navbarCollapse) {
+                // Fix for three-dots toggle to close when clicked again
+                navbarToggler.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle the navbar collapse
+                    navbarCollapse.classList.toggle('show');
+
+                    // Update aria-expanded attribute
+                    const isExpanded = navbarCollapse.classList.contains('show');
+                    this.setAttribute('aria-expanded', isExpanded);
+
+                    // Add/remove show class for Bootstrap compatibility
+                    if (isExpanded) {
+                        navbarCollapse.style.display = 'block';
+                        // Close any open dropdowns when opening navbar
+                        document.querySelectorAll('.modern-dropdown.show').forEach(dropdown => {
+                            dropdown.classList.remove('show');
+                        });
+                    } else {
+                        // Use timeout to allow transition
+                        setTimeout(() => {
+                            navbarCollapse.style.display = 'none';
+                        }, 300);
+                    }
+                });
+
+                // Close navbar when clicking outside on mobile
+                if (isMobile) {
+                    document.addEventListener('click', function(e) {
+                        if (!navbarCollapse.contains(e.target) &&
+                            !navbarToggler.contains(e.target) &&
+                            navbarCollapse.classList.contains('show')) {
+
+                            navbarCollapse.classList.remove('show');
+                            navbarToggler.setAttribute('aria-expanded', 'false');
+                            setTimeout(() => {
+                                navbarCollapse.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                }
+            }
+
+            // Modern dropdown handling for both mobile and desktop
             const dropdowns = document.querySelectorAll('.modern-dropdown');
             dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('show.bs.dropdown', function () {
-                    this.classList.add('showing');
+                const toggle = dropdown.querySelector('.dropdown-toggle');
+                const menu = dropdown.querySelector('.dropdown-menu');
+
+                if (toggle && menu) {
+                    if (isMobile) {
+                        // Mobile behavior: manual toggle
+                        toggle.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            // Close other open dropdowns
+                            document.querySelectorAll('.modern-dropdown.show').forEach(other => {
+                                if (other !== dropdown) {
+                                    other.classList.remove('show');
+                                }
+                            });
+
+                            // Toggle current dropdown
+                            dropdown.classList.toggle('show');
+
+                            // Scroll dropdown into view if needed
+                            if (dropdown.classList.contains('show')) {
+                                setTimeout(() => {
+                                    dropdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                }, 100);
+                            }
+                        });
+                    } else {
+                        // Desktop behavior: use Bootstrap's default
+                        dropdown.addEventListener('show.bs.dropdown', function () {
+                            this.classList.add('showing');
+                        });
+                        dropdown.addEventListener('hidden.bs.dropdown', function () {
+                            this.classList.remove('showing');
+                        });
+                    }
+                }
+            });
+
+            // Close dropdowns when clicking outside (for mobile)
+            if (isMobile) {
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.modern-dropdown')) {
+                        document.querySelectorAll('.modern-dropdown.show').forEach(dropdown => {
+                            dropdown.classList.remove('show');
+                        });
+                    }
                 });
-                dropdown.addEventListener('hidden.bs.dropdown', function () {
-                    this.classList.remove('showing');
-                });
+            }
+
+            // Close dropdowns when resizing to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 991.98) {
+                    // If on desktop, remove mobile show classes
+                    document.querySelectorAll('.modern-dropdown.show').forEach(dropdown => {
+                        dropdown.classList.remove('show');
+                    });
+                }
             });
         });
     </script>
 
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

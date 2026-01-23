@@ -8,7 +8,7 @@
         <div class="welcome-content">
             <div class="welcome-header">
                 <div class="welcome-avatar">
-                        {% if user.profile.profile_pic %}
+                    {% if user.profile.profile_pic %}
                         <img src="{{ user.profile.profile_pic.url }}" alt="Profile" class="welcome-profile-pic">
                     {% else %}
                         <div class="welcome-profile-placeholder">
@@ -93,6 +93,131 @@
     <div class="tab-content-wrapper">
         <!-- Movies Tab -->
         <div class="tab-content active" id="movies-content">
+            <!-- Daily Movies Section -->
+            <section class="media-section">
+                <div class="section-header">
+                    <h2 class="section-title-modern">
+                        <span class="title-text">🎲 Today's Movies</span>
+                        <div class="title-underline"></div>
+                    </h2>
+                    <div class="section-controls">
+                        <button class="section-nav-btn prev-btn" data-section="daily-movies">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="section-nav-btn next-btn" data-section="daily-movies">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="media-scroller" id="daily-movies-scroller">
+                    <div class="media-container">
+                        {% for movie in daily_movies %}
+                        <div class="media-card with-admin-controls" data-media-id="{{ movie.id }}">
+                            <!-- Admin/Editor Controls -->
+                            {% if user.is_authenticated and user.is_staff or perms.movie_site.edit_media %}
+                            <div class="admin-controls">
+                                {% if user.is_staff %}
+                                <a href="{% url 'delete_movie' movie.slug %}" class="admin-btn delete-btn admin-btn-tooltip"
+                                   data-tooltip="Delete Movie">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                {% endif %}
+
+                                {% if perms.movie_site.edit_media %}
+                                <a href="{% url 'edit_movie' movie.slug %}" class="admin-btn edit-btn admin-btn-tooltip"
+                                   data-tooltip="Edit Movie">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="media-poster-container">
+                                <img src="{{ movie.poster }}" alt="{{ movie.name }}" class="media-poster">
+                                <div class="media-overlay">
+                                    <div class="action-buttons">
+                                        <!-- Add to Watchlist Form -->
+                                        <form method="POST" action="{% url 'add_to_collection' %}" class="action-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="title" value="{{ movie.name }}">
+                                            <input type="hidden" name="description" value="{{ movie.description|default:'' }}">
+                                            <input type="hidden" name="release_date" value="{{ movie.release_date|date:'Y-m-d' }}">
+                                            <input type="hidden" name="poster" value="{{ movie.poster }}">
+                                            <input type="hidden" name="trailer_url" value="{{ movie.trailer_url|default:'' }}">
+                                            <input type="hidden" name="type" value="movie">
+                                            <input type="hidden" name="rating" value="{{ movie.rating|default:0 }}">
+                                            <button type="submit" class="action-btn watchlist-btn" title="Add to Watchlist">
+                                                <i class="fas fa-clock"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Add to Favorites Form -->
+                                        <form method="POST" action="{% url 'add_to_favorite' %}" class="action-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="title" value="{{ movie.name }}">
+                                            <input type="hidden" name="description" value="{{ movie.description|default:'' }}">
+                                            <input type="hidden" name="release_date" value="{{ movie.release_date|date:'Y-m-d' }}">
+                                            <input type="hidden" name="poster" value="{{ movie.poster }}">
+                                            <input type="hidden" name="trailer_url" value="{{ movie.trailer_url|default:'' }}">
+                                            <input type="hidden" name="type" value="movie">
+                                            <input type="hidden" name="rating" value="{{ movie.rating|default:0 }}">
+                                            <button type="submit" class="action-btn favorite-btn" title="Add to Favorites">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+
+                                        {% if movie.trailer_url %}
+                                        <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ movie.trailer_url }}">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                        {% endif %}
+
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                            <i class="fas fa-info"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="media-badge movie-badge">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                            </div>
+
+                            <div class="media-info">
+                                <h4 class="media-title">{{ movie.name }}</h4>
+                                <div class="media-meta">
+                                    <span class="media-year">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ movie.release_date|date:"Y" }}
+                                    </span>
+                                    <span class="media-rating">
+                                        <i class="fas fa-star"></i>
+                                        {{ movie.rating|floatformat:1|default:"N/A" }}
+                                    </span>
+                                </div>
+                                <div class="media-genres">
+                                    {% for genre in movie.genre.all|slice:":2" %}
+                                    <span class="genre-tag">{{ genre.name }}</span>
+                                    {% endfor %}
+                                    {% if movie.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ movie.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <h3>No Daily Movies Available</h3>
+                            <p>Check back tomorrow for new selections</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
             <!-- Trending Movies Section -->
             <section class="media-section">
                 <div class="section-header">
@@ -173,13 +298,13 @@
                                         </button>
                                         {% endif %}
 
-                                        <button class="action-btn info-btn" title="View Details" data-movie='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
                                             <i class="fas fa-info"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="media-badge movie-badge">
-                                    <i class="fas fa-film"></i>
+                                    <i class="fas fa-fire"></i>
                                 </div>
                             </div>
 
@@ -192,13 +317,16 @@
                                     </span>
                                     <span class="media-rating">
                                         <i class="fas fa-star"></i>
-                                        {{ movie.rating|default:"N/A" }}
+                                        {{ movie.rating|floatformat:1|default:"N/A" }}
                                     </span>
                                 </div>
                                 <div class="media-genres">
-                                    {% for genre in movie.genre.all %}
+                                    {% for genre in movie.genre.all|slice:":2" %}
                                     <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
+                                    {% if movie.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ movie.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -295,13 +423,13 @@
                                         </button>
                                         {% endif %}
 
-                                        <button class="action-btn info-btn" title="View Details" data-movie='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
                                             <i class="fas fa-info"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="media-badge movie-badge">
-                                    <i class="fas fa-film"></i>
+                                    <i class="fas fa-star"></i>
                                 </div>
                             </div>
 
@@ -314,13 +442,16 @@
                                     </span>
                                     <span class="media-rating">
                                         <i class="fas fa-star"></i>
-                                        {{ movie.rating|default:"N/A" }}
+                                        {{ movie.rating|floatformat:1|default:"N/A" }}
                                     </span>
                                 </div>
                                 <div class="media-genres">
-                                    {% for genre in movie.genre.all %}
+                                    {% for genre in movie.genre.all|slice:":2" %}
                                     <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
+                                    {% if movie.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ movie.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -337,26 +468,26 @@
                 </div>
             </section>
 
-            <!-- All Movies Section -->
+            <!-- Latest Movies Section -->
             <section class="media-section">
                 <div class="section-header">
                     <h2 class="section-title-modern">
-                        <span class="title-text">🎬 All Movies</span>
+                        <span class="title-text">🆕 Latest Movies</span>
                         <div class="title-underline"></div>
                     </h2>
                     <div class="section-controls">
-                        <button class="section-nav-btn prev-btn" data-section="all-movies">
+                        <button class="section-nav-btn prev-btn" data-section="latest-movies">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <button class="section-nav-btn next-btn" data-section="all-movies">
+                        <button class="section-nav-btn next-btn" data-section="latest-movies">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="media-scroller" id="all-movies-scroller">
+                <div class="media-scroller" id="latest-movies-scroller">
                     <div class="media-container">
-                        {% for movie in movies %}
+                        {% for movie in latest_movies %}
                         <div class="media-card with-admin-controls" data-media-id="{{ movie.id }}">
                             <!-- Admin/Editor Controls -->
                             {% if user.is_authenticated and user.is_staff or perms.movie_site.edit_media %}
@@ -417,13 +548,13 @@
                                         </button>
                                         {% endif %}
 
-                                        <button class="action-btn info-btn" title="View Details" data-movie='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ movie.name }}", "description": "{{ movie.description|default:'No description available' }}", "poster": "{{ movie.poster }}", "year": "{{ movie.release_date|date:'Y' }}", "rating": "{{ movie.rating|default:'N/A' }}", "genres": "{% for genre in movie.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
                                             <i class="fas fa-info"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="media-badge movie-badge">
-                                    <i class="fas fa-film"></i>
+                                    <i class="fas fa-calendar-plus"></i>
                                 </div>
                             </div>
 
@@ -436,27 +567,26 @@
                                     </span>
                                     <span class="media-rating">
                                         <i class="fas fa-star"></i>
-                                        {{ movie.rating|default:"N/A" }}
+                                        {{ movie.rating|floatformat:1|default:"N/A" }}
                                     </span>
                                 </div>
                                 <div class="media-genres">
-                                    {% for genre in movie.genre.all %}
+                                    {% for genre in movie.genre.all|slice:":2" %}
                                     <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
+                                    {% if movie.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ movie.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                         {% empty %}
                         <div class="empty-state">
                             <div class="empty-icon">
-                                <i class="fas fa-film"></i>
+                                <i class="fas fa-calendar-plus"></i>
                             </div>
-                            <h3>No Movies Available</h3>
-                            <p>Check back later for new additions</p>
-                            <a href="{% url 'search_movies' %}" class="discover-link">
-                                <i class="fas fa-search"></i>
-                                Discover Movies
-                            </a>
+                            <h3>No Latest Movies</h3>
+                            <p>Check back for new movie releases</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -466,6 +596,131 @@
 
         <!-- TV Shows Tab -->
         <div class="tab-content" id="shows-content">
+            <!-- Daily TV Shows Section -->
+            <section class="media-section">
+                <div class="section-header">
+                    <h2 class="section-title-modern">
+                        <span class="title-text">🎲 Today's TV Shows</span>
+                        <div class="title-underline"></div>
+                    </h2>
+                    <div class="section-controls">
+                        <button class="section-nav-btn prev-btn" data-section="daily-shows">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="section-nav-btn next-btn" data-section="daily-shows">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="media-scroller" id="daily-shows-scroller">
+                    <div class="media-container">
+                        {% for show in daily_shows %}
+                        <div class="media-card with-admin-controls" data-media-id="{{ show.id }}">
+                            <!-- Admin/Editor Controls -->
+                            {% if user.is_authenticated and user.is_staff or perms.movie_site.edit_media %}
+                            <div class="admin-controls">
+                                {% if user.is_staff %}
+                                <a href="{% url 'delete_movie' show.slug %}" class="admin-btn delete-btn admin-btn-tooltip"
+                                   data-tooltip="Delete TV Show">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                {% endif %}
+
+                                {% if perms.movie_site.edit_media %}
+                                <a href="{% url 'edit_movie' show.slug %}" class="admin-btn edit-btn admin-btn-tooltip"
+                                   data-tooltip="Edit TV Show">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="media-poster-container">
+                                <img src="{{ show.poster }}" alt="{{ show.name }}" class="media-poster">
+                                <div class="media-overlay">
+                                    <div class="action-buttons">
+                                        <!-- Add to Watchlist Form -->
+                                        <form method="POST" action="{% url 'add_to_collection' %}" class="action-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="title" value="{{ show.name }}">
+                                            <input type="hidden" name="description" value="{{ show.description|default:'' }}">
+                                            <input type="hidden" name="release_date" value="{{ show.release_date|date:'Y-m-d' }}">
+                                            <input type="hidden" name="poster" value="{{ show.poster }}">
+                                            <input type="hidden" name="trailer_url" value="{{ show.trailer_url|default:'' }}">
+                                            <input type="hidden" name="type" value="tv">
+                                            <input type="hidden" name="rating" value="{{ show.rating|default:0 }}">
+                                            <button type="submit" class="action-btn watchlist-btn" title="Add to Watchlist">
+                                                <i class="fas fa-clock"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Add to Favorites Form -->
+                                        <form method="POST" action="{% url 'add_to_favorite' %}" class="action-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="title" value="{{ show.name }}">
+                                            <input type="hidden" name="description" value="{{ show.description|default:'' }}">
+                                            <input type="hidden" name="release_date" value="{{ show.release_date|date:'Y-m-d' }}">
+                                            <input type="hidden" name="poster" value="{{ show.poster }}">
+                                            <input type="hidden" name="trailer_url" value="{{ show.trailer_url|default:'' }}">
+                                            <input type="hidden" name="type" value="tv">
+                                            <input type="hidden" name="rating" value="{{ show.rating|default:0 }}">
+                                            <button type="submit" class="action-btn favorite-btn" title="Add to Favorites">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+
+                                        {% if show.trailer_url %}
+                                        <button class="action-btn trailer-btn" title="Watch Trailer" data-trailer="{{ show.trailer_url }}">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                        {% endif %}
+
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                            <i class="fas fa-info"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="media-badge show-badge">
+                                    <i class="fas fa-tv"></i>
+                                </div>
+                            </div>
+
+                            <div class="media-info">
+                                <h4 class="media-title">{{ show.name }}</h4>
+                                <div class="media-meta">
+                                    <span class="media-year">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ show.release_date|date:"Y" }}
+                                    </span>
+                                    <span class="media-rating">
+                                        <i class="fas fa-star"></i>
+                                        {{ show.rating|floatformat:1|default:"N/A" }}
+                                    </span>
+                                </div>
+                                <div class="media-genres">
+                                    {% for genre in show.genre.all|slice:":2" %}
+                                    <span class="genre-tag">{{ genre.name }}</span>
+                                    {% endfor %}
+                                    {% if show.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ show.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-tv"></i>
+                            </div>
+                            <h3>No Daily TV Shows</h3>
+                            <p>Check back tomorrow for new selections</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
             <!-- Trending TV Shows Section -->
             <section class="media-section">
                 <div class="section-header">
@@ -546,13 +801,13 @@
                                         </button>
                                         {% endif %}
 
-                                        <button class="action-btn info-btn" title="View Details" data-movie='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
                                             <i class="fas fa-info"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="media-badge show-badge">
-                                    <i class="fas fa-tv"></i>
+                                    <i class="fas fa-fire"></i>
                                 </div>
                             </div>
 
@@ -565,13 +820,16 @@
                                     </span>
                                     <span class="media-rating">
                                         <i class="fas fa-star"></i>
-                                        {{ show.rating|default:"N/A" }}
+                                        {{ show.rating|floatformat:1|default:"N/A" }}
                                     </span>
                                 </div>
                                 <div class="media-genres">
-                                    {% for genre in show.genre.all %}
+                                    {% for genre in show.genre.all|slice:":2" %}
                                     <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
+                                    {% if show.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ show.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -668,13 +926,13 @@
                                         </button>
                                         {% endif %}
 
-                                        <button class="action-btn info-btn" title="View Details" data-movie='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
                                             <i class="fas fa-info"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="media-badge show-badge">
-                                    <i class="fas fa-tv"></i>
+                                    <i class="fas fa-star"></i>
                                 </div>
                             </div>
 
@@ -687,13 +945,16 @@
                                     </span>
                                     <span class="media-rating">
                                         <i class="fas fa-star"></i>
-                                        {{ show.rating|default:"N/A" }}
+                                        {{ show.rating|floatformat:1|default:"N/A" }}
                                     </span>
                                 </div>
                                 <div class="media-genres">
-                                    {% for genre in show.genre.all %}
+                                    {% for genre in show.genre.all|slice:":2" %}
                                     <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
+                                    {% if show.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ show.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -710,26 +971,26 @@
                 </div>
             </section>
 
-            <!-- All TV Shows Section -->
+            <!-- Latest TV Shows Section -->
             <section class="media-section">
                 <div class="section-header">
                     <h2 class="section-title-modern">
-                        <span class="title-text">📺 All TV Shows</span>
+                        <span class="title-text">🆕 Latest TV Shows</span>
                         <div class="title-underline"></div>
                     </h2>
                     <div class="section-controls">
-                        <button class="section-nav-btn prev-btn" data-section="all-shows">
+                        <button class="section-nav-btn prev-btn" data-section="latest-shows">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <button class="section-nav-btn next-btn" data-section="all-shows">
+                        <button class="section-nav-btn next-btn" data-section="latest-shows">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="media-scroller" id="all-shows-scroller">
+                <div class="media-scroller" id="latest-shows-scroller">
                     <div class="media-container">
-                        {% for show in shows %}
+                        {% for show in latest_shows %}
                         <div class="media-card with-admin-controls" data-media-id="{{ show.id }}">
                             <!-- Admin/Editor Controls -->
                             {% if user.is_authenticated and user.is_staff or perms.movie_site.edit_media %}
@@ -790,13 +1051,13 @@
                                         </button>
                                         {% endif %}
 
-                                        <button class="action-btn info-btn" title="View Details" data-movie='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
+                                        <button class="action-btn info-btn" title="View Details" data-media='{"title": "{{ show.name }}", "description": "{{ show.description|default:'No description available' }}", "poster": "{{ show.poster }}", "year": "{{ show.release_date|date:'Y' }}", "rating": "{{ show.rating|default:'N/A' }}", "genres": "{% for genre in show.genre.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"}'>
                                             <i class="fas fa-info"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="media-badge show-badge">
-                                    <i class="fas fa-tv"></i>
+                                    <i class="fas fa-calendar-plus"></i>
                                 </div>
                             </div>
 
@@ -809,27 +1070,26 @@
                                     </span>
                                     <span class="media-rating">
                                         <i class="fas fa-star"></i>
-                                        {{ show.rating|default:"N/A" }}
+                                        {{ show.rating|floatformat:1|default:"N/A" }}
                                     </span>
                                 </div>
                                 <div class="media-genres">
-                                    {% for genre in show.genre.all %}
+                                    {% for genre in show.genre.all|slice:":2" %}
                                     <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
+                                    {% if show.genre.all.count > 2 %}
+                                    <span class="genre-tag">+{{ show.genre.all.count|add:"-2" }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                         {% empty %}
                         <div class="empty-state">
                             <div class="empty-icon">
-                                <i class="fas fa-tv"></i>
+                                <i class="fas fa-calendar-plus"></i>
                             </div>
-                            <h3>No TV Shows Available</h3>
-                            <p>Check back later for new additions</p>
-                            <a href="{% url 'search_movies' %}" class="discover-link">
-                                <i class="fas fa-search"></i>
-                                Discover TV Shows
-                            </a>
+                            <h3>No Latest TV Shows</h3>
+                            <p>Check back for new TV show releases</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -839,8 +1099,8 @@
     </div>
 </div>
 
-<!-- Movie Details Modal -->
-<div class="modal-overlay" id="movieModal">
+<!-- Media Details Modal -->
+<div class="modal-overlay" id="mediaModal">
     <div class="modal-content movie-modal">
         <button class="modal-close" id="closeModal">
             <i class="fas fa-times"></i>
@@ -856,7 +1116,9 @@
                     <span id="modalRating"></span>
                     <span id="modalGenres"></span>
                 </div>
-                <p id="modalDescription" class="modal-description"></p>
+                <div class="modal-description-container">
+                    <p id="modalDescription" class="modal-description"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -876,7 +1138,6 @@
     </div>
 </div>
 
-<!-- JavaScript -->
 <script>
 // YouTube Player Functions
 let youtubePlayer;
@@ -976,17 +1237,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollers = document.querySelectorAll('.media-scroller');
 
     scrollers.forEach(scroller => {
-        const sectionId = scroller.id.split('-').slice(0, -1).join('-');
-        const prevBtn = document.querySelector(`.prev-btn[data-section="${sectionId}"]`);
-        const nextBtn = document.querySelector(`.next-btn[data-section="${sectionId}"]`);
+        const sectionId = scroller.id;
+        const prevBtn = document.querySelector(`.prev-btn[data-section="${sectionId.replace('-scroller', '')}"]`);
+        const nextBtn = document.querySelector(`.next-btn[data-section="${sectionId.replace('-scroller', '')}"]`);
 
         if (prevBtn && nextBtn) {
+            const scrollAmount = 300;
+
             prevBtn.addEventListener('click', () => {
-                scroller.scrollBy({ left: -300, behavior: 'smooth' });
+                scroller.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
             });
 
             nextBtn.addEventListener('click', () => {
-                scroller.scrollBy({ left: 300, behavior: 'smooth' });
+                scroller.scrollBy({ left: scrollAmount, behavior: 'smooth' });
             });
         }
     });
@@ -1010,35 +1273,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Movie Details Modal
-    const movieModal = document.getElementById('movieModal');
+    // Media Details Modal
+    const mediaModal = document.getElementById('mediaModal');
     const closeModal = document.getElementById('closeModal');
     const infoButtons = document.querySelectorAll('.info-btn');
 
     infoButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const movieData = JSON.parse(this.getAttribute('data-movie'));
+            try {
+                const mediaData = JSON.parse(this.getAttribute('data-media').replace(/\n/g, '\\n'));
 
-            document.getElementById('modalTitle').textContent = movieData.title;
-            document.getElementById('modalPoster').src = movieData.poster;
-            document.getElementById('modalYear').textContent = movieData.year;
-            document.getElementById('modalRating').textContent = `⭐ ${movieData.rating}`;
-            document.getElementById('modalGenres').textContent = movieData.genres;
-            document.getElementById('modalDescription').textContent = movieData.description;
+                document.getElementById('modalTitle').textContent = mediaData.title;
+                document.getElementById('modalPoster').src = mediaData.poster;
+                document.getElementById('modalPoster').alt = mediaData.title;
+                document.getElementById('modalYear').textContent = mediaData.year;
+                document.getElementById('modalRating').textContent = `⭐ ${mediaData.rating}`;
+                document.getElementById('modalGenres').textContent = mediaData.genres || 'No genres';
+                document.getElementById('modalDescription').textContent = mediaData.description || 'No description available';
 
-            movieModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+                mediaModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error('Error parsing media data:', error);
+                alert('Error loading media details.');
+            }
         });
     });
 
     closeModal.addEventListener('click', function() {
-        movieModal.classList.remove('active');
+        mediaModal.classList.remove('active');
         document.body.style.overflow = 'auto';
     });
 
-    movieModal.addEventListener('click', function(e) {
-        if (e.target === movieModal) {
-            movieModal.classList.remove('active');
+    mediaModal.addEventListener('click', function(e) {
+        if (e.target === mediaModal) {
+            mediaModal.classList.remove('active');
             document.body.style.overflow = 'auto';
         }
     });
@@ -1125,8 +1394,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close modals with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            if (movieModal.classList.contains('active')) {
-                movieModal.classList.remove('active');
+            if (mediaModal.classList.contains('active')) {
+                mediaModal.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
             if (trailerModal.classList.contains('active')) {
@@ -1163,6 +1432,36 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(card);
     });
+
+    // Handle touch events for mobile scrolling
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    scrollers.forEach(scroller => {
+        scroller.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        scroller.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe(scroller);
+        }, { passive: true });
+    });
+
+    function handleSwipe(scroller) {
+        const swipeThreshold = 50;
+        const swipeDistance = touchEndX - touchStartX;
+
+        if (Math.abs(swipeDistance) > swipeThreshold) {
+            if (swipeDistance > 0) {
+                // Swipe right - scroll left
+                scroller.scrollBy({ left: -300, behavior: 'smooth' });
+            } else {
+                // Swipe left - scroll right
+                scroller.scrollBy({ left: 300, behavior: 'smooth' });
+            }
+        }
+    }
 });
 </script>
 

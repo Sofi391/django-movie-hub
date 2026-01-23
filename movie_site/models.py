@@ -106,3 +106,49 @@ class Favorite(models.Model):
     class Meta:
         unique_together = ('user','media')
         ordering = ['-added_at']
+
+
+class Badge(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True,null=True)
+    threshold = models.IntegerField()
+    slug = models.SlugField(unique=True,blank=True,max_length=120)
+
+    def __str__(self):
+        return f"{self.name}-{self.threshold}"
+
+
+class UserBadge(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='badges')
+    badge = models.ForeignKey(Badge,on_delete=models.CASCADE,related_name='user_badges')
+    awarded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}-{self.badge.slug}"
+
+    class Meta:
+        unique_together = ('user','badge')
+
+
+class Question(models.Model):
+    text = models.TextField()
+    option_a = models.CharField(max_length=255)
+    option_b = models.CharField(max_length=255)
+    option_c = models.CharField(max_length=255)
+    option_d = models.CharField(max_length=255)
+    correct_option = models.CharField(max_length=1, choices=[('a','A'),('b','B'),('c','C'),('d','D')])
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.text
+
+
+class UserQuizAttempt(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_attempts')
+    score = models.IntegerField()
+    taken_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.score}"
+

@@ -8740,4 +8740,751 @@ textarea.auth-input {
     -webkit-box-orient: vertical !important;
   }
 
+
+
+
+/* ===== ADDITIONAL HOME PAGE STYLES FOR NEW SECTIONS ===== */
+
+/* Daily badge styling */
+.media-badge.movie-badge .fa-calendar-plus,
+.media-badge.show-badge .fa-calendar-plus {
+    color: white;
+}
+
+/* Trending badge styling */
+.media-badge.movie-badge .fa-fire,
+.media-badge.show-badge .fa-fire {
+    color: white;
+}
+
+/* Popular badge styling */
+.media-badge.movie-badge .fa-star,
+.media-badge.show-badge .fa-star {
+    color: white;
+}
+
+/* Latest badge styling */
+.media-badge.movie-badge .fa-calendar-plus,
+.media-badge.show-badge .fa-calendar-plus {
+    color: white;
+}
+
+/* Daily section title emoji */
+.section-title-modern .title-text[class*="🎲"] {
+    background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Latest section title emoji */
+.section-title-modern .title-text[class*="🆕"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Enhanced scrollbar for media scrollers */
+.media-scroller {
+    scrollbar-width: thin;
+    scrollbar-color: var(--netflix-red) rgba(255, 255, 255, 0.1);
+}
+
+.media-scroller::-webkit-scrollbar {
+    height: 6px;
+}
+
+.media-scroller::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.media-scroller::-webkit-scrollbar-thumb {
+    background: var(--netflix-red);
+    border-radius: 3px;
+}
+
+.media-scroller::-webkit-scrollbar-thumb:hover {
+    background: var(--netflix-red-dark);
+}
+
+/* Improved genre tag display for mobile */
+@media (max-width: 768px) {
+    .media-genres {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 8px;
+    }
+
+    .genre-tag {
+        font-size: 0.7rem !important;
+        padding: 3px 6px !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+}
+
+/* Loading spinner for buttons */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Enhanced modal description container */
+.modal-description-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 15px;
+    padding-right: 10px;
+}
+
+.modal-description-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-description-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.modal-description-container::-webkit-scrollbar-thumb {
+    background: var(--netflix-red);
+    border-radius: 3px;
+}
+
+/* Better touch handling for mobile */
+@media (hover: none) and (pointer: coarse) {
+    .action-buttons {
+        opacity: 0.8 !important;
+        transform: translateY(-50%) !important;
+    }
+
+    .admin-controls {
+        opacity: 0.8 !important;
+    }
+
+    .media-card:active {
+        transform: scale(0.98) !important;
+    }
+}
+
+/* Improved empty state styling for new sections */
+.empty-state .fa-calendar-plus {
+    color: #10b981;
+}
+
+.empty-state .fa-fire {
+    color: #ef4444;
+}
+
+/* Float formatting for ratings */
+.media-rating i {
+    color: #fbbf24;
+}
+
+/* Prevent text overflow in modal */
+.modal-title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ensure proper spacing for multiple sections */
+.media-section {
+    margin-bottom: 40px;
+}
+
+/* Responsive adjustments for daily sections */
+@media (max-width: 480px) {
+    .section-title-modern .title-text {
+        font-size: 1.3rem;
+    }
+}
+/* ===== FIX FOR SECTION TITLE ICONS ===== */
+
+/* This ensures icons inside title-text don't inherit the gradient */
+.section-title-modern .title-text .title-icon {
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    background: transparent !important;
+    color: var(--netflix-white) !important;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+/* Ensure the text still has the gradient */
+.section-title-modern .title-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+}
+
+/* Specific icon colors for each section type */
+.section-title-modern .title-text .fa-dice { color: #8b5cf6 !important; }
+.section-title-modern .title-text .fa-fire { color: #e50914 !important; }
+.section-title-modern .title-text .fa-star { color: #fbbf24 !important; }
+.section-title-modern .title-text .fa-calendar-plus { color: #10b981 !important; }
+
+/* Empty state icons should also be visible */
+.empty-state .empty-icon {
+    color: var(--netflix-text) !important;
+    opacity: 0.5;
+}
+
+
+
+
+
+/* ===== BADGE SYSTEM STYLES ===== */
+
+/* Badge Unlock Overlay */
+.badge-unlock-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.badge-unlock-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.badge-unlock-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    animation: badgeContainerEnter 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.badge-content {
+    background: linear-gradient(135deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(40, 40, 40, 0.95) 100%);
+    border-radius: 30px;
+    padding: 40px 30px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Badge Close Button */
+.badge-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--netflix-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.badge-close-btn:hover {
+    background: var(--netflix-red);
+    transform: rotate(90deg);
+}
+
+/* Badge Icon Container with Animation Rings */
+.badge-icon-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 30px;
+}
+
+.badge-outer-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    animation: ringSpin 4s linear infinite;
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.3);
+}
+
+.badge-outer-ring::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg,
+        var(--netflix-red),
+        var(--accent-purple),
+        var(--accent-blue),
+        var(--netflix-red));
+    border-radius: 50%;
+    z-index: -1;
+    animation: ringGradient 3s linear infinite;
+}
+
+.badge-middle-ring {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 160px;
+    height: 160px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: ringSpinReverse 3s linear infinite;
+}
+
+.badge-inner-ring {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 120px;
+    height: 120px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: ringPulse 2s ease-in-out infinite;
+}
+
+.badge-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+    animation: badgeFloat 3s ease-in-out infinite;
+}
+
+/* Sparkle Effects */
+.badge-sparkle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #ffd700 30%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(1px);
+    animation: sparkleFlash 1.5s ease-in-out infinite;
+}
+
+.sparkle-1 {
+    top: 10px;
+    left: 50%;
+    animation-delay: 0s;
+}
+
+.sparkle-2 {
+    top: 50%;
+    right: 10px;
+    animation-delay: 0.3s;
+}
+
+.sparkle-3 {
+    bottom: 10px;
+    left: 50%;
+    animation-delay: 0.6s;
+}
+
+.sparkle-4 {
+    top: 50%;
+    left: 10px;
+    animation-delay: 0.9s;
+}
+
+/* Badge Text */
+.badge-text {
+    margin-bottom: 30px;
+}
+
+.badge-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+    text-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.badge-name {
+    font-size: 2rem;
+    color: var(--netflix-white);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.badge-description {
+    color: var(--netflix-text);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.badge-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-count {
+    font-weight: 700;
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+/* Badge Actions */
+.badge-actions {
+    margin-top: 20px;
+}
+
+.badge-dismiss-btn {
+    padding: 15px 30px;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto;
+    animation: buttonPulse 2s ease-in-out infinite;
+}
+
+.badge-dismiss-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(229, 9, 20, 0.4);
+}
+
+.badge-dismiss-btn i {
+    animation: handWave 1s ease-in-out infinite;
+}
+
+/* Profile Badges Display */
+.badge-profile-display {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.profile-badges-container {
+    background: rgba(26, 26, 26, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.profile-badges-container h4 {
+    color: var(--netflix-white);
+    margin-bottom: 15px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-badges-container h4 i {
+    color: #ffd700;
+}
+
+.profile-badges-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.profile-badge-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.profile-badge-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.profile-badge-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.profile-badge-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-badge-name {
+    color: var(--netflix-white);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.profile-badge-date {
+    color: var(--netflix-text);
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* Celebration Effects */
+.badge-unlock-overlay.celebrating::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%,
+        rgba(255, 215, 0, 0.1) 0%,
+        transparent 70%);
+    animation: celebrationGlow 2s ease-out forwards;
+}
+
+/* Animations */
+@keyframes badgeContainerEnter {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) rotate(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes ringSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes ringSpinReverse {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes ringGradient {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+@keyframes ringPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 40px rgba(229, 9, 20, 0.5);
+    }
+}
+
+@keyframes badgeFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(5deg);
+    }
+}
+
+@keyframes sparkleFlash {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes buttonPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(229, 9, 20, 0);
+    }
+}
+
+@keyframes handWave {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-15deg);
+    }
+    75% {
+        transform: rotate(15deg);
+    }
+}
+
+@keyframes celebrationGlow {
+    0% {
+        opacity: 1;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .badge-unlock-container {
+        max-width: 90%;
+        padding: 10px;
+    }
+
+    .badge-content {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+
+    .badge-icon-container {
+        width: 150px;
+        height: 150px;
+    }
+
+    .badge-inner-ring {
+        top: 30px;
+        left: 30px;
+        width: 90px;
+        height: 90px;
+    }
+
+    .badge-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .badge-title {
+        font-size: 2rem;
+    }
+
+    .badge-name {
+        font-size: 1.5rem;
+    }
+
+    .badge-dismiss-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+
+    .badge-profile-display {
+        bottom: 10px;
+        right: 10px;
+        max-width: 250px;
+    }
+
+    .profile-badges-container {
+        padding: 12px;
+    }
+
+    .profile-badge-img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .profile-badge-name {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .badge-icon-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .badge-inner-ring {
+        top: 20px;
+        left: 20px;
+        width: 80px;
+        height: 80px;
+    }
+
+    .badge-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .badge-title {
+        font-size: 1.5rem;
+    }
+
+    .badge-name {
+        font-size: 1.2rem;
+    }
+
+    .badge-description {
+        font-size: 0.9rem;
+    }
+
+    .profile-badges-grid {
+        grid-template-columns: 1fr;
+    }
+}
   /* --- END USER MEDIA INFO FIX (SMALLER SIZE) --- */
