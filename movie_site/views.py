@@ -869,6 +869,7 @@ def add_to_watched(request):
             media=media_added,
             defaults={'status': 'Watched'}
         )
+        add_badges(request.user)
 
         return redirect('user_media', status='Watched', type=media_type)
 
