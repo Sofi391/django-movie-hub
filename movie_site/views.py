@@ -309,6 +309,17 @@ def remove_from_fav(request, media_slug):
     return redirect('favorites', type=media_type)
 
 
+def add_badges(user):
+    watched_count = UserMedia.objects.filter(user=user,status='Watched').count()
+
+    earned_badges = UserBadge.objects.filter(user=user).values_list('badge_id',flat=True)
+    badges_to_earn = Badge.objects.exclude(id__in=earned_badges).order_by('threshold')
+
+    for badge in badges_to_earn:
+        if watched_count >= badge.threshold:
+            UserBadge.objects.get_or_create(user=user,badge=badge)
+
+
 @login_required
 def mark_as_watched(request, media_slug):
     if request.method != "POST":
@@ -319,7 +330,7 @@ def mark_as_watched(request, media_slug):
     if not created:
         user_media.status = 'Watched'
         user_media.save()
-        add_badges(request.user)
+    add_badges(request.user)
     return redirect('user_media', type=media_type,status='Watched')
 
 
@@ -374,16 +385,6 @@ def get_badge_count(request):
         'count': count
     })
 
-
-def add_badges(user):
-    watched_count = UserMedia.objects.filter(user=user,status='Watched').count()
-
-    earned_badges = UserBadge.objects.filter(user=user).values_list('badge_id',flat=True)
-    badges_to_earn = Badge.objects.exclude(id__in=earned_badges).order_by('threshold')
-
-    for badge in badges_to_earn:
-        if watched_count >= badge.threshold:
-            UserBadge.objects.get_or_create(user=user,badge=badge)
 
 
 @login_required
