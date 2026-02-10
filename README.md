@@ -6,13 +6,20 @@
 
 **Live Demo:** [https://movie-hub-a4gn.onrender.com](https://movie-hub-a4gn.onrender.com)
 
-A Django web application that allows users to **discover, track, and interact with movies and TV shows**. Users can search for any movie or show, check IMDb ratings, view trailers, and manage their watchlists, favorites, and watched content. Admins, editors, and moderators have special permissions to manage content, while all users can explore what others are watching.
+A Django web application that allows users to **discover, track, and interact with movies and TV shows**. Users can search for any movie or show, check IMDb ratings, view trailers, and manage their watch lists, favorites, and watched content. Admins, editors, and moderators have special permissions to manage content, while all users can explore what others are watching. 
+It combines content discovery with **gamification**, **quizzes**, **badges**, and **asynchronous notifications** to keep users engaged.
 
 ---
 
 ## ✨ Motivation
 
-This project was inspired by my love for movies and my desire to track the movies and shows I’ve watched, as well as mark the ones I want to watch in the future. It reflects my passion for cinema and storytelling, and my goal was to build a platform that organizes content in a **personal and interactive way** while also learning and applying advanced Django concepts.
+This project was inspired by my love for movies and my desire to track the movies and shows I’ve watched, as well as mark the ones I want to watch in the future. It reflects my passion for cinema and storytelling, and my goal was to build a platform that organizes content in a **personal and interactive way** This project was inspired by my love for movies and my desire to track what I’ve watched, what I want to watch, and to explore what others are enjoying.
+
+Beyond entertainment, Movie Hub was built as a **learning-driven project** to apply real-world backend concepts such as:
+- Asynchronous background processing
+- Scheduled tasks
+- Email notifications
+- Production deployment and scaling
 
 ---
 
@@ -26,6 +33,33 @@ This project was inspired by my love for movies and my desire to track the movie
 
 - **🔥 Trending & Popular Content**  
   Home page displays trending, popular, and user-added content dynamically. Switch between movies and shows easily.  
+
+- **🧠 Quizzes & Gamification**
+  - Weekly rotating quizzes
+  - Earn **badges** by interacting with content
+  - Encourages consistent user engagement
+
+- **🏅 Badges System**
+  - Users earn badges based on activity
+  - Tracks latest badge achievements
+  - Inactivity is detected automatically
+
+- **🔔 Notifications System**
+  - **In-app notifications** for:
+    - Weekly quiz updates
+    - System messages
+  - **Email notifications (async)** for:
+    - Inactive users
+      - Users who haven’t earned a badge in a while
+      - Welcome emails on signup
+
+- **⚡ Asynchronous Background Tasks**
+  - Built using **Celery + Redis**
+  - Tasks include:
+    - Weekly quiz rotation
+    - Scheduled notifications
+    - Async email delivery with retries
+  - Managed via **django-celery-beat**
 
 - **👥 User Interaction**  
   Discover other users, see their watched content, and interact through reviews and ratings.  
@@ -44,17 +78,37 @@ This project was inspired by my love for movies and my desire to track the movie
 
 ## ⚙️ Tech Stack
 
+### Backend
 - Python 3.x  
 - Django 5.x  
-- Django REST Framework (optional for APIs)  
-- Bootstrap / CSS for styling  
-- MySQL / PostgreSQL  
-- Whitenoise for static file handling  
-- Git for version control  
+- Django REST Framework (optional for APIs)   
+- Celery (background tasks)
+- Redis (message broker & result backend)
+- django-celery-beat
+- django-celery-results
+
+### Email
+- Brevo (Transactional Email API)
+- Async email delivery with retry logic
+
+### Database
+- MySQL (local development)
+- PostgreSQL / Neon (production)
+
+### Other
+- TMDB API
+- Cloudinary (media storage)
+- Whitenoise (static files)
+- Bootstrap / CSS
+- Git & GitHub
 
 ---
 
 ## 🚀 Deployment
+
+- **Web App:** Render  
+- **Database:** Neon  
+- **Async Tasks:** Celery + Redis (production-ready configuration)
 
 The project is live on Render: [https://movie-hub-a4gn.onrender.com](https://movie-hub-a4gn.onrender.com)
 
@@ -88,6 +142,9 @@ python manage.py runserver
 - Managing static files and media in production
 - CRUD operations for user-generated content and admin moderation
 - Working with APIs (TMDB) for movie data and trailers
+- Asynchronous task processing with Celery & Redis
+- Scheduled background jobs with django-celery-beat
+- Clean separation of concerns and scalable architecture
 
 ---
 
