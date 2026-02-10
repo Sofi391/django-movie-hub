@@ -14,9 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+import ssl
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +23,7 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
 
@@ -41,6 +39,8 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'cloudinary',
     'cloudinary_storage',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'movie_site.context_processor.notification_count',
             ],
         },
     },
@@ -134,11 +135,41 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # EMAIL
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv("EMAIL")
-EMAIL_HOST_PASSWORD = os.getenv("PASSWORD")
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp-relay.brevo.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv("EMAIL")
+# EMAIL_HOST_PASSWORD = os.getenv("PASSWORD")
+#
+# DEFAULT_FROM_EMAIL = 'Movie Hub <no-reply@brevo-mail.com>'
+
+# BREVO_API
+BREVO_API_KEY=os.getenv("BREVO_KEY")
+
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+
+
+REDIS_URL = os.getenv("REDIS_URL","redis://localhost:6379/0")
+
+# CELERY CONFIG
+if REDIS_URL.startswith("rediss://"):
+    # This structure is specifically what the Redis backend expects
+    CELERY_REDIS_BACKEND_USE_SSL = {
+        'ssl_cert_reqs': ssl.CERT_NONE
+    }
+    CELERY_BROKER_USE_SSL = CELERY_REDIS_BACKEND_USE_SSL
+else:
+    CELERY_REDIS_BACKEND_USE_SSL = None
+    CELERY_BROKER_USE_SSL = None
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_RESULT_EXPIRES = 3600
+CELERY_CACHE_BACKEND = 'django-cache'
+
+

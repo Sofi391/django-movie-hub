@@ -1028,6 +1028,19 @@
                             <div class="nav-underline"></div>
                         </a>
                     </li>
+
+                    <!-- QUIZZES OPTION ADDED HERE -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-modern" href="{% url 'quiz' %}">
+                            <div class="nav-icon-wrapper">
+                                <i class="fas fa-question-circle"></i>
+                                <div class="nav-pulse"></div>
+                            </div>
+                            <span class="nav-label">Quizzes</span>
+                            <div class="nav-underline"></div>
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link nav-modern" href="{% url 'search_movies' %}">
                             <div class="nav-icon-wrapper">
@@ -1089,9 +1102,13 @@
                     {% if user.is_authenticated %}
                         <!-- Notification Icon -->
                         <li class="nav-item notification-container">
-                            <a href="{% url 'notifications' %}" class="notification-icon-btn">
-                                <i class="fas fa-envelope"></i>
-                                <span class="notification-badge"></span>
+                            <a href="{% url 'notifications' %}" class="notification-icon-btn" aria-label="Notifications">
+                                <div class="notification-icon-wrapper">
+                                    <i class="fas fa-bell"></i>
+                                    {% if unread_notification_count > 0 %}
+                                    <span class="notification-badge pulse">{{ unread_notification_count }}</span>
+                                    {% endif %}
+                                </div>
                             </a>
                         </li>
 

@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Announcement</title>
+    <link rel="stylesheet" href="{% static 'movie_site/css/announcements.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="announcement-container">
+        <div class="header-section">
+            <h1><i class="fas fa-bullhorn"></i> Send Announcement</h1>
+            <p class="subtitle">This announcement will be sent to all users in the system.</p>
+
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-section">
+            <form method="POST" id="announcementForm" class="announcement-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="title">
+                        <i class="fas fa-heading"></i> Title *
+                    </label>
+                    <input type="text"
+                           id="title"
+                           name="title"
+                           class="form-control"
+                           placeholder="Enter announcement title"
+                           required
+                           maxlength="200">
+                    <div class="char-counter" id="titleCounter">0/200</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">
+                        <i class="fas fa-tag"></i> Type *
+                    </label>
+                    <select id="type" name="type" class="form-control" required>
+                        <option value="" disabled selected>Select announcement type</option>
+                        <option value="System" data-icon="fas fa-cogs">System</option>
+                        <option value="Quiz" data-icon="fas fa-question-circle">Quiz</option>
+                        <option value="Reminder" data-icon="fas fa-bell">Reminder</option>
+                        <option value="Admin" data-icon="fas fa-user-shield">Admin</option>
+                        <option value="Badge" data-icon="fas fa-award">Badge</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">
+                        <i class="fas fa-edit"></i> Content *
+                    </label>
+                    <textarea id="content"
+                              name="content"
+                              class="form-control"
+                              rows="6"
+                              placeholder="Enter announcement content..."
+                              required
+                              maxlength="2000"></textarea>
+                    <div class="char-counter" id="contentCounter">0/2000</div>
+                </div>
+
+                <div class="form-group preview-section">
+                    <label><i class="fas fa-eye"></i> Preview</label>
+                    <div class="preview-box" id="previewBox">
+                        <div class="preview-header">
+                            <span class="preview-type" id="previewType">System</span>
+                            <span class="preview-title" id="previewTitle">Your announcement title will appear here</span>
+                        </div>
+                        <div class="preview-content" id="previewContent">
+                            Your announcement content will appear here...
+                        </div>
+                        <div class="preview-footer">
+                            <span class="preview-sender">Sender: {{ request.user.username }}</span>
+                            <span class="preview-time">Time: Now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-clear" id="clearBtn">
+                        <i class="fas fa-eraser"></i> Clear All
+                    </button>
+                    <button type="submit" class="btn btn-send" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i> Send Announcement
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="info-section">
+            <h3><i class="fas fa-info-circle"></i> Announcement Types</h3>
+            <div class="type-info-grid">
+                <div class="type-info" data-type="System">
+                    <i class="fas fa-cogs"></i>
+                    <h4>System</h4>
+                    <p>System updates, maintenance, or technical changes</p>
+                </div>
+                <div class="type-info" data-type="Quiz">
+                    <i class="fas fa-question-circle"></i>
+                    <h4>Quiz</h4>
+                    <p>New quizzes, challenges, or trivia announcements</p>
+                </div>
+                <div class="type-info" data-type="Reminder">
+                    <i class="fas fa-bell"></i>
+                    <h4>Reminder</h4>
+                    <p>Important reminders and deadlines</p>
+                </div>
+                <div class="type-info" data-type="Admin">
+                    <i class="fas fa-user-shield"></i>
+                    <h4>Admin</h4>
+                    <p>Administrative notices and policy changes</p>
+                </div>
+                <div class="type-info" data-type="Badge">
+                    <i class="fas fa-award"></i>
+                    <h4>Badge</h4>
+                    <p>New badges, achievements, or rewards</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal - Updated for scrollable content -->
+    <div class="modal-overlay" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Confirm Announcement</h3>
+            </div>
+            <div class="modal-body">
+                <p><strong>Are you sure you want to send this announcement?</strong></p>
+                <p class="warning-text">
+                    <i class="fas fa-users"></i>
+                    <strong>Note:</strong> This announcement will be sent to <strong>ALL USERS</strong> in the system.
+                    This action cannot be undone.
+                </p>
+                <div class="announcement-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Type:</span>
+                        <span class="summary-value" id="confirmType"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Title:</span>
+                        <span class="summary-value" id="confirmTitle"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Content:</span>
+                        <span class="summary-value" id="confirmContent"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Sender:</span>
+                        <span class="summary-value">{{ request.user.username }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Time:</span>
+                        <span class="summary-value">Now</span>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+                    <i class="fas fa-info-circle"></i> This notification will appear in every user's notification panel.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" id="cancelBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-confirm" id="confirmBtn">
+                    <i class="fas fa-check"></i> Yes, Send to All Users
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Character counters
+            const titleInput = document.getElementById('title');
+            const contentInput = document.getElementById('content');
+            const titleCounter = document.getElementById('titleCounter');
+            const contentCounter = document.getElementById('contentCounter');
+
+            // Preview elements
+            const previewType = document.getElementById('previewType');
+            const previewTitle = document.getElementById('previewTitle');
+            const previewContent = document.getElementById('previewContent');
+
+            // Confirmation modal elements
+            const modal = document.getElementById('confirmationModal');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const sendBtn = document.getElementById('sendBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const form = document.getElementById('announcementForm');
+
+            // Character counter updates
+            function updateCounters() {
+                titleCounter.textContent = `${titleInput.value.length}/200`;
+                contentCounter.textContent = `${contentInput.value.length}/2000`;
+            }
+
+            // Update preview
+            function updatePreview() {
+                const type = document.getElementById('type').value || 'System';
+                const title = titleInput.value || 'Your announcement title will appear here';
+                const content = contentInput.value || 'Your announcement content will appear here...';
+
+                previewType.textContent = type;
+                previewTitle.textContent = title;
+                previewContent.textContent = content;
+
+                // Update modal confirmation
+                document.getElementById('confirmType').textContent = type;
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmContent').textContent = content;
+            }
+
+            // Event listeners
+            titleInput.addEventListener('input', function() {
+                updateCounters();
+                updatePreview();
+            });
+
+            contentInput.addEventListener('input', function() {
+                updateCounters();
+                updatePreview();
+            });
+
+            document.getElementById('type').addEventListener('change', updatePreview);
+
+            // Clear form
+            clearBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all fields?')) {
+                    form.reset();
+                    updateCounters();
+                    updatePreview();
+                }
+            });
+
+            // Show confirmation modal
+            sendBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                updatePreview(); // Ensure modal has latest data
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Confirm and submit
+            confirmBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                form.submit();
+            });
+
+            // Cancel confirmation
+            cancelBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Initialize
+            updateCounters();
+            updatePreview();
+        });
+    </script>
+</body>
+</html>

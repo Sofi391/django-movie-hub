@@ -147,8 +147,29 @@ class Question(models.Model):
 class UserQuizAttempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_attempts')
     score = models.IntegerField()
+    total_questions = models.IntegerField(default=10)
     taken_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.score}"
 
+
+class Notification(models.Model):
+    choice = [
+        ('System', 'System'),
+        ('Admin', 'Admin'),
+        ('Reminder', 'Reminder'),
+        ('Quiz', 'Quiz'),
+        ('Badge', 'Badge'),
+    ]
+    sender = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sent_notifications')
+    recipient = models.ForeignKey(User,on_delete=models.CASCADE,related_name='received_notifications')
+    type = models.CharField(max_length=100,choices=choice)
+    title = models.CharField(max_length=100,default='notification')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    action_url = models.URLField(blank=True,null=True)
+
+    def __str__(self):
+        return self.title

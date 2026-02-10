@@ -1,6 +1,6 @@
 from django.db.models import Q, ExpressionWrapper,F,FloatField
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Media,UserMedia,Genre,Favorite,Profile,UserBadge,Badge,Question,UserQuizAttempt
+from .models import Media, UserMedia, Favorite, Profile, UserBadge, Badge, Question, UserQuizAttempt, Notification
 from django.views.generic import ListView,UpdateView,DeleteView,CreateView
 from django.urls import reverse_lazy
 from django.conf import settings
@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin,PermissionRequiredMixin
 from .forms import UserMediaEditForm
 from django.http import HttpResponseNotAllowed
-from django.core.mail import send_mail
 import random
 from django.http import JsonResponse
 from django.core.cache import cache
@@ -17,6 +16,14 @@ from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST,require_http_methods
+from .services import inapp_notifications,announcements
+from .tasks import send_email_task
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 
 
@@ -128,7 +135,11 @@ class UpdateProfile(LoginRequiredMixin,UpdateView):
     fields = ['bio','profile_pic']
     template_name = 'movie_site/update_profile.html'
     success_url = reverse_lazy('home')
+    title = 'Profile Updated'
+    content = 'Your profile has been successfully updated.'
+    type = 'System'
     def get_object(self):
+        inapp_notifications(self.request.user,self.type,self.title,self.content)
         return Profile.objects.get(user=self.request.user)
 
 
@@ -254,17 +265,14 @@ class ModeratorEdit(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
     def notify(self):
         subject = "Your media entry was updated"
         message = f"Dear {self.object.user.username}, your media '{self.object.media.name}' was edited by a moderator."
-        from_email = f"MovieHub<{settings.EMAIL_HOST_USER}>"
         recipient_list = [self.object.user.email]
-        try:
-            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-        except Exception as e:
-            print(f"Failed to send email to {self.object.user.email}: {e}")
+        send_email_task.delay(subject=subject,content=message,recipients=recipient_list)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user_media'] = self.object
         return context
+
 
 @login_required
 @permission_required('movie_site.delete_user_media',raise_exception=True)
@@ -273,15 +281,16 @@ def delete_user_content(request,usermedia_id):
     user_email = user_media.user.email
 
     subject = "Your media entry was deleted"
-    message = f"Dear {user_media.user.username}, your media '{user_media.media.name}' was deleted by a moderator."
-    from_email = f"MovieHub<{settings.EMAIL_HOST_USER}>"
-    recipient_list = [user_media.user.email]
+    message = f"""
+Dear {user_media.user.username},
+Your media “{ user_media.media.name }” was removed by a moderator because it violated our content guidelines.
+
+If you believe this was a mistake, you may contact support or review the community rules before submitting again. 
+"""
+    recipient_list = [user_email]
 
     user_media.delete()
-    try:
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-    except Exception as e:
-        print(f"Failed to send email to {user_email}: {e}")
+    send_email_task.delay(subject=subject, content=message, recipients=recipient_list)
     return redirect('moderator_view')
 
 
@@ -318,6 +327,15 @@ def add_badges(user):
     for badge in badges_to_earn:
         if watched_count >= badge.threshold:
             UserBadge.objects.get_or_create(user=user,badge=badge)
+            title = "🎉 Badge Unlocked!"
+            content = f"""
+Congratulations! You’ve just earned the {badge.name} badge.
+This badge marks your progress and achievements on Movie Hub.
+You can view all your earned badges in Home → Profile → Your Badges.
+
+Keep watching movies and completing quizzes to unlock even more!"""
+            type = "Badge"
+            inapp_notifications(user, type, title, content)
 
 
 @login_required
@@ -912,25 +930,129 @@ def add_to_favorite(request):
 
     return redirect('search_movies')
 
-#
-#
-# def weekly_rotation():
-#     if timezone.now().weekday() == 6:
-#         Question.objects.update(is_active=False)
-#
-#         weekly_questions = Question.objects.order_by('?')[:100]
-#         Question.objects.filter(
-#             id__in=weekly_questions.values_list('id',flat=True)
-#         ).update(is_active=True)
-#
-#
-#
-# class QuizQuestionsListView(LoginRequiredMixin,ListView):
-#     model = Question
-#     template_name = 'movie_site/quiz.html'
-#     context_object_name = 'questions'
-#
-#     def get_queryset(self):
-#         return Question.objects.filter(is_active=True).order_by('?')[:10]
 
+
+class QuizQuestionsListView(LoginRequiredMixin,ListView):
+    model = Question
+    template_name = 'movie_site/quiz.html'
+    context_object_name = 'questions'
+
+    def get_queryset(self):
+        return Question.objects.filter(is_active=True).order_by('?')[:10]
+
+
+
+@login_required
+@require_POST
+@csrf_exempt
+def save_quiz_results(request):
+    try:
+        data = json.loads(request.body)
+
+        # Create new quiz attempt
+        attempt = UserQuizAttempt.objects.create(
+            user=request.user,
+            score=data['score'],
+            total_questions=data['total_questions']
+        )
+        title = "Quiz Results Saved"
+        content = f"""
+Your results for this quiz have been successfully saved.
+You scored {attempt.score} points on this attempt.
+
+Keep practicing to improve your score and earn more badges!"""
+        type = "Quiz"
+
+        inapp_notifications(request.user, type, title, content)
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Quiz results saved successfully',
+            'attempt_id': attempt.id
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
+
+
+
+
+@staff_member_required
+def announcement_noti(request):
+    types = ['System', 'Quiz', 'Reminder', 'Admin', 'Badge']
+
+    if request.method == "POST":
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        noti_type = request.POST.get('type')
+
+        if noti_type not in types:
+            messages.error(request, "Invalid notification type.")
+            return redirect('announcements')
+
+        if title and content and noti_type:
+            announcements(
+                sender=request.user,
+                type=noti_type,
+                title=title,
+                content=content
+            )
+            messages.success(request, "Announcement sent to all users.")
+            return redirect('announcements')
+
+        messages.error(request, "All fields are required.")
+
+    return render(request, 'movie_site/announcements.html')
+
+
+
+class Notifications(ListView):
+    model = Notification
+    template_name = 'movie_site/notifications.html'
+    context_object_name = 'notifications'
+
+    def get_queryset(self):
+        return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
+
+
+
+@login_required
+@require_POST
+@csrf_exempt
+def mark_notification_read(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id, recipient=request.user)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({'success': True})
+    except Notification.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Notification not found'}, status=404)
+
+
+@login_required
+@require_POST
+@csrf_exempt
+def mark_all_notifications_read(request):
+    try:
+        Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["DELETE"])
+@csrf_exempt
+def delete_notification(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id)
+        # Check if user is staff or recipient
+        if request.user.is_staff or notification.recipient == request.user:
+            notification.delete()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Permission denied'}, status=403)
+    except Notification.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Notification not found'}, status=404)
 

@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Media, UserMedia, Genre, Favorite,Profile,UserBadge,Badge,Question,UserQuizAttempt
+from .models import (Media, UserMedia, Genre, Favorite,
+                     Profile,UserBadge,Badge,Question,
+                     UserQuizAttempt,Notification)
 
 
 # Register your models here.
@@ -52,3 +54,9 @@ class QuestionAdmin(admin.ModelAdmin):
 class UserQuizAttemptAdmin(admin.ModelAdmin):
     list_display = ('user', 'score','taken_at')
     search_fields = ('user', 'score')
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('title', 'sender__username','recipient__username','type')
+    search_fields = ('title', 'sender__username', 'recipient__username')

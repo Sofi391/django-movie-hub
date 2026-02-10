@@ -1,12 +1,13 @@
 from django.urls import path
-from django.views.generic import TemplateView
 from .views import (Home, AddMovie, EditMovie, DeleteMovie,
                     search_movies, add_to_collection,
                     UserMediaListView, FavoriteListView,update_user_media,
                     delete_user_media,UpdateProfile,add_to_favorite,remove_from_fav,
                     mark_as_watched,mark_as_watchlist,ModeratorViews,ModeratorEdit,
                     delete_user_content,DiscoverPeople,get_user_badges,
-                    get_badge_count,check_new_badges,add_to_watched)
+                    get_badge_count,check_new_badges,add_to_watched,
+                    QuizQuestionsListView,save_quiz_results,announcement_noti,
+                    Notifications,mark_notification_read,mark_all_notifications_read,delete_notification)
 
 urlpatterns = [
     path('',Home.as_view(),name='home'),
@@ -42,5 +43,13 @@ urlpatterns = [
     path('badges/check-new-badges/', check_new_badges, name='check_new_badges'),
     path('badges/get-badge-count/', get_badge_count, name='get_badge_count'),
 
-    path('notifications/',TemplateView.as_view(template_name='movie_site/notifications.html'),name='notifications'),
+    path('notifications/',Notifications.as_view(),name='notifications'),
+
+    path('weekly-quiz/',QuizQuestionsListView.as_view(),name='quiz'),
+    path('save_results/',save_quiz_results,name='save_quiz_results'),
+
+    path('announce/',announcement_noti,name='announcements'),
+    path('notifications/<int:notification_id>/mark-read/', mark_notification_read, name='mark_notification_read'),
+    path('notifications/mark-all-read/', mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('notifications/<int:notification_id>/delete/', delete_notification, name='delete_notification'),
 ]

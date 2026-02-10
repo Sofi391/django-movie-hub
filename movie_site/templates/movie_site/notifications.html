@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +7,9 @@
     <title>Notifications - MovieHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    {% load static %}
     <link rel="stylesheet" href="{% static 'movie_site/css/noti.css' %}">
     <link rel="icon" href="{% static 'movie_site/img/fav.ico' %}">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
     <!-- Animated Background -->
@@ -31,294 +32,108 @@
                 Notifications
             </h1>
             <p>Stay updated with the latest news and announcements</p>
+
+            <!-- Action Buttons -->
+            <div class="notifications-actions">
+                {% if notifications %}
+                <button type="button" class="btn-action btn-mark-read" onclick="markAllAsRead()" id="markAllBtn" aria-label="Mark all notifications as read">
+                    <i class="fas fa-check-double" aria-hidden="true"></i>
+                    <span>Mark All as Read</span>
+                </button>
+                {% endif %}
+            </div>
         </div>
 
         <!-- Notifications List -->
         <div class="notifications-list">
-            <!-- Notification 1: Server Apology -->
-            <div class="notification-item" onclick="showPopup('server-apology')">
-                <div class="new-indicator"></div>
-                <div class="notification-content">
-                    <div class="notification-icon">
-                        ⚠️
-                    </div>
-                    <div class="notification-details">
-                        <div class="notification-title">
-                            <span>We're Back Online!</span>
-                            <span class="notification-time">Just now</span>
+            {% if notifications %}
+                {% for notification in notifications %}
+                <div class="notification-item {{ notification.type|lower }} glass-effect"
+                     onclick="showNotification({{ notification.id }}, '{{ notification.type }}')"
+                     data-notification-id="{{ notification.id }}"
+                     data-notification-type="{{ notification.type }}"
+                     data-full-content="{{ notification.content }}">
+                    {% if not notification.is_read %}
+                    <div class="new-indicator"></div>
+                    {% endif %}
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            {% if notification.type == "System" %}
+                            ⚙️
+                            {% elif notification.type == "Admin" %}
+                            👨‍💼
+                            {% elif notification.type == "Reminder" %}
+                            ⏰
+                            {% elif notification.type == "Quiz" %}
+                            🧠
+                            {% elif notification.type == "Badge" %}
+                            🏅
+                            {% else %}
+                            🔔
+                            {% endif %}
                         </div>
-                        <p class="notification-preview">
-                            Hi there! 👋 We want to apologize for the recent downtime...
-                        </p>
-                        <div class="read-more">
-                            <span>Click to read more</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Notification 2: Version 2.0 Release -->
-            <div class="notification-item" onclick="showPopup('version-release')">
-                <div class="new-indicator"></div>
-                <div class="notification-content">
-                    <div class="notification-icon">
-                        🚀
-                    </div>
-                    <div class="notification-details">
-                        <div class="notification-title">
-                            <span>Version 2.0 Released 🚀</span>
-                            <span class="notification-time">2 hours ago</span>
-                        </div>
-                        <p class="notification-preview">
-                            Exciting news! Version 2.0 of Movie Hub is live! 🎉 This release brings a bunch of new features...
-                        </p>
-                        <div class="read-more">
-                            <span>Click to read more</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Notification 3: What's New -->
-            <div class="notification-item" onclick="showPopup('whats-new')">
-                <div class="notification-content">
-                    <div class="notification-icon">
-                        ✨
-                    </div>
-                    <div class="notification-details">
-                        <div class="notification-title">
-                            <span>Discover What's New ✨</span>
-                            <span class="notification-time">1 day ago</span>
-                        </div>
-                        <p class="notification-preview">
-                            Here's a quick overview of the new things you can enjoy in Version 2.0...
-                        </p>
-                        <div class="read-more">
-                            <span>Click to read more</span>
-                            <i class="fas fa-chevron-right"></i>
+                        <div class="notification-details">
+                            <div class="notification-title">
+                                <span>{{ notification.title }}</span>
+                                <span class="notification-time">
+                                    {% if notification.created_at|timesince == "0 minutes" %}
+                                    Just now
+                                    {% else %}
+                                    {{ notification.created_at|timesince }} ago
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <p class="notification-preview">
+                                {{ notification.content|truncatechars:120 }}
+                            </p>
+                            <div class="read-more">
+                                <span>Click to view full message</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Notification 4: How to Earn Badges -->
-            <div class="notification-item" onclick="showPopup('earn-badges')">
-                <div class="notification-content">
-                    <div class="notification-icon">
-                        🏅
+                {% endfor %}
+            {% else %}
+                <!-- Empty state -->
+                <div class="no-notifications glass-effect">
+                    <div class="no-notifications-icon">
+                        <i class="fas fa-bell-slash"></i>
                     </div>
-                    <div class="notification-details">
-                        <div class="notification-title">
-                            <span>How to Earn Badges 🏅</span>
-                            <span class="notification-time">2 days ago</span>
-                        </div>
-                        <p class="notification-preview">
-                            Want to collect badges? Here's how to earn them and where to find your collection...
-                        </p>
-                        <div class="read-more">
-                            <span>Click to read more</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
+                    <h3>No Notifications</h3>
+                    <p>You're all caught up! Check back later for updates.</p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Empty state (hidden when there are notifications) -->
-        <div class="no-notifications" style="display: none;">
-            <div class="no-notifications-icon">
-                <i class="fas fa-bell-slash"></i>
-            </div>
-            <h3>No Notifications</h3>
-            <p>You're all caught up! Check back later for updates.</p>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Popup Overlays -->
-    <!-- Server Apology Popup -->
-    <div id="server-apology-popup" class="notification-popup-overlay">
+    <!-- Single Dynamic Popup -->
+    <div id="notification-popup" class="notification-popup-overlay">
         <div class="notification-popup">
-            <button class="popup-close-btn" onclick="closePopup('server-apology')">
-                <i class="fas fa-times"></i>
+            <button type="button" class="popup-close-btn" onclick="closePopup()" aria-label="Close popup">
+                <i class="fas fa-times" aria-hidden="true"></i>
             </button>
             <div class="popup-header">
                 <h2 class="popup-title">
-                    <span>⚠️ We're Back Online!</span>
-                    <span class="popup-date">Just now</span>
+                    <span id="popup-icon"></span>
+                    <span id="popup-title-text"></span>
                 </h2>
+                <span class="popup-date" id="popup-date"></span>
+                <div class="popup-type-badge" id="popup-type-badge"></div>
             </div>
             <div class="popup-content">
-                <p class="popup-message">
-                    Hi there! 👋 We want to apologize for the recent downtime. Our server was temporarily unavailable, but everything is back to normal now. Thank you for your patience! 💖<br><br>
-                    You can now continue exploring movies, shows, and all the new features we've added in this update. Enjoy your seamless experience!
-                </p>
-                <div class="popup-features">
-                    <div class="feature-item">
-                        <span class="feature-icon">✓</span>
-                        <span class="feature-text">All servers are now operational and running smoothly</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">✓</span>
-                        <span class="feature-text">Your data and preferences are safe and intact</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">✓</span>
-                        <span class="feature-text">Improved server stability for better performance</span>
-                    </div>
-                </div>
-                <div class="popup-footer">
-                    <p>Thank you for being a valued MovieHub member! 🎬</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Version 2.0 Release Popup -->
-    <div id="version-release-popup" class="notification-popup-overlay">
-        <div class="notification-popup">
-            <button class="popup-close-btn" onclick="closePopup('version-release')">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="popup-header">
-                <h2 class="popup-title">
-                    <span>🚀 Version 2.0 Released</span>
-                    <span class="popup-date">2 hours ago</span>
-                </h2>
-            </div>
-            <div class="popup-content">
-                <p class="popup-message">
-                    Exciting news! Version 2.0 of MovieHub is live! 🎉<br><br>
-                    This release brings a bunch of new features to make your experience more fun and engaging:
-                </p>
-                <div class="popup-features">
-                    <div class="feature-item">
-                        <span class="feature-icon">🏅</span>
-                        <span class="feature-text">A badges system to reward your movie-watching achievements</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🎬</span>
-                        <span class="feature-text">Weekly quizzes to test your movie and TV knowledge</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🌟</span>
-                        <span class="feature-text">Updated homepage with trending content and daily recommendations</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📱</span>
-                        <span class="feature-text">Improved mobile experience with better navigation</span>
-                    </div>
-                </div>
-                <p class="popup-message" style="margin-top: 20px;">
-                    Dive in and explore all the new updates! There's something exciting waiting for you at every corner of the site.
-                </p>
-                <div class="popup-footer">
-                    <p>Ready to explore? Start with the new badge system! 🏆</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- What's New Popup -->
-    <div id="whats-new-popup" class="notification-popup-overlay">
-        <div class="notification-popup">
-            <button class="popup-close-btn" onclick="closePopup('whats-new')">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="popup-header">
-                <h2 class="popup-title">
-                    <span>✨ Discover What's New</span>
-                    <span class="popup-date">1 day ago</span>
-                </h2>
-            </div>
-            <div class="popup-content">
-                <p class="popup-message">
-                    Here's a quick overview of the new things you can enjoy in Version 2.0:
-                </p>
-                <div class="popup-features">
-                    <div class="feature-item">
-                        <span class="feature-icon">🏆</span>
-                        <span class="feature-text"><strong>Badge system:</strong> Earn badges for watching movies, shows, and completing challenges</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🧠</span>
-                        <span class="feature-text"><strong>Weekly quizzes:</strong> Answer 10 questions every week and test your knowledge</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📢</span>
-                        <span class="feature-text"><strong>Fun facts & movie news:</strong> Read fun facts, trending news, and trailers right on the site</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🎨</span>
-                        <span class="feature-text"><strong>Improved homepage layout:</strong> See popular, trending, and latest content more easily</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">⚡</span>
-                        <span class="feature-text"><strong>Faster loading:</strong> Optimized performance for smoother browsing</span>
-                    </div>
-                </div>
-                <p class="popup-message" style="margin-top: 20px;">
-                    Check them out and level up your MovieHub experience! Each new feature is designed to make your movie discovery journey more enjoyable.
-                </p>
-                <div class="popup-guide">
-                    <div class="guide-title">Quick Tip:</div>
-                    <p style="color: #d1d5db; font-size: 0.9rem; margin: 0;">
-                        Try out the weekly quiz to earn your first badge! Look for the quiz section on the homepage.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- How to Earn Badges Popup -->
-    <div id="earn-badges-popup" class="notification-popup-overlay">
-        <div class="notification-popup">
-            <button class="popup-close-btn" onclick="closePopup('earn-badges')">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="popup-header">
-                <h2 class="popup-title">
-                    <span>🏅 How to Earn Badges</span>
-                    <span class="popup-date">2 days ago</span>
-                </h2>
-            </div>
-            <div class="popup-content">
-                <p class="popup-message">
-                    Want to collect badges? Here's how to earn them and track your progress:
-                </p>
-                <div class="popup-features">
-                    <div class="feature-item">
-                        <span class="feature-icon">🍿</span>
-                        <span class="feature-text"><strong>Watch movies and TV shows:</strong> The more you watch, the more progress you make!</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🧩</span>
-                        <span class="feature-text"><strong>Complete quizzes:</strong> Each completed weekly quiz gives you points towards badges</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🎯</span>
-                        <span class="feature-text"><strong>Special achievements:</strong> Some badges are awarded for milestones like watching 10, 50, or 100 movies</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">⭐</span>
-                        <span class="feature-text"><strong>Daily engagement:</strong> Regular visits and interactions earn you bonus points</span>
-                    </div>
-                </div>
-
-                <div class="popup-guide">
-                    <div class="guide-title">Where to find your badges:</div>
-                    <div class="guide-step">1. Go to <strong>Home</strong> → <strong>Profile</strong> (click on your username)</div>
-                    <div class="guide-step">2. Click on <strong>"Your Badges"</strong> in the dropdown menu</div>
-                    <div class="guide-step">3. See all your earned badges and track your progress!</div>
-                </div>
-
-                <p class="popup-message" style="margin-top: 20px;">
-                    Keep watching, exploring, and collecting! Each badge tells a story of your movie journey. The more you engage, the more badges you'll unlock. 🌟
-                </p>
-
-                <div class="popup-footer">
-                    <p>Start your badge collection today! Your first badge is just a few clicks away. 🎬</p>
+                <div class="popup-message" id="popup-message"></div>
+                <div class="popup-actions">
+                    {% if user.is_staff %}
+                    <button type="button" class="btn-popup-action delete" id="delete-btn" aria-label="Delete notification">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        <span>Delete</span>
+                    </button>
+                    {% endif %}
+                    <button type="button" class="btn-popup-action cancel" onclick="closePopup()" aria-label="Close notification dialog">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <span>Close</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -326,66 +141,285 @@
 
     <!-- JavaScript -->
     <script>
-        // Popup functions
-        function showPopup(type) {
-            const popup = document.getElementById(`${type}-popup`);
-            if (popup) {
-                popup.classList.add('active');
-                document.body.style.overflow = 'hidden';
+        // CSRF token for AJAX requests
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+        let currentNotificationId = null;
 
-                // Remove new indicator when notification is read
-                const notificationItem = event.currentTarget;
-                const indicator = notificationItem.querySelector('.new-indicator');
-                if (indicator) {
-                    indicator.style.display = 'none';
+        // Function to show notification details
+        function showNotification(notificationId, type) {
+            currentNotificationId = notificationId;
+
+            // Mark as read via AJAX
+            markAsRead(notificationId);
+
+            // Get notification data from data attributes
+            const notificationItem = document.querySelector(`[data-notification-id="${notificationId}"]`);
+            const title = notificationItem.querySelector('.notification-title span:first-child').textContent;
+            const content = notificationItem.dataset.fullContent;
+            const time = notificationItem.querySelector('.notification-time').textContent;
+
+            // Set type icon
+            let icon = '🔔';
+            switch(type) {
+                case 'System': icon = '⚙️'; break;
+                case 'Admin': icon = '👨‍💼'; break;
+                case 'Reminder': icon = '⏰'; break;
+                case 'Quiz': icon = '🧠'; break;
+                case 'Badge': icon = '🏅'; break;
+            }
+
+            // Update popup content
+            document.getElementById('popup-icon').textContent = icon;
+            document.getElementById('popup-title-text').textContent = title;
+            document.getElementById('popup-date').textContent = time;
+            document.getElementById('popup-message').innerHTML = formatMessageContent(content);
+
+            // Set type badge
+            const typeBadge = document.getElementById('popup-type-badge');
+            typeBadge.textContent = type;
+            typeBadge.className = 'popup-type-badge ' + type.toLowerCase();
+
+            // Set up delete button
+            {% if user.is_staff %}
+            const deleteBtn = document.getElementById('delete-btn');
+            deleteBtn.onclick = function() {
+                if (confirm('Are you sure you want to delete this notification?')) {
+                    deleteNotification(notificationId);
                 }
+            };
+            {% endif %}
+
+            // Show popup
+            document.getElementById('notification-popup').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Remove new indicator
+            const indicator = notificationItem.querySelector('.new-indicator');
+            if (indicator) {
+                indicator.style.display = 'none';
             }
         }
 
-        function closePopup(type) {
-            const popup = document.getElementById(`${type}-popup`);
-            if (popup) {
-                popup.classList.remove('active');
-                document.body.style.overflow = 'auto';
+        // Function to format message content with proper line breaks and lists
+        function formatMessageContent(content) {
+            // Create a temporary div to handle HTML escaping and formatting
+            const tempDiv = document.createElement('div');
+            tempDiv.textContent = content;
+
+            // Get the text content with proper escaping
+            let formatted = tempDiv.innerHTML;
+
+            // Replace newlines with <br> tags
+            formatted = formatted.replace(/\n/g, '<br>');
+
+            // Replace double newlines with paragraph breaks
+            formatted = formatted.replace(/<br><br>/g, '</p><p>');
+
+            // Wrap in paragraph tags if not already
+            if (!formatted.startsWith('<p>')) {
+                formatted = '<p>' + formatted + '</p>';
             }
+
+            // Replace common formatting patterns
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Handle bullet points
+            formatted = formatted.replace(/•/g, '•');
+
+            return formatted;
+        }
+
+        // Function to close popup
+        function closePopup() {
+            document.getElementById('notification-popup').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            currentNotificationId = null;
+        }
+
+        // AJAX function to mark notification as read
+        function markAsRead(notificationId) {
+            fetch(`/notifications/${notificationId}/mark-read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Notification marked as read');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Function to mark all notifications as read
+        function markAllAsRead() {
+            const btn = document.getElementById('markAllBtn');
+            const originalText = btn.innerHTML;
+
+            // Show loading state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Marking as read...</span>';
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            fetch('/notifications/mark-all-read/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove all new indicators
+                    document.querySelectorAll('.new-indicator').forEach(indicator => {
+                        indicator.style.display = 'none';
+                    });
+
+                    // Show success message
+                    btn.innerHTML = '<i class="fas fa-check"></i><span>All marked as read!</span>';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                    }, 2000);
+                } else {
+                    alert('Error marking notifications as read');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error marking notifications as read');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('loading');
+            });
+        }
+
+        // Function to delete single notification
+        function deleteNotification(notificationId) {
+            const btn = document.getElementById('delete-btn');
+            const originalText = btn.innerHTML;
+
+            // Show loading state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Deleting...</span>';
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            fetch(`/notifications/${notificationId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove notification from list
+                    const notificationItem = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                    if (notificationItem) {
+                        notificationItem.style.opacity = '0';
+                        notificationItem.style.transform = 'translateX(-100%)';
+                        setTimeout(() => {
+                            notificationItem.remove();
+                            closePopup();
+
+                            // Check if no notifications left
+                            if (document.querySelectorAll('.notification-item').length === 0) {
+                                document.querySelector('.notifications-list').innerHTML = `
+                                    <div class="no-notifications glass-effect">
+                                        <div class="no-notifications-icon">
+                                            <i class="fas fa-bell-slash"></i>
+                                        </div>
+                                        <h3>No Notifications</h3>
+                                        <p>You're all caught up! Check back later for updates.</p>
+                                    </div>
+                                `;
+                                // Hide action buttons
+                                document.querySelector('.notifications-actions').style.display = 'none';
+                            }
+                        }, 300);
+                    }
+                } else {
+                    alert('Error deleting notification: ' + (data.error || 'Unknown error'));
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting notification');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('loading');
+            });
         }
 
         // Close popup when clicking outside
-        document.querySelectorAll('.notification-popup-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                }
-            });
+        document.getElementById('notification-popup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
         });
 
         // Close popup with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.notification-popup-overlay.active').forEach(popup => {
-                    popup.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                });
+                closePopup();
             }
         });
-
-        // Mark all as read functionality (optional)
-        function markAllAsRead() {
-            document.querySelectorAll('.new-indicator').forEach(indicator => {
-                indicator.style.display = 'none';
-            });
-        }
 
         // Initialize animations
         document.addEventListener('DOMContentLoaded', function() {
             // Add click animation to notification items
-            document.querySelectorAll('.notification-item').forEach(item => {
+            document.querySelectorAll('.notification-item').forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+
                 item.addEventListener('click', function() {
                     this.style.transform = 'scale(0.98)';
                     setTimeout(() => {
                         this.style.transform = '';
                     }, 200);
+                });
+            });
+
+            // Add hover effect to action buttons
+            document.querySelectorAll('.btn-action, .btn-popup-action').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (!this.disabled) {
+                        this.style.transform = 'translateY(-4px) scale(1.02)';
+                    }
+                });
+
+                btn.addEventListener('mouseleave', function() {
+                    if (!this.disabled) {
+                        this.style.transform = '';
+                    }
+                });
+            });
+
+            // Add click animation to buttons
+            document.querySelectorAll('.btn-action, .btn-popup-action').forEach(btn => {
+                btn.addEventListener('mousedown', function() {
+                    if (!this.disabled) {
+                        this.style.transform = 'translateY(-1px) scale(0.98)';
+                    }
+                });
+
+                btn.addEventListener('mouseup', function() {
+                    if (!this.disabled) {
+                        this.style.transform = 'translateY(-4px) scale(1.02)';
+                    }
                 });
             });
         });

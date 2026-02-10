@@ -1,0 +1,2522 @@
+[
+  {
+    "text": "Who directed Inception?",
+    "option_a": "James Cameron",
+    "option_b": "Steven Spielberg",
+    "option_c": "Christopher Nolan",
+    "option_d": "Ridley Scott",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which movie features the character Darth Vader?",
+    "option_a": "Blade Runner",
+    "option_b": "Star Wars",
+    "option_c": "Star Trek",
+    "option_d": "Alien",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Matrix', what color pill does Neo take?",
+    "option_a": "Yellow",
+    "option_b": "Blue",
+    "option_c": "Red",
+    "option_d": "Green",
+    "correct_option": "c"
+  },
+  {
+    "text": "What year was the movie 'Pulp Fiction' released?",
+    "option_a": "1996",
+    "option_b": "1998",
+    "option_c": "1992",
+    "option_d": "1994",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which actor played Tony Stark in the Marvel Cinematic Universe?",
+    "option_a": "Chris Hemsworth",
+    "option_b": "Robert Downey Jr.",
+    "option_c": "Mark Ruffalo",
+    "option_d": "Chris Evans",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the fictional continent where 'Game of Thrones' primarily takes place?",
+    "option_a": "Westeros",
+    "option_b": "Azeroth",
+    "option_c": "Narnia",
+    "option_d": "Middle-earth",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which 1993 film features Jeff Goldblum as a mathematician researching chaos theory?",
+    "option_a": "The Lost World",
+    "option_b": "Jurassic Park",
+    "option_c": "The Fly",
+    "option_d": "Independence Day",
+    "correct_option": "b"
+  },
+  {
+    "text": "What was the first feature-length animated film ever released?",
+    "option_a": "Fantasia",
+    "option_b": "Snow White and the Seven Dwarfs",
+    "option_c": "Gertie the Dinosaur",
+    "option_d": "Steamboat Willie",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Friends', what is the name of Central Perk's barista?",
+    "option_a": "Richard",
+    "option_b": "Janice",
+    "option_c": "Gunther",
+    "option_d": "Mike",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film won the Academy Award for Best Picture in 2020?",
+    "option_a": "Once Upon a Time in Hollywood",
+    "option_b": "1917",
+    "option_c": "Parasite",
+    "option_d": "Joker",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the highest-grossing film of all time (as of 2023)?",
+    "option_a": "Titanic",
+    "option_b": "Avengers: Endgame",
+    "option_c": "Star Wars: The Force Awakens",
+    "option_d": "Avatar",
+    "correct_option": "d"
+  },
+  {
+    "text": "Who composed the iconic soundtrack for 'Star Wars'?",
+    "option_a": "Ennio Morricone",
+    "option_b": "John Williams",
+    "option_c": "Howard Shore",
+    "option_d": "Hans Zimmer",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Shining', what phrase does Jack Torrance repeatedly type?",
+    "option_a": "Redrum",
+    "option_b": "Here's Johnny!",
+    "option_c": "All work and no play",
+    "option_d": "Forever and ever",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which TV show features the characters Walter White and Jesse Pinkman?",
+    "option_a": "Narcos",
+    "option_b": "The Wire",
+    "option_c": "Better Call Saul",
+    "option_d": "Breaking Bad",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the hobbit played by Elijah Wood in the 'Lord of the Rings' films?",
+    "option_a": "Bilbo Baggins",
+    "option_b": "Samwise Gamgee",
+    "option_c": "Frodo Baggins",
+    "option_d": "Pippin Took",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actor played the Joker in the 2008 film 'The Dark Knight'?",
+    "option_a": "Jared Leto",
+    "option_b": "Jack Nicholson",
+    "option_c": "Heath Ledger",
+    "option_d": "Joaquin Phoenix",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional newspaper where Clark Kent works?",
+    "option_a": "The Gotham Gazette",
+    "option_b": "The Daily Planet",
+    "option_c": "The Star City Times",
+    "option_d": "The Metropolis Herald",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which 1999 film popularized the 'bullet time' visual effect?",
+    "option_a": "The Sixth Sense",
+    "option_b": "The Blair Witch Project",
+    "option_c": "Fight Club",
+    "option_d": "The Matrix",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Office' (US), what is Michael Scott's famous film quote?",
+    "option_a": "I'll be back.",
+    "option_b": "You can't handle the truth!",
+    "option_c": "That's what she said.",
+    "option_d": "You talking to me?",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the ship in the film 'Alien'?",
+    "option_a": "Covenant",
+    "option_b": "Prometheus",
+    "option_c": "Sulaco",
+    "option_d": "Nostromo",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which actress played Princess Leia in the original 'Star Wars' trilogy?",
+    "option_a": "Natalie Portman",
+    "option_b": "Sigourney Weaver",
+    "option_c": "Mark Hamill",
+    "option_d": "Carrie Fisher",
+    "correct_option": "d"
+  },
+  {
+    "text": "What 1975 film features the quote, 'I'm as mad as hell, and I'm not going to take this anymore!'?",
+    "option_a": "Taxi Driver",
+    "option_b": "Dog Day Afternoon",
+    "option_c": "Network",
+    "option_d": "One Flew Over the Cuckoo's Nest",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which director is known for his cameo appearances in his own films, often as a man with a Hitchcock-like silhouette?",
+    "option_a": "Quentin Tarantino",
+    "option_b": "Wes Anderson",
+    "option_c": "Alfred Hitchcock",
+    "option_d": "Martin Scorsese",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional African country in 'Black Panther'?",
+    "option_a": "Zamunda",
+    "option_b": "Malawi",
+    "option_c": "Wakanda",
+    "option_d": "Genosha",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Stranger Things', what is the name of the alternate dimension?",
+    "option_a": "The Nether",
+    "option_b": "The Backrooms",
+    "option_c": "The Void",
+    "option_d": "The Upside Down",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which 1986 film has the iconic line, 'Life moves pretty fast. If you don't stop and look around once in a while, you could miss it.'?",
+    "option_a": "Pretty in Pink",
+    "option_b": "Sixteen Candles",
+    "option_c": "Ferris Bueller's Day Off",
+    "option_d": "The Breakfast Club",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the prison in 'The Shawshank Redemption'?",
+    "option_a": "Alcatraz",
+    "option_b": "Sing Sing",
+    "option_c": "Cold Mountain Penitentiary",
+    "option_d": "Shawshank State Penitentiary",
+    "correct_option": "d"
+  },
+  {
+    "text": "Who played the character of Hannibal Lecter in 'The Silence of the Lambs'?",
+    "option_a": "Brian Cox",
+    "option_b": "Anthony Hopkins",
+    "option_c": "Gaspard Ulliel",
+    "option_d": "Mads Mikkelsen",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which TV series is set in the fictional town of Hawkins, Indiana?",
+    "option_a": "Gravity Falls",
+    "option_b": "Twin Peaks",
+    "option_c": "Riverdale",
+    "option_d": "Stranger Things",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional sport played in 'The Hunger Games'?",
+    "option_a": "The Games",
+    "option_b": "The Arena",
+    "option_c": "The Gauntlet",
+    "option_d": "The Reaping",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Back to the Future', what year does Marty McFly travel to first?",
+    "option_a": "1975",
+    "option_b": "1965",
+    "option_c": "1985",
+    "option_d": "1955",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the line, 'You're gonna need a bigger boat'?",
+    "option_a": "Pirates of the Caribbean",
+    "option_b": "Jaws",
+    "option_c": "The Perfect Storm",
+    "option_d": "Titanic",
+    "correct_option": "b"
+  },
+  {
+    "text": "Who directed the 1972 film 'The Godfather'?",
+    "option_a": "Stanley Kubrick",
+    "option_b": "Francis Ford Coppola",
+    "option_c": "Sergio Leone",
+    "option_d": "Martin Scorsese",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the toy cowboy in the 'Toy Story' films?",
+    "option_a": "Buzz Lightyear",
+    "option_b": "Rex",
+    "option_c": "Slinky Dog",
+    "option_d": "Woody",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which 2014 superhero film features the quote, 'I can do this all day'?",
+    "option_a": "The Avengers",
+    "option_b": "Iron Man",
+    "option_c": "Captain America: The Winter Soldier",
+    "option_d": "Captain America: The First Avenger",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does Dorothy say to return home?",
+    "option_a": "I want to go home.",
+    "option_b": "Auntie Em!",
+    "option_c": "Take me home.",
+    "option_d": "There's no place like home.",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the real name of the superhero Iron Man?",
+    "option_a": "Steve Rogers",
+    "option_b": "Tony Stark",
+    "option_c": "Peter Parker",
+    "option_d": "Bruce Wayne",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actor played the title character in 'Forrest Gump'?",
+    "option_a": "Sally Field",
+    "option_b": "Gary Sinise",
+    "option_c": "Robin Wright",
+    "option_d": "Tom Hanks",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Buffy the Vampire Slayer'?",
+    "option_a": "Buffy High",
+    "option_b": "Sunnydale Academy",
+    "option_c": "Sunnydale High",
+    "option_d": "Hellmouth High",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features a dance scene to the song 'Twist and Shout' in the middle of a street?",
+    "option_a": "Dirty Dancing",
+    "option_b": "The Breakfast Club",
+    "option_c": "Ferris Bueller's Day Off",
+    "option_d": "Grease",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the hotel in the horror film 'The Shining'?",
+    "option_a": "The Grand Budapest Hotel",
+    "option_b": "The Overlook Hotel",
+    "option_c": "The Stanley Hotel",
+    "option_d": "The Bates Motel",
+    "correct_option": "b"
+  },
+  {
+    "text": "Who played Jack Dawson in the 1997 film 'Titanic'?",
+    "option_a": "Brad Pitt",
+    "option_b": "Orlando Bloom",
+    "option_c": "Leonardo DiCaprio",
+    "option_d": "Johnny Depp",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Big Lebowski', what does The Dude order at the bar?",
+    "option_a": "A Scotch",
+    "option_b": "A Beer",
+    "option_c": "A Martini",
+    "option_d": "A White Russian",
+    "correct_option": "d"
+  },
+  {
+    "text": "What year was the first 'Harry Potter' film released?",
+    "option_a": "2005",
+    "option_b": "1999",
+    "option_c": "2003",
+    "option_d": "2001",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which actress played the lead role of Katniss Everdeen in 'The Hunger Games'?",
+    "option_a": "Kristen Stewart",
+    "option_b": "Shailene Woodley",
+    "option_c": "Jennifer Lawrence",
+    "option_d": "Emma Stone",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional company Michael Scott works for in 'The Office'?",
+    "option_a": "Paper Corp",
+    "option_b": "Initech",
+    "option_c": "Staples",
+    "option_d": "Dunder Mifflin",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Lion King', who is Simba's evil uncle?",
+    "option_a": "Mufasa",
+    "option_b": "Scar",
+    "option_c": "Zazu",
+    "option_d": "Timon",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film won the first ever Academy Award for Best Animated Feature in 2002?",
+    "option_a": "Spirited Away",
+    "option_b": "Toy Story 2",
+    "option_c": "Monsters, Inc.",
+    "option_d": "Shrek",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the spaceship in '2001: A Space Odyssey'?",
+    "option_a": "Nostromo",
+    "option_b": "Event Horizon",
+    "option_c": "Serenity",
+    "option_d": "Discovery One",
+    "correct_option": "d"
+  },
+  {
+    "text": "Who directed the 1994 film 'Pulp Fiction'?",
+    "option_a": "Guy Ritchie",
+    "option_b": "Robert Rodriguez",
+    "option_c": "Quentin Tarantino",
+    "option_d": "Martin Scorsese",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Seinfeld', what is the name of Jerry's neighbor?",
+    "option_a": "George",
+    "option_b": "Frank",
+    "option_c": "Newman",
+    "option_d": "Kramer",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character Maximus Decimus Meridius?",
+    "option_a": "Gladiator",
+    "option_b": "Braveheart",
+    "option_c": "Troy",
+    "option_d": "300",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional wizarding school Harry Potter attends?",
+    "option_a": "Durmstrang",
+    "option_b": "Hogwarts",
+    "option_c": "Ilvermorny",
+    "option_d": "Beauxbatons",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actor played Don Vito Corleone in 'The Godfather'?",
+    "option_a": "Al Pacino",
+    "option_b": "James Caan",
+    "option_c": "Marlon Brando",
+    "option_d": "Robert De Niro",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Princess Bride', what does Westley say instead of 'I love you'?",
+    "option_a": "Forever.",
+    "option_b": "My dearest.",
+    "option_c": "As you wish.",
+    "option_d": "Always.",
+    "correct_option": "c"
+  },
+  {
+    "text": "What year is Marty McFly trying to return to at the end of 'Back to the Future'?",
+    "option_a": "1885",
+    "option_b": "2015",
+    "option_c": "1955",
+    "option_d": "1985",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which TV show features the characters Sheldon Cooper and Leonard Hofstadter?",
+    "option_a": "Futurama",
+    "option_b": "The IT Crowd",
+    "option_c": "The Big Bang Theory",
+    "option_d": "Silicon Valley",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the planet the 'Avatar' films are set on?",
+    "option_a": "Ego",
+    "option_b": "Xandar",
+    "option_c": "Polyphemus",
+    "option_d": "Pandora",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Fight Club', what is the first rule of Fight Club?",
+    "option_a": "Fight until someone taps out.",
+    "option_b": "No shirts, no shoes.",
+    "option_c": "You do not talk about Fight Club.",
+    "option_d": "The first rule is not to talk about the rules.",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actor played the character of Jack Sparrow in the 'Pirates of the Caribbean' series?",
+    "option_a": "Javier Bardem",
+    "option_b": "Geoffrey Rush",
+    "option_c": "Orlando Bloom",
+    "option_d": "Johnny Depp",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the family in the TV series 'The Addams Family'?",
+    "option_a": "The Munsters",
+    "option_b": "The Addamses",
+    "option_c": "The Family Addams",
+    "option_d": "The Addams Household",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film is famous for the line, 'I see dead people'?",
+    "option_a": "Poltergeist",
+    "option_b": "The Ring",
+    "option_c": "The Sixth Sense",
+    "option_d": "The Others",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional bar in 'How I Met Your Mother'?",
+    "option_a": "MacLaren's",
+    "option_b": "The Alibi Room",
+    "option_c": "Cheers",
+    "option_d": "Puzzles",
+    "correct_option": "a"
+  },
+  {
+    "text": "Who played the character of Ellen Ripley in the 'Alien' franchise?",
+    "option_a": "Jodie Foster",
+    "option_b": "Sigourney Weaver",
+    "option_c": "Jamie Lee Curtis",
+    "option_d": "Linda Hamilton",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the wizard who leads the Fellowship?",
+    "option_a": "Saruman",
+    "option_b": "Alatar",
+    "option_c": "Radagast",
+    "option_d": "Gandalf",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which 1980 film features the line, 'Luke, I am your father'?",
+    "option_a": "Star Wars: Revenge of the Sith",
+    "option_b": "Star Wars: A New Hope",
+    "option_c": "Star Wars: The Empire Strikes Back",
+    "option_d": "Star Wars: Return of the Jedi",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the robot in 'Lost in Space'?",
+    "option_a": "Robbie",
+    "option_b": "K-9",
+    "option_c": "Bender",
+    "option_d": "Robot",
+    "correct_option": "d"
+  },
+  {
+    "text": "Who directed the 1993 film 'Schindler's List'?",
+    "option_a": "Stephen Daldry",
+    "option_b": "Steven Spielberg",
+    "option_c": "Quentin Tarantino",
+    "option_d": "Roman Polanski",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Simpsons', what is the name of the family's pet dog?",
+    "option_a": "Santa's Little Helper",
+    "option_b": "Poochie",
+    "option_c": "Laddie",
+    "option_d": "Brian",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of John McClane?",
+    "option_a": "Lethal Weapon",
+    "option_b": "Die Hard",
+    "option_c": "Predator",
+    "option_d": "Speed",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the fictional city where 'Batman' stories are primarily set?",
+    "option_a": "Metropolis",
+    "option_b": "Star City",
+    "option_c": "Central City",
+    "option_d": "Gotham City",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Breakfast Club', which character is the 'criminal'?",
+    "option_a": "Allison Reynolds",
+    "option_b": "Brian Johnson",
+    "option_c": "John Bender",
+    "option_d": "Andrew Clark",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actress played the character of Mia Wallace in 'Pulp Fiction'?",
+    "option_a": "Bruce Willis",
+    "option_b": "Uma Thurman",
+    "option_c": "Samuel L. Jackson",
+    "option_d": "John Travolta",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the hotel in the TV series 'Fawlty Towers'?",
+    "option_a": "Torquay Hotel",
+    "option_b": "Fawlty Towers",
+    "option_c": "Basil's Hotel",
+    "option_d": "The Grand Hotel",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the song 'My Heart Will Go On'?",
+    "option_a": "The Bodyguard",
+    "option_b": "Ghost",
+    "option_c": "Titanic",
+    "option_d": "Dirty Dancing",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Mandalorian', what is the name of the character commonly referred to as 'Baby Yoda'?",
+    "option_a": "Midi-chlorian",
+    "option_b": "Yoda",
+    "option_c": "The Child",
+    "option_d": "Grogu",
+    "correct_option": "d"
+  },
+  {
+    "text": "Who played the character of Michael Corleone in 'The Godfather' trilogy?",
+    "option_a": "Al Pacino",
+    "option_b": "Robert De Niro",
+    "option_c": "Marlon Brando",
+    "option_d": "James Caan",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what are Dorothy's ruby slippers in the original book?",
+    "option_a": "Diamond",
+    "option_b": "Ruby",
+    "option_c": "Silver",
+    "option_d": "Gold",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Clarice Starling?",
+    "option_a": "Zodiac",
+    "option_b": "Copycat",
+    "option_c": "The Silence of the Lambs",
+    "option_d": "Se7en",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the spaceship in 'Star Trek: The Original Series'?",
+    "option_a": "USS Voyager",
+    "option_b": "USS Discovery",
+    "option_c": "USS Defiant",
+    "option_d": "USS Enterprise",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Godfather', what is the famous line spoken by Marlon Brando?",
+    "option_a": "It's not personal, it's business.",
+    "option_b": "I'm gonna make him an offer he can't refuse.",
+    "option_c": "Keep your friends close, but your enemies closer.",
+    "option_d": "Leave the gun, take the cannoli.",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actress played the character of Wednesday Addams in the 1991 film 'The Addams Family'?",
+    "option_a": "Anjelica Huston",
+    "option_b": "Carolyn Jones",
+    "option_c": "Christina Ricci",
+    "option_d": "Lisa Loring",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Hunger Games', what district is Katniss from?",
+    "option_a": "District 7",
+    "option_b": "District 13",
+    "option_c": "District 12",
+    "option_d": "District 11",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Norman Bates?",
+    "option_a": "Friday the 13th",
+    "option_b": "Halloween",
+    "option_c": "Psycho",
+    "option_d": "The Texas Chain Saw Massacre",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Matrix', what is the real world like?",
+    "option_a": "A futuristic city",
+    "option_b": "A post-apocalyptic wasteland",
+    "option_c": "A utopia",
+    "option_d": "A medieval kingdom",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actor played the character of James Bond in 'GoldenEye'?",
+    "option_a": "Roger Moore",
+    "option_b": "Daniel Craig",
+    "option_c": "Pierce Brosnan",
+    "option_d": "Sean Connery",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Terminator', what is the famous line spoken by Arnold Schwarzenegger?",
+    "option_a": "Hasta la vista, baby.",
+    "option_b": "Come with me if you want to live.",
+    "option_c": "Get to the chopper!",
+    "option_d": "I'll be back.",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Alex DeLarge?",
+    "option_a": "A Clockwork Orange",
+    "option_b": "The Shining",
+    "option_c": "Full Metal Jacket",
+    "option_d": "One Flew Over the Cuckoo's Nest",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional law firm in 'Suits'?",
+    "option_a": "Specter Litt",
+    "option_b": "All of the above at different times",
+    "option_c": "Pearson Hardman",
+    "option_d": "Pearson Specter Litt",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Princess Diaries', who plays the role of Queen Clarisse Renaldi?",
+    "option_a": "Anne Hathaway",
+    "option_b": "Julie Andrews",
+    "option_c": "Hector Elizondo",
+    "option_d": "Heather Matarazzo",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Lester Burnham?",
+    "option_a": "The Graduate",
+    "option_b": "American Beauty",
+    "option_c": "American Psycho",
+    "option_d": "Fight Club",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the fictional island in 'Lost'?",
+    "option_a": "The Island has no name.",
+    "option_b": "The survivors named it later.",
+    "option_c": "The Island",
+    "option_d": "Mystery Island",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Social Network', who is portrayed as the founder of Facebook?",
+    "option_a": "Eduardo Saverin",
+    "option_b": "Sean Parker",
+    "option_c": "The Winklevoss twins",
+    "option_d": "Mark Zuckerberg",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Harry Callahan?",
+    "option_a": "The Enforcer",
+    "option_b": "Magnum Force",
+    "option_c": "Dirty Harry",
+    "option_d": "Sudden Impact",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional bar in 'It's Always Sunny in Philadelphia'?",
+    "option_a": "Philadelphia Pub",
+    "option_b": "The Gang's Bar",
+    "option_c": "Sunny's",
+    "option_d": "Paddy's Pub",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Devil Wears Prada', who plays the role of Miranda Priestly?",
+    "option_a": "Emily Blunt",
+    "option_b": "Meryl Streep",
+    "option_c": "Anne Hathaway",
+    "option_d": "Stanley Tucci",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Vincent Vega?",
+    "option_a": "Kill Bill",
+    "option_b": "Pulp Fiction",
+    "option_c": "Reservoir Dogs",
+    "option_d": "Jackie Brown",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Crown', who plays the role of Queen Elizabeth II in the first two seasons?",
+    "option_a": "Imelda Staunton",
+    "option_b": "Helena Bonham Carter",
+    "option_c": "Olivia Colman",
+    "option_d": "Claire Foy",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Travis Bickle?",
+    "option_a": "Raging Bull",
+    "option_b": "Mean Streets",
+    "option_c": "Taxi Driver",
+    "option_d": "The King of Comedy",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Usual Suspects', who is Keyser Söze?",
+    "option_a": "Both a and b",
+    "option_b": "Dean Keaton",
+    "option_c": "A mythical crime lord",
+    "option_d": "Roger 'Verbal' Kint",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Amélie Poulain?",
+    "option_a": "All of the above",
+    "option_b": "Le Fabuleux Destin d'Amélie Poulain",
+    "option_c": "Amélie",
+    "option_d": "The Fabulous Destiny of Amélie Poulain",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Twin Peaks'?",
+    "option_a": "Ghostwood",
+    "option_b": "Twin Peaks",
+    "option_c": "Black Lodge",
+    "option_d": "The town is not named.",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Fresh Prince of Bel-Air', what city is Will originally from?",
+    "option_a": "Baltimore",
+    "option_b": "New York",
+    "option_c": "West Philadelphia",
+    "option_d": "Philadelphia",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the iconic line, 'Here's looking at you, kid'?",
+    "option_a": "The Maltese Falcon",
+    "option_b": "Citizen Kane",
+    "option_c": "Gone with the Wind",
+    "option_d": "Casablanca",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Gilmore Girls'?",
+    "option_a": "Storybrooke",
+    "option_b": "Stars Hollow",
+    "option_c": "Mystic Falls",
+    "option_d": "Riverdale",
+    "correct_option": "b"
+  },
+  {
+    "text": "Who played the character of Wolverine in the X-Men film series?",
+    "option_a": "Patrick Stewart",
+    "option_b": "James McAvoy",
+    "option_c": "Hugh Jackman",
+    "option_d": "Ryan Reynolds",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Mean Girls', what day does Regina George wear sweatpants?",
+    "option_a": "Monday",
+    "option_b": "Saturday",
+    "option_c": "Friday",
+    "option_d": "Wednesday",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which director is famous for his tracking shots in films like 'Goodfellas'?",
+    "option_a": "Stanley Kubrick",
+    "option_b": "David Fincher",
+    "option_c": "Martin Scorsese",
+    "option_d": "Quentin Tarantino",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Frasier'?",
+    "option_a": "Luke's Diner",
+    "option_b": "Café Nervosa",
+    "option_c": "The Coffee Bean",
+    "option_d": "Central Perk",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which 1990 film features a young Macaulay Culkin defending his home from burglars?",
+    "option_a": "Uncle Buck",
+    "option_b": "The Good Son",
+    "option_c": "Home Alone",
+    "option_d": "Richie Rich",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film won the Palme d'Or at Cannes in 2019?",
+    "option_a": "Once Upon a Time in Hollywood",
+    "option_b": "The Lighthouse",
+    "option_c": "Parasite",
+    "option_d": "Pain and Glory",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional newspaper in 'Spider-Man' where Peter Parker works?",
+    "option_a": "The Gotham Gazette",
+    "option_b": "The Daily Bugle",
+    "option_c": "The New York Times",
+    "option_d": "The Daily Planet",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Sound of Music', how many children does Captain von Trapp have?",
+    "option_a": "Nine",
+    "option_b": "Ten",
+    "option_c": "Seven",
+    "option_d": "Five",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actor played Ron Burgundy in 'Anchorman'?",
+    "option_a": "Steve Carell",
+    "option_b": "Will Ferrell",
+    "option_c": "David Koechner",
+    "option_d": "Paul Rudd",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the spaceship in 'Firefly'?",
+    "option_a": "Nostromo",
+    "option_b": "Millennium Falcon",
+    "option_c": "Serenity",
+    "option_d": "Enterprise",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Dirty Dancing', what is Baby's real first name?",
+    "option_a": "Margaret",
+    "option_b": "Frances",
+    "option_c": "Susan",
+    "option_d": "Jennifer",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Elle Woods?",
+    "option_a": "10 Things I Hate About You",
+    "option_b": "Clueless",
+    "option_c": "Mean Girls",
+    "option_d": "Legally Blonde",
+    "correct_option": "d"
+  },
+  {
+    "text": "What year was the first 'James Bond' film released?",
+    "option_a": "1964",
+    "option_b": "1962",
+    "option_c": "1968",
+    "option_d": "1966",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The West Wing', who plays President Josiah Bartlet?",
+    "option_a": "Bradley Whitford",
+    "option_b": "John Spencer",
+    "option_c": "Rob Lowe",
+    "option_d": "Martin Sheen",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which animated film features the song 'Let It Go'?",
+    "option_a": "Tangled",
+    "option_b": "The Princess and the Frog",
+    "option_c": "Moana",
+    "option_d": "Frozen",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional medical facility in 'M*A*S*H'?",
+    "option_a": "The 8063rd",
+    "option_b": "Korea General Hospital",
+    "option_c": "4077th Mobile Army Surgical Hospital",
+    "option_d": "Camp Liberty",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Good Place', what is the name of the architect who designed the neighborhood?",
+    "option_a": "Michael",
+    "option_b": "Glenn",
+    "option_c": "Janet",
+    "option_d": "Shawn",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Tyler Durden?",
+    "option_a": "The Game",
+    "option_b": "American Psycho",
+    "option_c": "Se7en",
+    "option_d": "Fight Club",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Monty Python and the Holy Grail', what is the airspeed velocity of an unladen swallow?",
+    "option_a": "42 miles per hour",
+    "option_b": "It's not specified",
+    "option_c": "24 miles per hour",
+    "option_d": "African or European?",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which actress played Mary Poppins in the 1964 film?",
+    "option_a": "Emily Blunt",
+    "option_b": "Julie Andrews",
+    "option_c": "Emma Thompson",
+    "option_d": "Angela Lansbury",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Walking Dead', what is the name of Rick Grimes' son?",
+    "option_a": "Daryl",
+    "option_b": "Glenn",
+    "option_c": "Shane",
+    "option_d": "Carl",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Lisbeth Salander?",
+    "option_a": "The Girl Who Kicked the Hornet's Nest",
+    "option_b": "The Girl with the Dragon Tattoo",
+    "option_c": "All of the above",
+    "option_d": "The Girl Who Played with Fire",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional high school in 'Glee'?",
+    "option_a": "Ohio High School",
+    "option_b": "Lima High School",
+    "option_c": "William McKinley High School",
+    "option_d": "New Directions High School",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Good Will Hunting', what field is Will Hunting a genius in?",
+    "option_a": "Chemistry",
+    "option_b": "Mathematics",
+    "option_c": "Physics",
+    "option_d": "Literature",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which director is known for his distinctive symmetrical shot compositions?",
+    "option_a": "Tim Burton",
+    "option_b": "David Lynch",
+    "option_c": "Wes Anderson",
+    "option_d": "Christopher Nolan",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Princess Bride', what is the name of the giant?",
+    "option_a": "Miracle Max",
+    "option_b": "Inigo",
+    "option_c": "Fezzik",
+    "option_d": "Vizzini",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Oskar Schindler?",
+    "option_a": "Life is Beautiful",
+    "option_b": "The Pianist",
+    "option_c": "The Boy in the Striped Pajamas",
+    "option_d": "Schindler's List",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional prison in 'Orange is the New Black'?",
+    "option_a": "Briarcliff Manor",
+    "option_b": "Oz Penitentiary",
+    "option_c": "Shawshank Penitentiary",
+    "option_d": "Litchfield Penitentiary",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Star Trek: The Next Generation', who plays Captain Jean-Luc Picard?",
+    "option_a": "Leonard Nimoy",
+    "option_b": "Jonathan Frakes",
+    "option_c": "Patrick Stewart",
+    "option_d": "William Shatner",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Margo Channing?",
+    "option_a": "Sunset Boulevard",
+    "option_b": "The Philadelphia Story",
+    "option_c": "His Girl Friday",
+    "option_d": "All About Eve",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional country in 'The Grand Budapest Hotel'?",
+    "option_a": "Ruritania",
+    "option_b": "Florin",
+    "option_c": "Genovia",
+    "option_d": "Zubrowka",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Big Bang Theory', what is Sheldon's favorite sitcom?",
+    "option_a": "Battlestar Galactica",
+    "option_b": "Doctor Who",
+    "option_c": "Star Trek",
+    "option_d": "The Flash",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Billy Pilgrim?",
+    "option_a": "One Flew Over the Cuckoo's Nest",
+    "option_b": "Catch-22",
+    "option_c": "Slaughterhouse-Five",
+    "option_d": "The Catcher in the Rye",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The X-Files', what is Fox Mulder's famous poster slogan?",
+    "option_a": "Trust No One",
+    "option_b": "Deny Everything",
+    "option_c": "The Truth is Out There",
+    "option_d": "I Want to Believe",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Benjamin Braddock?",
+    "option_a": "Rebel Without a Cause",
+    "option_b": "Dead Poets Society",
+    "option_c": "American Beauty",
+    "option_d": "The Graduate",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Friday Night Lights'?",
+    "option_a": "Houston, Texas",
+    "option_b": "Odessa, Texas",
+    "option_c": "Austin, Texas",
+    "option_d": "Dillon, Texas",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Sopranos', what is the name of Tony's psychiatrist?",
+    "option_a": "Dr. Sidney Freedman",
+    "option_b": "Dr. Susan Ross",
+    "option_c": "Dr. Elliot Kupferberg",
+    "option_d": "Dr. Jennifer Melfi",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Randle McMurphy?",
+    "option_a": "A Clockwork Orange",
+    "option_b": "One Flew Over the Cuckoo's Nest",
+    "option_c": "Psycho",
+    "option_d": "The Shining",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Star Wars: Episode IV - A New Hope', what is the name of the cantina on Mos Eisley?",
+    "option_a": "The Jawa Juice Bar",
+    "option_b": "Chalmun's Cantina",
+    "option_c": "The Outer Rim Cantina",
+    "option_d": "Mos Eisley Cantina",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Atticus Finch?",
+    "option_a": "The Verdict",
+    "option_b": "12 Angry Men",
+    "option_c": "Inherit the Wind",
+    "option_d": "To Kill a Mockingbird",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Andy Griffith Show'?",
+    "option_a": "Green Acres",
+    "option_b": "Mayberry",
+    "option_c": "Petticoat Junction",
+    "option_d": "Hooterville",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does the Cowardly Lion want from the Wizard?",
+    "option_a": "A heart",
+    "option_b": "To go home",
+    "option_c": "Courage",
+    "option_d": "A brain",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Charles Foster Kane?",
+    "option_a": "The Third Man",
+    "option_b": "Touch of Evil",
+    "option_c": "The Magnificent Ambersons",
+    "option_d": "Citizen Kane",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Twilight Zone', what is the famous opening narration?",
+    "option_a": "There is a fifth dimension beyond that which is known to man...",
+    "option_b": "Submitted for your approval...",
+    "option_c": "Imagine if you will...",
+    "option_d": "You are about to enter another dimension...",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Harry Potter?",
+    "option_a": "All of the above",
+    "option_b": "Harry Potter and the Philosopher's Stone",
+    "option_c": "Harry Potter and the Chamber of Secrets",
+    "option_d": "Harry Potter and the Prisoner of Azkaban",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Dukes of Hazzard'?",
+    "option_a": "Duke County",
+    "option_b": "The show doesn't specify",
+    "option_c": "Boar's Nest",
+    "option_d": "Hazzard County",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Godfather Part II', what is the name of the young Vito Corleone's hometown in Sicily?",
+    "option_a": "Palermo",
+    "option_b": "Corleone",
+    "option_c": "Catania",
+    "option_d": "Messina",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Rick Deckard?",
+    "option_a": "RoboCop",
+    "option_b": "The Terminator",
+    "option_c": "Alien",
+    "option_d": "Blade Runner",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional law school in 'Legally Blonde'?",
+    "option_a": "Stanford Law School",
+    "option_b": "Columbia Law School",
+    "option_c": "Harvard Law School",
+    "option_d": "Yale Law School",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Wire', what is the name of the housing project central to Season 1?",
+    "option_a": "The Towers",
+    "option_b": "The Franklin Terrace",
+    "option_c": "The Pit",
+    "option_d": "The Low-Rises",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Tony Montana?",
+    "option_a": "Goodfellas",
+    "option_b": "The Godfather",
+    "option_c": "Scarface",
+    "option_d": "Carlito's Way",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Twin Peaks'?",
+    "option_a": "Ghostwood",
+    "option_b": "The town is not named",
+    "option_c": "Twin Peaks",
+    "option_d": "Black Lodge",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Princess Bride', what is the name of the princess?",
+    "option_a": "Princess Valeria",
+    "option_b": "Buttercup",
+    "option_c": "Princess Bride",
+    "option_d": "Princess Noreena",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Andy Dufresne?",
+    "option_a": "Escape from Alcatraz",
+    "option_b": "The Green Mile",
+    "option_c": "Cool Hand Luke",
+    "option_d": "The Shawshank Redemption",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Star Trek: The Original Series', what is the Vulcan salutation?",
+    "option_a": "Infinite diversity in infinite combinations",
+    "option_b": "The needs of the many outweigh the needs of the few",
+    "option_c": "Live long and prosper",
+    "option_d": "Peace and long life",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Vivian Ward?",
+    "option_a": "Pretty Woman",
+    "option_b": "Working Girl",
+    "option_c": "Mona Lisa Smile",
+    "option_d": "The Devil Wears Prada",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Simpsons'?",
+    "option_a": "Springfield",
+    "option_b": "Shelbyville",
+    "option_c": "Capital City",
+    "option_d": "Springfield is never specified",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Godfather', what is the name of Michael Corleone's first wife?",
+    "option_a": "Kay Adams",
+    "option_b": "Connie Corleone",
+    "option_c": "Mama Corleone",
+    "option_d": "Apollonia",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Dr. Hannibal Lecter?",
+    "option_a": "The Silence of the Lambs",
+    "option_b": "Red Dragon",
+    "option_c": "Hannibal",
+    "option_d": "All of the above",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Office', what is the name of Dwight Schrute's beet farm?",
+    "option_a": "Dunder Farms",
+    "option_b": "Beetropolis",
+    "option_c": "The Beet Retreat",
+    "option_d": "Schrute Farms",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which 1985 film features teenagers stuck in Saturday detention?",
+    "option_a": "Sixteen Candles",
+    "option_b": "St. Elmo's Fire",
+    "option_c": "Pretty in Pink",
+    "option_d": "The Breakfast Club",
+    "correct_option": "d"
+  },
+  {
+    "text": "Who played the role of Jack Torrance in 'The Shining'?",
+    "option_a": "Danny Lloyd",
+    "option_b": "Jack Nicholson",
+    "option_c": "Shelley Duvall",
+    "option_d": "Scatman Crothers",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Friends', what is Chandler Bing's middle name?",
+    "option_a": "He doesn't have one",
+    "option_b": "Muriel",
+    "option_c": "It's never revealed",
+    "option_d": "Bing",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the quote: 'You can't handle the truth!'?",
+    "option_a": "The Firm",
+    "option_b": "Presumed Innocent",
+    "option_c": "A Few Good Men",
+    "option_d": "The Pelican Brief",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the diner in 'Seinfeld'?",
+    "option_a": "Jerry's Place",
+    "option_b": "Soup Nazi's",
+    "option_c": "Reggie's Diner",
+    "option_d": "Monk's Cafe",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Harry Potter', what animal represents Hufflepuff house?",
+    "option_a": "Eagle",
+    "option_b": "Snake",
+    "option_c": "Lion",
+    "option_d": "Badger",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which actor played Captain Jack Sparrow's father in 'Pirates of the Caribbean'?",
+    "option_a": "Jonathan Pryce",
+    "option_b": "Bill Nighy",
+    "option_c": "Keith Richards",
+    "option_d": "Geoffrey Rush",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Star Wars', what species is Chewbacca?",
+    "option_a": "Wookiee",
+    "option_b": "Bothan",
+    "option_c": "Jawa",
+    "option_d": "Ewok",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film won Best Picture at the 1998 Academy Awards?",
+    "option_a": "Good Will Hunting",
+    "option_b": "Titanic",
+    "option_c": "As Good as It Gets",
+    "option_d": "L.A. Confidential",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the high school in 'Beverly Hills, 90210'?",
+    "option_a": "Walsh High",
+    "option_b": "California High",
+    "option_c": "West Beverly Hills High",
+    "option_d": "Beverly Hills High",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does the Tin Man want from the Wizard?",
+    "option_a": "A heart",
+    "option_b": "To go home",
+    "option_c": "A brain",
+    "option_d": "Courage",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which director made 'Psycho', 'Vertigo', and 'North by Northwest'?",
+    "option_a": "Howard Hawks",
+    "option_b": "Billy Wilder",
+    "option_c": "John Ford",
+    "option_d": "Alfred Hitchcock",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop owner in 'Twin Peaks'?",
+    "option_a": "Shelly Johnson",
+    "option_b": "The Log Lady",
+    "option_c": "Audrey Horne",
+    "option_d": "Norma Jennings",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Lord of the Rings', who is the heir to the throne of Gondor?",
+    "option_a": "Boromir",
+    "option_b": "Faramir",
+    "option_c": "Aragorn",
+    "option_d": "Denethor",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Donnie Darko?",
+    "option_a": "Eternal Sunshine",
+    "option_b": "Requiem for a Dream",
+    "option_c": "The Butterfly Effect",
+    "option_d": "Donnie Darko",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the police precinct in 'Brooklyn Nine-Nine'?",
+    "option_a": "The 9th Precinct",
+    "option_b": "NYPD 99",
+    "option_c": "Brooklyn Central",
+    "option_d": "The 99th Precinct",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of Jon Snow's direwolf?",
+    "option_a": "Shaggydog",
+    "option_b": "Nymeria",
+    "option_c": "Ghost",
+    "option_d": "Summer",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actress played Sandy in 'Grease'?",
+    "option_a": "Olivia Newton-John",
+    "option_b": "Debbie Reynolds",
+    "option_c": "Stockard Channing",
+    "option_d": "Doris Day",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the bar in 'How I Met Your Mother'?",
+    "option_a": "MacLaren's Pub",
+    "option_b": "The Goliath National Bank",
+    "option_c": "The Arcadian",
+    "option_d": "Puzzles",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Star Trek: The Next Generation', what is the name of Data's cat?",
+    "option_a": "Whiskers",
+    "option_b": "Spot",
+    "option_c": "Data doesn't have a cat",
+    "option_d": "Mittens",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Marge Gunderson?",
+    "option_a": "Burn After Reading",
+    "option_b": "The Big Lebowski",
+    "option_c": "No Country for Old Men",
+    "option_d": "Fargo",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional country in 'The Princess Diaries'?",
+    "option_a": "Ruritania",
+    "option_b": "Zubrowka",
+    "option_c": "Florin",
+    "option_d": "Genovia",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Big Bang Theory', what is Sheldon's apartment number?",
+    "option_a": "3B",
+    "option_b": "3A",
+    "option_c": "4B",
+    "option_d": "4A",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Vincent Vega?",
+    "option_a": "Jackie Brown",
+    "option_b": "Pulp Fiction",
+    "option_c": "Kill Bill",
+    "option_d": "Reservoir Dogs",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the school in 'Gossip Girl'?",
+    "option_a": "Upper East Side Academy",
+    "option_b": "St. Jude's School",
+    "option_c": "Manhattan Prep",
+    "option_d": "Constance Billard School",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Hunger Games', what is the name of Katniss's sister?",
+    "option_a": "Rue",
+    "option_b": "Primrose",
+    "option_c": "Glimmer",
+    "option_d": "Clove",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actor played James Bond in 'Dr. No'?",
+    "option_a": "George Lazenby",
+    "option_b": "Timothy Dalton",
+    "option_c": "Roger Moore",
+    "option_d": "Sean Connery",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Andy Griffith Show'?",
+    "option_a": "Mayberry",
+    "option_b": "Smallville",
+    "option_c": "Springfield",
+    "option_d": "Hooterville",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Matrix', what is Morpheus's ship called?",
+    "option_a": "The Osiris",
+    "option_b": "The Nebuchadnezzar",
+    "option_c": "The Mjolnir",
+    "option_d": "The Logos",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Harry Callahan?",
+    "option_a": "Magnum Force",
+    "option_b": "Sudden Impact",
+    "option_c": "The Enforcer",
+    "option_d": "Dirty Harry",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Frasier'?",
+    "option_a": "Central Perk",
+    "option_b": "Luke's Diner",
+    "option_c": "Café Nervosa",
+    "option_d": "The Coffee Bean",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of Han Solo's ship?",
+    "option_a": "X-wing",
+    "option_b": "Millennium Falcon",
+    "option_c": "Slave I",
+    "option_d": "TIE Fighter",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Elle Woods?",
+    "option_a": "Clueless",
+    "option_b": "10 Things I Hate About You",
+    "option_c": "Mean Girls",
+    "option_d": "Legally Blonde",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Saved by the Bell'?",
+    "option_a": "Sunnydale High",
+    "option_b": "West Beverly High",
+    "option_c": "Bayside High",
+    "option_d": "James K. Polk High",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the elf played by Orlando Bloom?",
+    "option_a": "Celeborn",
+    "option_b": "Galadriel",
+    "option_c": "Legolas",
+    "option_d": "Elrond",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Annie Wilkes?",
+    "option_a": "Cujo",
+    "option_b": "The Shining",
+    "option_c": "Carrie",
+    "option_d": "Misery",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the bar in 'It's Always Sunny in Philadelphia'?",
+    "option_a": "Sunny's",
+    "option_b": "The Gang's Bar",
+    "option_c": "Philadelphia Pub",
+    "option_d": "Paddy's Pub",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of Daenerys Targaryen's dragons?",
+    "option_a": "Drogon, Rhaegal, Viserion",
+    "option_b": "Syrax, Caraxes, Vermithor",
+    "option_c": "Balerion, Meraxes, Vhagar",
+    "option_d": "She only has one dragon",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Jack Dawson?",
+    "option_a": "The English Patient",
+    "option_b": "A Room with a View",
+    "option_c": "The Great Gatsby",
+    "option_d": "Titanic",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Gilmore Girls'?",
+    "option_a": "Riverdale",
+    "option_b": "Storybrooke",
+    "option_c": "Mystic Falls",
+    "option_d": "Stars Hollow",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Office', what is Michael Scott's movie?",
+    "option_a": "The Dundies",
+    "option_b": "Somehow I Manage",
+    "option_c": "Threat Level Midnight",
+    "option_d": "The Michael Scott Paper Company",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Maximus Decimus Meridius?",
+    "option_a": "Gladiator",
+    "option_b": "Braveheart",
+    "option_c": "300",
+    "option_d": "Troy",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Friends'?",
+    "option_a": "The Coffee Bean",
+    "option_b": "Central Perk",
+    "option_c": "Luke's Diner",
+    "option_d": "Monk's Cafe",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Star Trek', what is the Vulcan hand gesture?",
+    "option_a": "Infinite diversity",
+    "option_b": "The needs of the many",
+    "option_c": "Peace and long life",
+    "option_d": "Live long and prosper",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Clarice Starling?",
+    "option_a": "Hannibal",
+    "option_b": "Red Dragon",
+    "option_c": "The Silence of the Lambs",
+    "option_d": "All of the above",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Freaks and Geeks'?",
+    "option_a": "William McKinley High",
+    "option_b": "Weir High",
+    "option_c": "The show doesn't name it",
+    "option_d": "It's set in a middle school",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does the Cowardly Lion want?",
+    "option_a": "To go home",
+    "option_b": "A heart",
+    "option_c": "Courage",
+    "option_d": "A brain",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Tony Montana?",
+    "option_a": "Scarface",
+    "option_b": "Goodfellas",
+    "option_c": "The Godfather",
+    "option_d": "Carlito's Way",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the bar in 'Cheers'?",
+    "option_a": "The Winchester",
+    "option_b": "The Regal Beagle",
+    "option_c": "Cheers",
+    "option_d": "The Bull & Finch",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of Luke Skywalker's aunt and uncle?",
+    "option_a": "Padmé and Anakin Skywalker",
+    "option_b": "Jobal and Ruwee Naberrie",
+    "option_c": "Beru and Owen Lars",
+    "option_d": "Shmi and Cliegg Lars",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Andy Dufresne?",
+    "option_a": "The Green Mile",
+    "option_b": "Cool Hand Luke",
+    "option_c": "Escape from Alcatraz",
+    "option_d": "The Shawshank Redemption",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Twin Peaks'?",
+    "option_a": "Black Lodge",
+    "option_b": "The town is not named",
+    "option_c": "Ghostwood",
+    "option_d": "Twin Peaks",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the wizard played by Ian McKellen?",
+    "option_a": "Saruman",
+    "option_b": "Alatar",
+    "option_c": "Radagast",
+    "option_d": "Gandalf",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Don Vito Corleone?",
+    "option_a": "Goodfellas",
+    "option_b": "The Godfather",
+    "option_c": "Casino",
+    "option_d": "The Godfather Part II",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Seinfeld'?",
+    "option_a": "Jerry's Place",
+    "option_b": "Monk's Cafe",
+    "option_c": "Soup Nazi's",
+    "option_d": "Reggie's Diner",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of the Stark family's castle?",
+    "option_a": "Winterfell",
+    "option_b": "Casterly Rock",
+    "option_c": "The Eyrie",
+    "option_d": "Riverrun",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Jack Torrance?",
+    "option_a": "Doctor Sleep",
+    "option_b": "Firestarter",
+    "option_c": "The Dead Zone",
+    "option_d": "The Shining",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Buffy the Vampire Slayer'?",
+    "option_a": "Sunnydale High",
+    "option_b": "Sunnydale Academy",
+    "option_c": "Hellmouth High",
+    "option_d": "Buffy High",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Office', what is the name of Jim and Pam's wedding song?",
+    "option_a": "At Last by Etta James",
+    "option_b": "You and Me by Lifehouse",
+    "option_c": "They didn't have a wedding song",
+    "option_d": "Forever by Chris Brown",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Forrest Gump?",
+    "option_a": "The Terminal",
+    "option_b": "Forrest Gump",
+    "option_c": "Big Fish",
+    "option_d": "The Curious Case of Benjamin Button",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Andy Griffith Show'?",
+    "option_a": "Smallville",
+    "option_b": "Hooterville",
+    "option_c": "Mayberry",
+    "option_d": "Springfield",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Star Trek: The Next Generation', what is the name of the ship's doctor?",
+    "option_a": "Dr. Julian Bashir",
+    "option_b": "Dr. Katherine Pulaski",
+    "option_c": "Dr. Leonard McCoy",
+    "option_d": "Dr. Beverly Crusher",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Marge Gunderson?",
+    "option_a": "Fargo",
+    "option_b": "No Country for Old Men",
+    "option_c": "Burn After Reading",
+    "option_d": "The Big Lebowski",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Frasier'?",
+    "option_a": "Central Perk",
+    "option_b": "The Coffee Bean",
+    "option_c": "Luke's Diner",
+    "option_d": "Café Nervosa",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does the Scarecrow want?",
+    "option_a": "To go home",
+    "option_b": "A heart",
+    "option_c": "Courage",
+    "option_d": "A brain",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Vincent Vega?",
+    "option_a": "Kill Bill",
+    "option_b": "Jackie Brown",
+    "option_c": "Reservoir Dogs",
+    "option_d": "Pulp Fiction",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Gossip Girl'?",
+    "option_a": "Upper East Side Academy",
+    "option_b": "St. Jude's School",
+    "option_c": "Manhattan Prep",
+    "option_d": "Constance Billard School",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Hunger Games', what is the name of Katniss's sister?",
+    "option_a": "Clove",
+    "option_b": "Primrose",
+    "option_c": "Rue",
+    "option_d": "Glimmer",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actor played James Bond in 'Dr. No'?",
+    "option_a": "Roger Moore",
+    "option_b": "Sean Connery",
+    "option_c": "George Lazenby",
+    "option_d": "Timothy Dalton",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Andy Griffith Show'?",
+    "option_a": "Smallville",
+    "option_b": "Springfield",
+    "option_c": "Mayberry",
+    "option_d": "Hooterville",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Matrix', what is the name of the crew member who betrays them?",
+    "option_a": "Cypher",
+    "option_b": "Switch",
+    "option_c": "Apoc",
+    "option_d": "Tank",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Harry Callahan?",
+    "option_a": "The Enforcer",
+    "option_b": "Sudden Impact",
+    "option_c": "Magnum Force",
+    "option_d": "Dirty Harry",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Frasier'?",
+    "option_a": "Luke's Diner",
+    "option_b": "The Coffee Bean",
+    "option_c": "Café Nervosa",
+    "option_d": "Central Perk",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of Han Solo's ship?",
+    "option_a": "TIE Fighter",
+    "option_b": "X-wing",
+    "option_c": "Millennium Falcon",
+    "option_d": "Slave I",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Elle Woods?",
+    "option_a": "Mean Girls",
+    "option_b": "10 Things I Hate About You",
+    "option_c": "Clueless",
+    "option_d": "Legally Blonde",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Saved by the Bell'?",
+    "option_a": "Bayside High",
+    "option_b": "Sunnydale High",
+    "option_c": "West Beverly High",
+    "option_d": "James K. Polk High",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the elf played by Orlando Bloom?",
+    "option_a": "Legolas",
+    "option_b": "Elrond",
+    "option_c": "Galadriel",
+    "option_d": "Celeborn",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Annie Wilkes?",
+    "option_a": "Carrie",
+    "option_b": "Misery",
+    "option_c": "Cujo",
+    "option_d": "The Shining",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the bar in 'It's Always Sunny in Philadelphia'?",
+    "option_a": "Paddy's Pub",
+    "option_b": "The Gang's Bar",
+    "option_c": "Philadelphia Pub",
+    "option_d": "Sunny's",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of Daenerys Targaryen's dragons?",
+    "option_a": "Syrax, Caraxes, Vermithor",
+    "option_b": "Drogon, Rhaegal, Viserion",
+    "option_c": "Balerion, Meraxes, Vhagar",
+    "option_d": "She only has one dragon",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Jack Dawson?",
+    "option_a": "Titanic",
+    "option_b": "A Room with a View",
+    "option_c": "The Great Gatsby",
+    "option_d": "The English Patient",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Gilmore Girls'?",
+    "option_a": "Storybrooke",
+    "option_b": "Riverdale",
+    "option_c": "Stars Hollow",
+    "option_d": "Mystic Falls",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Office', what is Michael Scott's favorite movie?",
+    "option_a": "Star Wars",
+    "option_b": "The Godfather",
+    "option_c": "Die Hard",
+    "option_d": "It's never specified",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Maximus Decimus Meridius?",
+    "option_a": "Gladiator",
+    "option_b": "Troy",
+    "option_c": "300",
+    "option_d": "Braveheart",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Friends'?",
+    "option_a": "Monk's Cafe",
+    "option_b": "The Coffee Bean",
+    "option_c": "Central Perk",
+    "option_d": "Luke's Diner",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'Star Trek', what is the name of the captain played by William Shatner?",
+    "option_a": "Jean-Luc Picard",
+    "option_b": "Benjamin Sisko",
+    "option_c": "James T. Kirk",
+    "option_d": "Kathryn Janeway",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Clarice Starling?",
+    "option_a": "Hannibal",
+    "option_b": "Red Dragon",
+    "option_c": "The Silence of the Lambs",
+    "option_d": "All of the above",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Freaks and Geeks'?",
+    "option_a": "William McKinley High",
+    "option_b": "Weir High",
+    "option_c": "The show doesn't name it",
+    "option_d": "It's set in a middle school",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does the Cowardly Lion want?",
+    "option_a": "Courage",
+    "option_b": "A brain",
+    "option_c": "A heart",
+    "option_d": "To go home",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Tony Montana?",
+    "option_a": "Scarface",
+    "option_b": "Goodfellas",
+    "option_c": "The Godfather",
+    "option_d": "Carlito's Way",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the bar in 'Cheers'?",
+    "option_a": "Cheers",
+    "option_b": "The Bull & Finch",
+    "option_c": "The Regal Beagle",
+    "option_d": "The Winchester",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of the emperor?",
+    "option_a": "Count Dooku",
+    "option_b": "Darth Maul",
+    "option_c": "Darth Vader",
+    "option_d": "Palpatine",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Andy Dufresne?",
+    "option_a": "The Green Mile",
+    "option_b": "Escape from Alcatraz",
+    "option_c": "The Shawshank Redemption",
+    "option_d": "Cool Hand Luke",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Twin Peaks'?",
+    "option_a": "Ghostwood",
+    "option_b": "Twin Peaks",
+    "option_c": "Black Lodge",
+    "option_d": "The town is not named",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the wizard played by Ian McKellen?",
+    "option_a": "Gandalf",
+    "option_b": "Radagast",
+    "option_c": "Saruman",
+    "option_d": "Alatar",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Don Vito Corleone?",
+    "option_a": "Casino",
+    "option_b": "The Godfather Part II",
+    "option_c": "Goodfellas",
+    "option_d": "The Godfather",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Seinfeld'?",
+    "option_a": "Monk's Cafe",
+    "option_b": "Soup Nazi's",
+    "option_c": "Reggie's Diner",
+    "option_d": "Jerry's Place",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of the Stark family's castle?",
+    "option_a": "The Eyrie",
+    "option_b": "Riverrun",
+    "option_c": "Winterfell",
+    "option_d": "Casterly Rock",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Jack Torrance?",
+    "option_a": "Firestarter",
+    "option_b": "The Dead Zone",
+    "option_c": "Doctor Sleep",
+    "option_d": "The Shining",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Buffy the Vampire Slayer'?",
+    "option_a": "Sunnydale High",
+    "option_b": "Hellmouth High",
+    "option_c": "Sunnydale Academy",
+    "option_d": "Buffy High",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Office', what is the name of Jim and Pam's wedding song?",
+    "option_a": "You and Me by Lifehouse",
+    "option_b": "At Last by Etta James",
+    "option_c": "Forever by Chris Brown",
+    "option_d": "They didn't have a wedding song",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Forrest Gump?",
+    "option_a": "Forrest Gump",
+    "option_b": "Big Fish",
+    "option_c": "The Terminal",
+    "option_d": "The Curious Case of Benjamin Button",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Andy Griffith Show'?",
+    "option_a": "Springfield",
+    "option_b": "Mayberry",
+    "option_c": "Smallville",
+    "option_d": "Hooterville",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Star Trek: The Next Generation', what is the name of the ship's doctor?",
+    "option_a": "Dr. Leonard McCoy",
+    "option_b": "Dr. Julian Bashir",
+    "option_c": "Dr. Katherine Pulaski",
+    "option_d": "Dr. Beverly Crusher",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Marge Gunderson?",
+    "option_a": "No Country for Old Men",
+    "option_b": "The Big Lebowski",
+    "option_c": "Burn After Reading",
+    "option_d": "Fargo",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Frasier'?",
+    "option_a": "The Coffee Bean",
+    "option_b": "Central Perk",
+    "option_c": "Luke's Diner",
+    "option_d": "Café Nervosa",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what does the Scarecrow want?",
+    "option_a": "A brain",
+    "option_b": "A heart",
+    "option_c": "Courage",
+    "option_d": "To go home",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which film features the character of Vincent Vega?",
+    "option_a": "Reservoir Dogs",
+    "option_b": "Jackie Brown",
+    "option_c": "Kill Bill",
+    "option_d": "Pulp Fiction",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the high school in 'Gossip Girl'?",
+    "option_a": "Constance Billard School",
+    "option_b": "St. Jude's School",
+    "option_c": "Upper East Side Academy",
+    "option_d": "Manhattan Prep",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Hunger Games', what is the name of Katniss's sister?",
+    "option_a": "Rue",
+    "option_b": "Primrose",
+    "option_c": "Glimmer",
+    "option_d": "Clove",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which actor played James Bond in 'Dr. No'?",
+    "option_a": "Roger Moore",
+    "option_b": "Timothy Dalton",
+    "option_c": "George Lazenby",
+    "option_d": "Sean Connery",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'The Andy Griffith Show'?",
+    "option_a": "Springfield",
+    "option_b": "Mayberry",
+    "option_c": "Smallville",
+    "option_d": "Hooterville",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Matrix', what is the name of the crew member who betrays them?",
+    "option_a": "Switch",
+    "option_b": "Tank",
+    "option_c": "Apoc",
+    "option_d": "Cypher",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Harry Callahan?",
+    "option_a": "Sudden Impact",
+    "option_b": "Magnum Force",
+    "option_c": "The Enforcer",
+    "option_d": "Dirty Harry",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Frasier'?",
+    "option_a": "Luke's Diner",
+    "option_b": "The Coffee Bean",
+    "option_c": "Central Perk",
+    "option_d": "Café Nervosa",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of Han Solo's ship?",
+    "option_a": "TIE Fighter",
+    "option_b": "Slave I",
+    "option_c": "X-wing",
+    "option_d": "Millennium Falcon",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Elle Woods?",
+    "option_a": "Mean Girls",
+    "option_b": "10 Things I Hate About You",
+    "option_c": "Legally Blonde",
+    "option_d": "Clueless",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the high school in 'Saved by the Bell'?",
+    "option_a": "Sunnydale High",
+    "option_b": "West Beverly High",
+    "option_c": "Bayside High",
+    "option_d": "James K. Polk High",
+    "correct_option": "c"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the elf played by Orlando Bloom?",
+    "option_a": "Elrond",
+    "option_b": "Celeborn",
+    "option_c": "Legolas",
+    "option_d": "Galadriel",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which film features the character of Annie Wilkes?",
+    "option_a": "Carrie",
+    "option_b": "Misery",
+    "option_c": "Cujo",
+    "option_d": "The Shining",
+    "correct_option": "b"
+  },
+  {
+    "text": "What is the name of the bar in 'It's Always Sunny in Philadelphia'?",
+    "option_a": "The Gang's Bar",
+    "option_b": "Sunny's",
+    "option_c": "Philadelphia Pub",
+    "option_d": "Paddy's Pub",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of Daenerys Targaryen's dragons?",
+    "option_a": "Balerion, Meraxes, Vhagar",
+    "option_b": "Drogon, Rhaegal, Viserion",
+    "option_c": "Syrax, Caraxes, Vermithor",
+    "option_d": "She only has one dragon",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the character of Jack Dawson?",
+    "option_a": "Titanic",
+    "option_b": "The Great Gatsby",
+    "option_c": "A Room with a View",
+    "option_d": "The English Patient",
+    "correct_option": "a"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Gilmore Girls'?",
+    "option_a": "Storybrooke",
+    "option_b": "Riverdale",
+    "option_c": "Mystic Falls",
+    "option_d": "Stars Hollow",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Office', what is Michael Scott's favorite movie?",
+    "option_a": "Star Wars",
+    "option_b": "It's never specified",
+    "option_c": "The Godfather",
+    "option_d": "Die Hard",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Fresh Prince of Bel-Air', what is the name of Will's butler?",
+    "option_a": "Hilary",
+    "option_b": "Geoffrey",
+    "option_c": "Philip",
+    "option_d": "Carlton",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which film features the line, 'I'm the king of the world!'?",
+    "option_a": "King Kong",
+    "option_b": "Gladiator",
+    "option_c": "The Lion King",
+    "option_d": "Titanic",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Harry Potter', what is the name of the Weasley family's house?",
+    "option_a": "The Burrow",
+    "option_b": "Hogwarts",
+    "option_c": "Shell Cottage",
+    "option_d": "Grimmauld Place",
+    "correct_option": "a"
+  },
+  {
+    "text": "Which actor played the Terminator in the original 1984 film?",
+    "option_a": "Edward Furlong",
+    "option_b": "Michael Biehn",
+    "option_c": "Linda Hamilton",
+    "option_d": "Arnold Schwarzenegger",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Friends', what is the name of Joey's stuffed penguin?",
+    "option_a": "Snowball",
+    "option_b": "Bob",
+    "option_c": "Mr. Penguin",
+    "option_d": "Hugsy",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Django Freeman?",
+    "option_a": "Inglourious Basterds",
+    "option_b": "The Hateful Eight",
+    "option_c": "Jackie Brown",
+    "option_d": "Django Unchained",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the coffee shop in 'Twin Peaks'?",
+    "option_a": "Bookhouse Boys",
+    "option_b": "Double R Diner",
+    "option_c": "One Eyed Jack's",
+    "option_d": "Great Northern Hotel",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of Luke Skywalker's home planet?",
+    "option_a": "Endor",
+    "option_b": "Hoth",
+    "option_c": "Coruscant",
+    "option_d": "Tatooine",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film won Best Picture at the 1975 Academy Awards?",
+    "option_a": "The Conversation",
+    "option_b": "Lenny",
+    "option_c": "The Godfather Part II",
+    "option_d": "Chinatown",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the high school in 'The Wonder Years'?",
+    "option_a": "William McKinley High School",
+    "option_b": "The show doesn't name it",
+    "option_c": "John F. Kennedy High School",
+    "option_d": "Robert F. Kennedy High School",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Wizard of Oz', what is the name of the Good Witch?",
+    "option_a": "The Wicked Witch of the East",
+    "option_b": "Glinda",
+    "option_c": "Auntie Em",
+    "option_d": "The Wicked Witch of the West",
+    "correct_option": "b"
+  },
+  {
+    "text": "Which director made 'Jaws', 'E.T.', and 'Jurassic Park'?",
+    "option_a": "George Lucas",
+    "option_b": "Peter Jackson",
+    "option_c": "Steven Spielberg",
+    "option_d": "James Cameron",
+    "correct_option": "c"
+  },
+  {
+    "text": "What is the name of the police department in 'Law & Order'?",
+    "option_a": "NYPD 27th Precinct",
+    "option_b": "NYPD Central",
+    "option_c": "Manhattan South",
+    "option_d": "NYPD 15th Precinct",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'The Lord of the Rings', what is the name of the dwarf played by John Rhys-Davies?",
+    "option_a": "Thorin",
+    "option_b": "Balin",
+    "option_c": "Dwalin",
+    "option_d": "Gimli",
+    "correct_option": "d"
+  },
+  {
+    "text": "Which film features the character of Patrick Bateman?",
+    "option_a": "American Psycho",
+    "option_b": "The Game",
+    "option_c": "Se7en",
+    "option_d": "Fight Club",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of the three-eyed raven?",
+    "option_a": "Brandon Stark",
+    "option_b": "The Night King",
+    "option_c": "Brynden Rivers",
+    "option_d": "Jojen Reed",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actress played Marion Ravenwood in 'Raiders of the Lost Ark'?",
+    "option_a": "Alison Doody",
+    "option_b": "Kate Capshaw",
+    "option_c": "Sean Young",
+    "option_d": "Karen Allen",
+    "correct_option": "d"
+  },
+  {
+    "text": "What is the name of the fictional town in 'Northern Exposure'?",
+    "option_a": "Cicely, Washington",
+    "option_b": "Cicely, Oregon",
+    "option_c": "Cicely, Montana",
+    "option_d": "Cicely, Alaska",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Big Bang Theory', what is Penny's last name?",
+    "option_a": "Teller",
+    "option_b": "Rostenkowski",
+    "option_c": "Hofstadter",
+    "option_d": "Cooper",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Office', what is Dwight's middle name?",
+    "option_a": "He doesn't have one",
+    "option_b": "Kurt",
+    "option_c": "Schrute",
+    "option_d": "It's never revealed",
+    "correct_option": "b"
+  },
+  {
+    "text": "In 'The Hunger Games', what is the name of Katniss's mentor?",
+    "option_a": "President Snow",
+    "option_b": "Effie Trinket",
+    "option_c": "Haymitch Abernathy",
+    "option_d": "Cinna",
+    "correct_option": "c"
+  },
+  {
+    "text": "Which actor played James Bond in 'GoldenEye'?",
+    "option_a": "Roger Moore",
+    "option_b": "Timothy Dalton",
+    "option_c": "Sean Connery",
+    "option_d": "Pierce Brosnan",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'The Matrix', what is the name of the crew member who betrays them?",
+    "option_a": "Apoc",
+    "option_b": "Switch",
+    "option_c": "Tank",
+    "option_d": "Cypher",
+    "correct_option": "d"
+  },
+  {
+    "text": "In 'Star Wars', what is the name of the princess played by Carrie Fisher?",
+    "option_a": "Princess Leia Organa",
+    "option_b": "Padmé Amidala",
+    "option_c": "Rey",
+    "option_d": "Jyn Erso",
+    "correct_option": "a"
+  },
+  {
+    "text": "In 'Game of Thrones', what is the name of Jon Snow's direwolf?",
+    "option_a": "Ghost",
+    "option_b": "Summer",
+    "option_c": "Nymeria",
+    "option_d": "Shaggydog",
+    "correct_option": "a"
+  }
+]

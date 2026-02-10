@@ -1,10 +1,693 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Quiz Challenge | Cinematic Trivia</title>
+    <link rel="stylesheet" href="{% static 'movie_site/css/quiz.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
+    <div class="quiz-container">
+        <!-- Header Section -->
+        <header class="quiz-header">
+            <div class="header-content">
+                <a href="{% url 'home' %}" class="home-button">
+                    <i class="fas fa-home"></i> Back to Cinema
+                </a>
+                <div class="quiz-title">
+                    <h1><i class="fas fa-film"></i> CINEMATIC TRIVIA CHALLENGE</h1>
+                    <p class="tagline">Test your movie knowledge!</p>
+                </div>
+                <div class="quiz-progress">
+                    <div class="progress-info">
+                        <span class="score-display"><i class="fas fa-trophy"></i> Score: <span id="current-score">0</span>/<span id="max-score">{{ questions|length }}</span></span>
+                        <span class="question-counter">Question: <span id="current-question">1</span>/<span id="total-questions">{{ questions|length }}</span></span>
+                        <span class="timer"><i class="fas fa-clock"></i> Time: <span id="quiz-timer">00:00</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
+        <!-- Main Quiz Area -->
+        <main class="quiz-main">
+            <div class="quiz-content">
+                <!-- Quiz Intro Screen -->
+                <div class="intro-screen animate__animated animate__fadeIn" id="intro-screen">
+                    <div class="intro-content">
+                        <div class="intro-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <h2>Ready for the Ultimate Movie Quiz?</h2>
+                        <p>Answer {{ questions|length }} movie-related questions. You'll get instant feedback after each answer. Your final performance will be rated with cinematic flair!</p>
+                        <div class="instructions">
+                            <h3><i class="fas fa-info-circle"></i> How it works:</h3>
+                            <ul>
+                                <li><i class="fas fa-check-circle"></i> Choose one answer per question</li>
+                                <li><i class="fas fa-bolt"></i> Get immediate feedback on your answer</li>
+                                <li><i class="fas fa-star"></i> Earn 1 point for each correct answer</li>
+                                <li><i class="fas fa-clock"></i> Complete the quiz as fast as you can</li>
+                                <li><i class="fas fa-award"></i> Receive a cinematic rating at the end</li>
+                            </ul>
+                        </div>
+                        <button class="start-btn" id="start-quiz-btn">
+                            <i class="fas fa-play"></i> Start Quiz
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Question Screen -->
+                <div class="question-screen" id="question-screen" style="display: none;">
+                    <div class="question-header">
+                        <h3 class="question-number">Question <span id="q-number">1</span></h3>
+                        <div class="question-difficulty">
+                            <span class="difficulty-label">Difficulty:</span>
+                            <span class="difficulty-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="question-text-container">
+                        <p class="question-text" id="question-text">Loading question...</p>
+                    </div>
+
+                    <div class="options-container">
+                        <form id="quiz-form">
+                            <div class="option-row">
+                                <input type="radio" id="option-a" name="answer" value="a">
+                                <label for="option-a" class="option-label" id="label-a">
+                                    <span class="option-letter">A</span>
+                                    <span class="option-text" id="text-a">Option A</span>
+                                </label>
+                            </div>
+
+                            <div class="option-row">
+                                <input type="radio" id="option-b" name="answer" value="b">
+                                <label for="option-b" class="option-label" id="label-b">
+                                    <span class="option-letter">B</span>
+                                    <span class="option-text" id="text-b">Option B</span>
+                                </label>
+                            </div>
+
+                            <div class="option-row">
+                                <input type="radio" id="option-c" name="answer" value="c">
+                                <label for="option-c" class="option-label" id="label-c">
+                                    <span class="option-letter">C</span>
+                                    <span class="option-text" id="text-c">Option C</span>
+                                </label>
+                            </div>
+
+                            <div class="option-row">
+                                <input type="radio" id="option-d" name="answer" value="d">
+                                <label for="option-d" class="option-label" id="label-d">
+                                    <span class="option-letter">D</span>
+                                    <span class="option-text" id="text-d">Option D</span>
+                                </label>
+                            </div>
+
+                            <div class="submit-container">
+                                <button type="button" class="submit-btn" id="submit-answer" disabled>
+                                    <i class="fas fa-paper-plane"></i> Submit Answer
+                                </button>
+                                <button type="button" class="next-btn" id="next-question" style="display: none;">
+                                    <i class="fas fa-forward"></i> Next Question
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Feedback Area -->
+                    <div class="feedback-container" id="feedback-container" style="display: none;">
+                        <div class="feedback-content">
+                            <div class="feedback-icon" id="feedback-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="feedback-title" id="feedback-title">Correct Answer!</h3>
+                            <p class="feedback-text" id="feedback-text">You've selected the right answer!</p>
+                            <div class="correct-answer" id="correct-answer-display" style="display: none;">
+                                <p><strong>Correct Answer:</strong> <span id="correct-answer-text"></span></p>
+                            </div>
+                            <div class="score-change" id="score-change">
+                                <span class="score-change-text">+1 point</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Screen -->
+                <div class="results-screen" id="results-screen" style="display: none;">
+                    <div class="results-content">
+                        <div class="results-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h2>Quiz Complete!</h2>
+                        <p class="quiz-time">Time Taken: <span id="final-time">00:00</span></p>
+
+                        <div class="results-stats">
+                            <div class="stat-box">
+                                <div class="stat-value" id="final-score">0</div>
+                                <div class="stat-label">Final Score (out of {{ questions|length }})</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="correct-count">0</div>
+                                <div class="stat-label">Correct Answers</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="accuracy-rate">0%</div>
+                                <div class="stat-label">Accuracy</div>
+                            </div>
+                        </div>
+
+                        <div class="performance-rating">
+                            <h3>Your Cinematic Rating:</h3>
+                            <div class="rating-title" id="rating-title">Blockbuster!</div>
+                            <div class="rating-description" id="rating-description">
+                                You're a true film connoisseur! Your knowledge is worthy of the silver screen.
+                            </div>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+
+                        <div class="results-actions">
+                            <a href="{% url 'quiz' %}" class="retry-btn" id="retry-quiz-btn">
+                                <i class="fas fa-redo"></i> Try New Quiz
+                            </a>
+                            <button class="save-btn" id="save-results-btn">
+                                <i class="fas fa-save"></i> Save Results
+                            </button>
+                            <a href="{% url 'home' %}" class="home-results-btn">
+                                <i class="fas fa-home"></i> Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="quiz-footer">
+            <p>Movie Quiz Challenge &copy; 2023 | Test your cinematic knowledge!</p>
+            <div class="footer-icons">
+                <i class="fas fa-film"></i>
+                <i class="fas fa-popcorn"></i>
+                <i class="fas fa-camera"></i>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading your cinematic challenge...</p>
+    </div>
+
+    <!-- Django Context Data -->
+    <script>
+        // Convert Django context data to JavaScript
+        const djangoQuizData = [
+            {% for question in questions %}
+            {
+                id: {{ question.id }},
+                text: "{{ question.text|escapejs }}",
+                option_a: "{{ question.option_a|escapejs }}",
+                option_b: "{{ question.option_b|escapejs }}",
+                option_c: "{{ question.option_c|escapejs }}",
+                option_d: "{{ question.option_d|escapejs }}",
+                correct_option: "{{ question.correct_option|escapejs }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        const csrfToken = '{{ csrf_token }}';
+    </script>
+
+    <!-- Scripts -->
+    <script>
+        // Quiz data and state
+        let quizData = djangoQuizData;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = quizData.length;
+        let maxScore = totalQuestions; // Each question worth 1 point
+        let startTime = null;
+        let timerInterval = null;
+        let elapsedTime = 0;
+        let userAnswers = [];
+
+        // DOM elements
+        const introScreen = document.getElementById('intro-screen');
+        const questionScreen = document.getElementById('question-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const submitAnswerBtn = document.getElementById('submit-answer');
+        const nextQuestionBtn = document.getElementById('next-question');
+        const quizForm = document.getElementById('quiz-form');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const saveResultsBtn = document.getElementById('save-results-btn');
+        const currentScoreElement = document.getElementById('current-score');
+        const maxScoreElement = document.getElementById('max-score');
+        const currentQuestionElement = document.getElementById('current-question');
+        const quizTimerElement = document.getElementById('quiz-timer');
+        const quizProgressElement = document.getElementById('quiz-progress');
+
+        // Initialize the quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Quiz data loaded:', quizData);
+            console.log('Total questions:', totalQuestions);
+
+            // Update score display to show out of total
+            maxScoreElement.textContent = maxScore;
+
+            // Event listeners
+            startQuizBtn.addEventListener('click', startQuiz);
+            submitAnswerBtn.addEventListener('click', submitAnswer);
+            nextQuestionBtn.addEventListener('click', showNextQuestion);
+            saveResultsBtn.addEventListener('click', saveQuizResults);
+
+            // Radio button change event
+            const radioButtons = document.querySelectorAll('input[name="answer"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    console.log('Radio button changed:', this.value);
+                    submitAnswerBtn.disabled = false;
+                    submitAnswerBtn.classList.add('active');
+
+                    // Highlight selected option
+                    document.querySelectorAll('.option-label').forEach(label => {
+                        label.classList.remove('selected');
+                    });
+                    const selectedLabel = document.getElementById(`label-${this.value}`);
+                    selectedLabel.classList.add('selected');
+                });
+            });
+
+            // If no questions, show error
+            if (totalQuestions === 0) {
+                alert('No active questions available for the quiz. Please try again later.');
+                startQuizBtn.disabled = true;
+            }
+
+            // Adjust quiz content height on load
+            adjustQuizHeight();
+
+            // Adjust height on window resize
+            window.addEventListener('resize', adjustQuizHeight);
+        });
+
+        // Adjust quiz content height to fit everything without scrolling
+        function adjustQuizHeight() {
+            const quizContent = document.querySelector('.quiz-content');
+            const headerHeight = document.querySelector('.quiz-header').offsetHeight;
+            const footerHeight = document.querySelector('.quiz-footer').offsetHeight;
+            const windowHeight = window.innerHeight;
+
+            // Calculate available height
+            const availableHeight = windowHeight - headerHeight - footerHeight - 80; // 80px for padding
+
+            // Set minimum height for quiz content
+            quizContent.style.minHeight = Math.max(availableHeight, 500) + 'px';
+        }
+
+        // Start the quiz
+        function startQuiz() {
+            console.log('Starting quiz...');
+            introScreen.style.display = 'none';
+            questionScreen.style.display = 'block';
+
+            // Start timer
+            startTime = new Date();
+            startTimer();
+
+            // Load first question
+            loadQuestion(currentQuestionIndex);
+
+            // Adjust height after showing question screen
+            setTimeout(adjustQuizHeight, 100);
+        }
+
+        // Load a specific question
+        function loadQuestion(index) {
+            console.log('Loading question index:', index);
+
+            if (index >= quizData.length) {
+                endQuiz();
+                return;
+            }
+
+            const question = quizData[index];
+            console.log('Current question:', question);
+
+            // Update UI elements
+            document.getElementById('q-number').textContent = index + 1;
+            document.getElementById('current-question').textContent = index + 1;
+            document.getElementById('question-text').textContent = question.text;
+
+            // Update options
+            document.getElementById('text-a').textContent = question.option_a;
+            document.getElementById('text-b').textContent = question.option_b;
+            document.getElementById('text-c').textContent = question.option_c;
+            document.getElementById('text-d').textContent = question.option_d;
+
+            // Reset form and enable radio buttons
+            quizForm.reset();
+            document.querySelectorAll('input[name="answer"]').forEach(radio => {
+                radio.disabled = false;
+            });
+
+            submitAnswerBtn.disabled = true;
+            submitAnswerBtn.classList.remove('active');
+            submitAnswerBtn.style.display = 'block';
+            nextQuestionBtn.style.display = 'none';
+            feedbackContainer.style.display = 'none';
+
+            // Remove any previous styling from options
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.classList.remove('correct', 'incorrect', 'selected');
+            });
+
+            // Update progress bar
+            const progressPercent = ((index) / totalQuestions) * 100;
+            quizProgressElement.style.width = `${progressPercent}%`;
+
+            console.log('Question loaded successfully');
+
+            // Adjust height after loading question
+            setTimeout(adjustQuizHeight, 50);
+        }
+
+        // Submit answer and show feedback
+        function submitAnswer() {
+            console.log('Submit button clicked');
+
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            console.log('Selected option:', selectedOption);
+
+            if (!selectedOption) {
+                console.log('No option selected');
+                return;
+            }
+
+            const selectedValue = selectedOption.value;
+            const question = quizData[currentQuestionIndex];
+            console.log('Question correct answer:', question.correct_option);
+            console.log('User selected:', selectedValue);
+
+            const isCorrect = selectedValue === question.correct_option;
+            console.log('Is correct?', isCorrect);
+
+            // Store user answer
+            userAnswers.push({
+                questionId: question.id,
+                selected: selectedValue,
+                correct: question.correct_option,
+                isCorrect: isCorrect
+            });
+
+            // Update score if correct (1 point per correct answer)
+            if (isCorrect) {
+                score += 1;
+                currentScoreElement.textContent = score;
+
+                // Animate score update
+                currentScoreElement.classList.add('score-update');
+                setTimeout(() => {
+                    currentScoreElement.classList.remove('score-update');
+                }, 500);
+            }
+
+            // Show feedback
+            showFeedback(isCorrect, question.correct_option);
+
+            // Disable all radio buttons
+            document.querySelectorAll('input[name="answer"]').forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // Style the options based on correctness
+            const selectedLabel = document.getElementById(`label-${selectedValue}`);
+            selectedLabel.classList.add(isCorrect ? 'correct' : 'incorrect');
+            selectedLabel.classList.add('selected');
+
+            // Highlight the correct answer (if user got it wrong)
+            if (!isCorrect) {
+                const correctLabel = document.getElementById(`label-${question.correct_option}`);
+                correctLabel.classList.add('correct');
+            }
+
+            // Update UI
+            submitAnswerBtn.style.display = 'none';
+            nextQuestionBtn.style.display = 'block';
+
+            // Adjust height after showing feedback
+            setTimeout(adjustQuizHeight, 50);
+        }
+
+        // Show feedback for the answer
+        function showFeedback(isCorrect, correctOption) {
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            const correctAnswerDisplay = document.getElementById('correct-answer-display');
+            const correctAnswerText = document.getElementById('correct-answer-text');
+            const scoreChange = document.getElementById('score-change');
+
+            if (isCorrect) {
+                feedbackIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                feedbackIcon.style.color = '#4CAF50';
+                feedbackTitle.textContent = "Correct!";
+                feedbackText.textContent = getRandomCorrectFeedback();
+                correctAnswerDisplay.style.display = 'none';
+                scoreChange.innerHTML = '<span class="score-change-text">+1 point</span>';
+                scoreChange.style.backgroundColor = 'rgba(76, 175, 80, 0.2)';
+            } else {
+                feedbackIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                feedbackIcon.style.color = '#f44336';
+                feedbackTitle.textContent = "Incorrect";
+                feedbackText.textContent = getRandomIncorrectFeedback();
+
+                // Show correct answer
+                const correctOptionLetter = correctOption.toUpperCase();
+                const correctOptionText = document.getElementById(`text-${correctOption}`).textContent;
+                correctAnswerText.textContent = `${correctOptionLetter}: ${correctOptionText}`;
+                correctAnswerDisplay.style.display = 'block';
+
+                scoreChange.innerHTML = '<span class="score-change-text">+0 points</span>';
+                scoreChange.style.backgroundColor = 'rgba(244, 67, 54, 0.2)';
+            }
+
+            feedbackContainer.style.display = 'block';
+
+            // Add animation
+            feedbackContainer.classList.add('animate__animated', 'animate__fadeIn');
+            setTimeout(() => {
+                feedbackContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            }, 1000);
+        }
+
+        // Move to next question
+        function showNextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < totalQuestions) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                endQuiz();
+            }
+        }
+
+        // End the quiz and show results
+        function endQuiz() {
+            // Stop timer
+            stopTimer();
+
+            // Calculate final stats
+            const correctCount = score; // Score is already the count of correct answers
+            const accuracy = Math.round((correctCount / totalQuestions) * 100);
+            const finalTime = formatTime(elapsedTime);
+
+            // Update results screen
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
+            document.getElementById('final-time').textContent = finalTime;
+
+            // Set performance rating
+            setPerformanceRating(accuracy);
+
+            // Switch to results screen
+            questionScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+
+            // Add animation
+            resultsScreen.classList.add('animate__animated', 'animate__fadeIn');
+            setTimeout(() => {
+                resultsScreen.classList.remove('animate__animated', 'animate__fadeIn');
+            }, 1000);
+        }
+
+        // Set the performance rating based on accuracy
+        function setPerformanceRating(accuracy) {
+            const ratingTitle = document.getElementById('rating-title');
+            const ratingDescription = document.getElementById('rating-description');
+
+            let title, description, stars;
+
+            if (accuracy >= 90) {
+                title = "Oscar-Worthy!";
+                description = "You're a true film connoisseur! Your knowledge is worthy of the silver screen.";
+                stars = 5;
+            } else if (accuracy >= 75) {
+                title = "Blockbuster Hit!";
+                description = "Impressive knowledge! You'd make a great film critic.";
+                stars = 4;
+            } else if (accuracy >= 60) {
+                title = "Critically Acclaimed!";
+                description = "Solid performance! You know your movies well.";
+                stars = 3;
+            } else if (accuracy >= 40) {
+                title = "Cult Classic!";
+                description = "Not bad! You've got the basics down, but there's room to grow.";
+                stars = 2;
+            } else {
+                title = "Direct-to-Video";
+                description = "You might want to binge-watch some classics and try again!";
+                stars = 1;
+            }
+
+            ratingTitle.textContent = title;
+            ratingDescription.textContent = description;
+
+            // Update star display
+            const starElements = document.querySelectorAll('.rating-stars i');
+            starElements.forEach((star, index) => {
+                if (index < stars) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Save quiz results to the server - UPDATED for 1-10 score
+        function saveQuizResults() {
+            const saveBtn = document.getElementById('save-results-btn');
+            const originalText = saveBtn.innerHTML;
+
+            // Show loading state
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            // Prepare data to send - score is now 1-10 (not percentage)
+            const quizDataToSave = {
+                score: score, // This is now 1-10 (number of correct answers)
+                total_questions: totalQuestions,
+                time_taken: elapsedTime
+            };
+
+            // Make AJAX call to save results
+            fetch('{% url "save_quiz_results" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(quizDataToSave)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Save response:', data);
+                if (data.status === 'success') {
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Results Saved!';
+                    saveBtn.style.backgroundColor = '#4CAF50';
+                } else {
+                    saveBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error Saving';
+                    saveBtn.style.backgroundColor = '#f44336';
+                    console.error('Server error:', data.message);
+                }
+
+                // After 2 seconds, reset the button
+                setTimeout(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.style.backgroundColor = '';
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error saving results:', error);
+                saveBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error Saving';
+                saveBtn.style.backgroundColor = '#f44336';
+
+                setTimeout(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.style.backgroundColor = '';
+                }, 2000);
+            });
+        }
+
+        // Timer functions
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                elapsedTime += 1;
+                quizTimerElement.textContent = formatTime(elapsedTime);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Feedback message generators
+        function getRandomCorrectFeedback() {
+            const feedbacks = [
+                "Spot on! You really know your movies!",
+                "Absolutely correct! That's cinema knowledge at its finest!",
+                "Bravo! You've clearly done your film homework!",
+                "Perfect! You're on your way to becoming a film buff!",
+                "Correct! Your cinematic intuition is impressive!",
+                "Right answer! That's worthy of a standing ovation!"
+            ];
+            return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+        }
+
+        function getRandomIncorrectFeedback() {
+            const feedbacks = [
+                "Not quite right, but don't worry - even the best critics miss sometimes!",
+                "Incorrect, but every wrong answer is a chance to learn more about cinema!",
+                "That's not it, but the world of film is vast and full of surprises!",
+                "Wrong answer, but movie trivia is tricky! Try again next time!",
+                "Not correct, but don't let that dim your love for cinema!"
+            ];
+            return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+        }
+    </script>
 </body>
 </html>
