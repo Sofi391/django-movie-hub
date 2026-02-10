@@ -88,7 +88,7 @@ Beyond entertainment, Movie Hub was built as a **learning-driven project** to ap
 - django-celery-results
 
 ### Email
-- Brevo (Transactional Email API)
+- Brevo API (Transactional Email API)
 - Async email delivery with retry logic
 
 ### Database
