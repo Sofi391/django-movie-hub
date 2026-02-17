@@ -13,11 +13,16 @@ It combines content discovery with **gamification**, **quizzes**, **badges**, an
 
 ## ✨ Motivation
 
-This project was inspired by my love for movies and my desire to track the movies and shows I’ve watched, as well as mark the ones I want to watch in the future. It reflects my passion for cinema and storytelling, and my goal was to build a platform that organizes content in a **personal and interactive way** This project was inspired by my love for movies and my desire to track what I’ve watched, what I want to watch, and to explore what others are enjoying.
+This project was inspired by my love for movies and my desire to track:
+- What I’ve watched  
+- What I want to watch  
+- What others are enjoying
 
 Beyond entertainment, Movie Hub was built as a **learning-driven project** to apply real-world backend concepts such as:
+- Distributed architecture
 - Asynchronous background processing
 - Scheduled tasks
+- Production containerization
 - Email notifications
 - Production deployment and scaling
 
@@ -87,6 +92,13 @@ Beyond entertainment, Movie Hub was built as a **learning-driven project** to ap
 - django-celery-beat
 - django-celery-results
 
+### Infrastructure
+- Docker
+- Gunicorn
+- Redis (TLS supported)
+- Whitenoise
+- Cloudinary
+
 ### Email
 - Brevo API (Transactional Email API)
 - Async email delivery with retry logic
@@ -96,9 +108,6 @@ Beyond entertainment, Movie Hub was built as a **learning-driven project** to ap
 - PostgreSQL / Neon (production)
 
 ### Other
-- TMDB API
-- Cloudinary (media storage)
-- Whitenoise (static files)
 - Bootstrap / CSS
 - Git & GitHub
 
@@ -114,23 +123,64 @@ The project is live on Render: [https://movie-hub-a4gn.onrender.com](https://mov
 
 ---
 
-## Steps to run locally:
+## 🐳 Docker Setup
+
+This project is fully containerized using:
+
+- `Dockerfile`
+- `docker-compose.yml`
+
+### Services Defined in docker-compose
+
+- **web** → Django + Gunicorn
+- **worker** → Celery worker
+- **beat** → Celery Beat scheduler
+
+---
+
+## 🔐 Environment Configuration
+
+This project uses environment variables.
+
+1️⃣ Copy the example file:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/movie_site.git
-
-cd movie_site
-
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/Mac
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-python manage.py runserver
+cp .env.example .env
 ```
+2️⃣ Fill in your own values in the .env file
+
+---
+
+## Steps to run locally:
+This project is containerized using Docker. To run the project locally, you will need to have Docker installed on your machine.
+
+```bash
+docker-compose build
+```
+### Run all services
+```bash
+docker-compose up
+```
+### This will start:
+- Web server on http://localhost:8000
+- Celery worker
+- Celery Beat scheduler
+
+### To stop:
+```bash
+docker-compose down
+```
+
+---
+
+### 🩺 Health Check
+A /health/ endpoint is included for container monitoring.
+
+Dockerfile includes:
+- Non-root user execution
+- Production Gunicorn server
+- Static file collection
+- HEALTHCHECK configuration
 
 ---
 
@@ -145,6 +195,8 @@ python manage.py runserver
 - Asynchronous task processing with Celery & Redis
 - Scheduled background jobs with django-celery-beat
 - Clean separation of concerns and scalable architecture
+- Distributed Django architecture
+- Production-ready Docker containerization
 
 ---
 

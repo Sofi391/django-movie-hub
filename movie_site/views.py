@@ -8,7 +8,7 @@ import requests
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin,PermissionRequiredMixin
 from .forms import UserMediaEditForm
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed,HttpResponse
 import random
 from django.http import JsonResponse
 from django.core.cache import cache
@@ -1056,3 +1056,6 @@ def delete_notification(request, notification_id):
     except Notification.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Notification not found'}, status=404)
 
+
+def health(request):
+    return HttpResponse("OK")

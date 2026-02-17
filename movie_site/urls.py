@@ -7,7 +7,8 @@ from .views import (Home, AddMovie, EditMovie, DeleteMovie,
                     delete_user_content,DiscoverPeople,get_user_badges,
                     get_badge_count,check_new_badges,add_to_watched,
                     QuizQuestionsListView,save_quiz_results,announcement_noti,
-                    Notifications,mark_notification_read,mark_all_notifications_read,delete_notification)
+                    Notifications,mark_notification_read,mark_all_notifications_read,
+                    delete_notification,health)
 
 urlpatterns = [
     path('',Home.as_view(),name='home'),
@@ -52,4 +53,6 @@ urlpatterns = [
     path('notifications/<int:notification_id>/mark-read/', mark_notification_read, name='mark_notification_read'),
     path('notifications/mark-all-read/', mark_all_notifications_read, name='mark_all_notifications_read'),
     path('notifications/<int:notification_id>/delete/', delete_notification, name='delete_notification'),
+
+    path('health/',health,name='health'),
 ]

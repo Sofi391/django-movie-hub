@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    command: gunicorn advanced_views.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+  worker:
+    build: .
+    restart: always
+    command: celery -A advanced_views worker -l info
+    env_file:
+      - .env
+    depends_on:
+      - web
+
+  beat:
+    build: .
+    restart: always
+    command: celery -A advanced_views beat -l info
+    env_file:
+      - .env
+    depends_on:
+      - web
+
