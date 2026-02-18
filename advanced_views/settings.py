@@ -158,7 +158,7 @@ REDIS_URL = os.getenv("REDIS_URL","redis://localhost:6379/0")
 if REDIS_URL.startswith("rediss://"):
     # This structure is specifically what the Redis backend expects
     CELERY_REDIS_BACKEND_USE_SSL = {
-        'ssl_cert_reqs': ssl.CERT_NONE
+        'ssl_cert_reqs': ssl.CERT_REQUIRED
     }
     CELERY_BROKER_USE_SSL = CELERY_REDIS_BACKEND_USE_SSL
 else:
