@@ -23,7 +23,7 @@ EXPOSE 8000
 RUN useradd -m appuser
 USER appuser
 
-CMD celery -A advanced_views worker -l info --concurrency=1 -B & gunicorn advanced_views.wsgi:application --bind 0.0.0.0:8000
+CMD ["gunicorn", "advanced_views.wsgi:application", "--bind", "0.0.0.0:8000"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8000/health/ || exit 1

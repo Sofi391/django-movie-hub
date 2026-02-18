@@ -1,0 +1,2 @@
+app:
+  command: "sh -c 'celery -A advanced_views worker -l info --concurrency=1 & celery -A advanced_views beat -l info & python -m http.server 8000'"
