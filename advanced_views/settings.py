@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG=os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['.onrender.com','celeryworker1-ahk5w03o.b4a.run', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
