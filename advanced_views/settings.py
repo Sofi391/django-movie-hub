@@ -116,6 +116,7 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     CSRF_TRUSTED_ORIGINS = [
         "https://*.onrender.com",
+        "https://celeryworker1-ahk5w03o.b4a.run",
     ]
 
 
