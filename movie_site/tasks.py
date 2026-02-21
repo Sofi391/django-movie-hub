@@ -97,7 +97,7 @@ def inactive_badge():
         if unearned_days in THRESHOLD:
             subject = 'Update on your Movie Hub progress'
             content = f"""
-Hi {{username}},
+Hi {user.username},
 
 We wanted to let you know that it’s been a while since your last badge activity on Movie Hub.
 
