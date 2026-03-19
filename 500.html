@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieHub — Back Soon</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 50%;
+            animation: drift linear infinite;
+        }
+
+        @keyframes drift {
+            0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+        }
+
+        /* Film strip top & bottom */
+        .filmstrip {
+            position: fixed;
+            left: 0; right: 0;
+            height: 48px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 8px;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .filmstrip.top { top: 0; }
+        .filmstrip.bottom { bottom: 0; }
+
+        .filmstrip::before,
+        .filmstrip::after {
+            content: '';
+            position: absolute;
+            top: 8px; bottom: 8px;
+            width: 14px;
+            background: #0a0a0a;
+            border-radius: 3px;
+        }
+        .filmstrip::before { left: 8px; }
+        .filmstrip::after  { right: 8px; }
+
+        .hole {
+            flex-shrink: 0;
+            width: 28px;
+            height: 32px;
+            background: #0a0a0a;
+            border-radius: 4px;
+            animation: filmroll 1.2s linear infinite;
+        }
+
+        @keyframes filmroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-34px); }
+        }
+
+        /* Main card */
+        .card {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 48px 40px;
+            max-width: 520px;
+            width: 90%;
+            background: linear-gradient(135deg, rgba(20,20,20,0.97) 0%, rgba(30,30,30,0.97) 100%);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            box-shadow: 0 0 60px rgba(59,130,246,0.12), 0 20px 60px rgba(0,0,0,0.6);
+        }
+
+        /* Top accent line */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            border-radius: 2px;
+        }
+
+        /* Projector icon */
+        .icon-wrap {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 28px;
+            border-radius: 50%;
+            background: rgba(59,130,246,0.08);
+            border: 1px solid rgba(59,130,246,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.3); }
+            50%       { box-shadow: 0 0 0 16px rgba(59,130,246,0); }
+        }
+
+        .icon-wrap svg {
+            width: 44px;
+            height: 44px;
+            fill: #3b82f6;
+        }
+
+        /* Brand */
+        .brand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #3b82f6;
+            margin-bottom: 16px;
+        }
+
+        /* Headline */
+        h1 {
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        h1 span {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Subtitle */
+        p {
+            color: #9ca3af;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* Loading dots */
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40%            { transform: scale(1);   opacity: 1; }
+        }
+
+        /* Retry button */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.35);
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #fff;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover svg { transform: rotate(180deg); }
+
+        /* Status line */
+        .status {
+            margin-top: 28px;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Countdown */
+        #countdown {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 36px 24px; }
+            .filmstrip { height: 36px; }
+            .hole { width: 20px; height: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Film strips -->
+    <div class="filmstrip top" id="topStrip"></div>
+    <div class="filmstrip bottom" id="bottomStrip"></div>
+
+    <!-- Background particles -->
+    <div class="bg" id="bg"></div>
+
+    <!-- Main card -->
+    <div class="card">
+        <div class="icon-wrap">
+            <!-- Projector SVG -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-8 7.5v-3l4 1.5-4 1.5zM4 4h16v1H4zm0 15h16v1H4z"/>
+            </svg>
+        </div>
+
+        <div class="brand">🎬 MovieHub</div>
+
+        <h1>We're in the <span>Editing Room</span></h1>
+
+        <p>
+            Our projector hit a snag — the server is taking a short intermission.<br>
+            The show will go on shortly. Grab some popcorn! 🍿
+        </p>
+
+        <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <a href="/" class="btn" onclick="location.reload(); return false;">
+            <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            Try Again
+        </a>
+
+        <div class="status">Error 500 &mdash; Server Error</div>
+        <div id="countdown"></div>
+    </div>
+
+    <script>
+        // Generate film holes
+        ['topStrip', 'bottomStrip'].forEach(id => {
+            const strip = document.getElementById(id);
+            for (let i = 0; i < 60; i++) {
+                const hole = document.createElement('div');
+                hole.className = 'hole';
+                strip.appendChild(hole);
+            }
+        });
+
+        // Generate background particles
+        const bg = document.getElementById('bg');
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
+            p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+            p.style.animationDelay = (Math.random() * 10) + 's';
+            bg.appendChild(p);
+        }
+
+        // Auto-retry countdown
+        let secs = 30;
+        const cd = document.getElementById('countdown');
+        const timer = setInterval(() => {
+            secs--;
+            cd.textContent = 'Auto-retrying in ' + secs + 's…';
+            if (secs <= 0) { clearInterval(timer); location.reload(); }
+        }, 1000);
+    </script>
+</body>
+</html>

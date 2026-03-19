@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from .views import (Home, AddMovie, EditMovie, DeleteMovie,
                     search_movies, add_to_collection,
                     UserMediaListView, FavoriteListView,update_user_media,

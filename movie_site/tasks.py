@@ -1,11 +1,18 @@
 from celery import shared_task
 from celery.exceptions import MaxRetriesExceededError
+from celery.signals import task_postrun
 from .models import Question
 from django.contrib.auth.models import User
 from .services import inapp_notifications,email_notifications
 from django.utils import timezone
 from django.db.models import Max
-import time
+from django.db import connections
+
+
+@task_postrun.connect
+def close_db_connection(*args, **kwargs):
+    for conn in connections.all():
+        conn.close()
 
 
 @shared_task

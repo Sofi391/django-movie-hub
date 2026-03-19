@@ -84,8 +84,9 @@ if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True
+            conn_max_age=0,
+            ssl_require=True,
+            conn_health_checks=True
         )
     }
 else:
@@ -138,15 +139,6 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# EMAIL
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp-relay.brevo.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv("EMAIL")
-# EMAIL_HOST_PASSWORD = os.getenv("PASSWORD")
-#
-# DEFAULT_FROM_EMAIL = 'Movie Hub <no-reply@brevo-mail.com>'
 
 # BREVO_API
 BREVO_API_KEY=os.getenv("BREVO_KEY")
@@ -168,12 +160,18 @@ else:
     CELERY_REDIS_BACKEND_USE_SSL = None
     CELERY_BROKER_USE_SSL = None
 
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 3600,
+    'polling_interval': 5,  # Checks every 5 seconds instead of 1
+}
+
 CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_RESULT_BACKEND = None
+CELERY_TASK_IGNORE_RESULT = True
+
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
-CELERY_RESULT_EXPIRES = 3600
-CELERY_CACHE_BACKEND = 'django-cache'
+
 # Celery beat scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

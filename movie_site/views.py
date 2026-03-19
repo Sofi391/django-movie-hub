@@ -1,4 +1,4 @@
-from django.db.models import Q, ExpressionWrapper,F,FloatField
+from django.db.models import Q
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import Media, UserMedia, Favorite, Profile, UserBadge, Badge, Question, UserQuizAttempt, Notification
 from django.views.generic import ListView,UpdateView,DeleteView,CreateView
@@ -40,75 +40,82 @@ class Home(ListView):
         movies = Media.objects.filter(type='movie')
         tv = Media.objects.filter(type='tv')
 
-        #Today's List
         today_seed = timezone.now().date().toordinal()
         random.seed(today_seed)
 
-        daily_movie_pool = movies.filter(
-            rating__gte=6.5,
-            release_date__isnull=False
-        ).order_by('-release_date')[:300]
+        two_years_ago = timezone.now().date() - timedelta(days=730)
 
-        movie_ids = list(daily_movie_pool.values_list('id', flat=True))
-        random.shuffle(movie_ids)
-
-        daily_movie_ids = movie_ids[:12]
-
-        context['daily_movies'] = Media.objects.filter(
-            id__in=daily_movie_ids
+        recent_movie_pool = list(
+            movies.filter(rating__gte=6.0, release_date__gte=two_years_ago)
+            .order_by('-release_date')
+            .values_list('id', flat=True)[:200]
         )
-        daily_tv_pool = tv.filter(
-            rating__gte=6.5,
-            release_date__isnull=False
-        ).order_by('-release_date')[:300]
-
-        tv_ids = list(daily_tv_pool.values_list('id', flat=True))
-        random.shuffle(tv_ids)
-
-        daily_tv_ids = tv_ids[:12]
-
-        context['daily_shows'] = Media.objects.filter(
-            id__in=daily_tv_ids
+        older_movie_pool = list(
+            movies.filter(rating__gte=7.0, release_date__lt=two_years_ago)
+            .order_by('-release_date')
+            .values_list('id', flat=True)[:200]
         )
+        random.shuffle(recent_movie_pool)
+        random.shuffle(older_movie_pool)
+        daily_movie_ids = (recent_movie_pool[:8] + older_movie_pool[:4])[:12]
 
-        # Popular by rating
+        context['daily_movies'] = Media.objects.filter(id__in=daily_movie_ids).order_by('-release_date')
+
+        recent_tv_pool = list(
+            tv.filter(rating__gte=6.0, release_date__gte=two_years_ago)
+            .order_by('-release_date')
+            .values_list('id', flat=True)[:200]
+        )
+        older_tv_pool = list(
+            tv.filter(rating__gte=7.0, release_date__lt=two_years_ago)
+            .order_by('-release_date')
+            .values_list('id', flat=True)[:200]
+        )
+        random.shuffle(recent_tv_pool)
+        random.shuffle(older_tv_pool)
+        daily_tv_ids = (recent_tv_pool[:8] + older_tv_pool[:4])[:12]
+
+        context['daily_shows'] = Media.objects.filter(id__in=daily_tv_ids).order_by('-release_date')
+
+        # Popular by rating — excludes today's picks
         context['popular_movies'] = movies.exclude(id__in=daily_movie_ids).order_by('-rating')[:15]
         context['popular_shows'] = tv.exclude(id__in=daily_tv_ids).order_by('-rating')[:15]
 
-        #Latest movies/tvs
+        # Latest — excludes today's picks
         context['latest_movies'] = movies.exclude(id__in=daily_movie_ids).order_by('-release_date')[:10]
         context['latest_shows'] = tv.exclude(id__in=daily_tv_ids).order_by('-release_date')[:10]
 
-        # Get trending movies (most added to collections in last 30 days)
-        trending_movies = Media.objects.exclude(id__in=daily_movie_ids).filter(
-            type='movie',
-            user__added_at__gte=timezone.now() - timedelta(days=7)
-        ).annotate(
-            recent_additions=Count('user',distinct=True),
-            score=ExpressionWrapper(
-                F('recent_additions') * 0.85 + F('rating') * 0.15,
-                output_field=FloatField()
-            )
-        ).order_by('-score')[:10]
+        def trending_score(media):
+            # Recency bias: newer DB entries (higher id) rank higher when additions are equal
+            recency_bonus = media.id * 0.001
+            return media.recent_additions * 0.85 + media.rating * 0.10 + recency_bonus
 
-        # Get trending TV shows (most added to collections in last 30 days)
-        trending_shows = Media.objects.exclude(id__in=daily_tv_ids).filter(
-            type='tv',
-            user__added_at__gte=timezone.now() - timedelta(days=7)
-        ).annotate(
-            recent_additions=Count('user',distinct=True),
-            score= ExpressionWrapper(
-                F('recent_additions')*0.85 + F('rating') * 0.15,
-                output_field= FloatField()
-            )
-        ).order_by('-score')[:10]
+        raw_trending_movies = list(
+            Media.objects.filter(
+                type='movie',
+                user__added_at__gte=timezone.now() - timedelta(days=14)
+            ).annotate(
+                recent_additions=Count('user', distinct=True)
+            ).order_by('-recent_additions')[:30]
+        )
+        trending_movies = sorted(raw_trending_movies, key=trending_score, reverse=True)[:10]
 
-        # If no trending content (no user activity in last 30 days), fallback to highest rated
-        if not trending_movies.exists():
-            trending_movies = movies.exclude(id__in=movie_ids).order_by('-rating')[:10]
+        raw_trending_shows = list(
+            Media.objects.filter(
+                type='tv',
+                user__added_at__gte=timezone.now() - timedelta(days=14)
+            ).annotate(
+                recent_additions=Count('user', distinct=True)
+            ).order_by('-recent_additions')[:30]
+        )
+        trending_shows = sorted(raw_trending_shows, key=trending_score, reverse=True)[:10]
 
-        if not trending_shows.exists():
-            trending_shows = tv.exclude(id__in=tv_ids).order_by('-rating')[:10]
+        # Fallback: no user activity yet — use most recently added media to the DB
+        if not trending_movies:
+            trending_movies = list(movies.order_by('-id')[:10])
+
+        if not trending_shows:
+            trending_shows = list(tv.order_by('-id')[:10])
 
         context['trending_movies'] = trending_movies
         context['trending_shows'] = trending_shows
@@ -127,7 +134,6 @@ class Home(ListView):
             ).count()
 
         return context
-
 
 
 class UpdateProfile(LoginRequiredMixin,UpdateView):

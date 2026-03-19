@@ -1010,9 +1010,9 @@
                 </div>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-target="#navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color: rgba(255,255,255,0.5);">
                 <span class="navbar-toggler-icon">
-                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-bars" style="color: #ffffff; font-size: 1.2rem;"></i>
                 </span>
             </button>
 
@@ -1608,48 +1608,36 @@
             const navbarCollapse = document.getElementById('navbarNav');
 
             if (navbarToggler && navbarCollapse) {
-                // Fix for three-dots toggle to close when clicked again
+                const barsIcon = navbarToggler.querySelector('.fa-bars');
+
+                function openNav() {
+                    navbarCollapse.classList.add('show');
+                    navbarCollapse.style.display = 'block';
+                    navbarToggler.setAttribute('aria-expanded', 'true');
+                    if (barsIcon) { barsIcon.classList.replace('fa-bars', 'fa-times'); }
+                }
+
+                function closeNav() {
+                    navbarCollapse.classList.remove('show');
+                    navbarToggler.setAttribute('aria-expanded', 'false');
+                    if (barsIcon) { barsIcon.classList.replace('fa-times', 'fa-bars'); }
+                    setTimeout(() => { navbarCollapse.style.display = ''; }, 300);
+                }
+
                 navbarToggler.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-
-                    // Toggle the navbar collapse
-                    navbarCollapse.classList.toggle('show');
-
-                    // Update aria-expanded attribute
-                    const isExpanded = navbarCollapse.classList.contains('show');
-                    this.setAttribute('aria-expanded', isExpanded);
-
-                    // Add/remove show class for Bootstrap compatibility
-                    if (isExpanded) {
-                        navbarCollapse.style.display = 'block';
-                        // Close any open dropdowns when opening navbar
-                        document.querySelectorAll('.modern-dropdown.show').forEach(dropdown => {
-                            dropdown.classList.remove('show');
-                        });
-                    } else {
-                        // Use timeout to allow transition
-                        setTimeout(() => {
-                            navbarCollapse.style.display = 'none';
-                        }, 300);
-                    }
+                    navbarCollapse.classList.contains('show') ? closeNav() : openNav();
                 });
 
                 // Close navbar when clicking outside on mobile
-                if (isMobile) {
-                    document.addEventListener('click', function(e) {
-                        if (!navbarCollapse.contains(e.target) &&
-                            !navbarToggler.contains(e.target) &&
-                            navbarCollapse.classList.contains('show')) {
-
-                            navbarCollapse.classList.remove('show');
-                            navbarToggler.setAttribute('aria-expanded', 'false');
-                            setTimeout(() => {
-                                navbarCollapse.style.display = 'none';
-                            }, 300);
-                        }
-                    });
-                }
+                document.addEventListener('click', function(e) {
+                    if (!navbarCollapse.contains(e.target) &&
+                        !navbarToggler.contains(e.target) &&
+                        navbarCollapse.classList.contains('show')) {
+                        closeNav();
+                    }
+                });
             }
 
             // Modern dropdown handling for both mobile and desktop
