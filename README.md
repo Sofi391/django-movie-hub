@@ -197,6 +197,7 @@ Dockerfile includes:
 - Clean separation of concerns and scalable architecture
 - Distributed Django architecture
 - Production-ready Docker containerization
+- Identifying and resolving N+1 query problems using `select_related` and `prefetch_related`
 
 ---
 

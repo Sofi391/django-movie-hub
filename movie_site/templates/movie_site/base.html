@@ -1302,8 +1302,10 @@
             if ({% if user.is_authenticated %}true{% else %}false{% endif %}) {
                 loadUserBadges();
 
-                // Check for new badges periodically (every 30 seconds)
-                setInterval(checkForNewBadges, 30000);
+                // Check for new badges every 60s only when tab is visible
+                let badgeInterval = setInterval(() => {
+                    if (!document.hidden) checkForNewBadges();
+                }, 60000);
             }
 
             // Function to load user badges
@@ -1315,6 +1317,7 @@
                             userBadges = data.badges;
                             updateBadgeCount(data.badges.length);
                             displayAllBadges(data.badges);
+                            // Only show unlock animation for truly new badges
                             checkForUnshownBadges(data.badges);
                         }
                     })
@@ -1364,15 +1367,9 @@
                     badgeAwardedDate.textContent = '';
                 }
 
-                // Get updated badge count
-                fetch('/badges/get-badge-count/')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            badgeCount.textContent = data.count;
-                            updateBadgeCount(data.count);
-                        }
-                    });
+                // Get updated badge count inline — no separate fetch
+                badgeCount.textContent = userBadges.length + 1;
+                updateBadgeCount(userBadges.length + 1);
 
                 // Set title to unlock mode
                 currentBadgeTitle = "🎉 Badge Unlocked!";

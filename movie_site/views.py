@@ -59,7 +59,7 @@ class Home(ListView):
         random.shuffle(older_movie_pool)
         daily_movie_ids = (recent_movie_pool[:8] + older_movie_pool[:4])[:12]
 
-        context['daily_movies'] = Media.objects.filter(id__in=daily_movie_ids).order_by('-release_date')
+        context['daily_movies'] = Media.objects.filter(id__in=daily_movie_ids).prefetch_related('genre').order_by('-release_date')
 
         recent_tv_pool = list(
             tv.filter(rating__gte=6.0, release_date__gte=two_years_ago)
@@ -75,15 +75,15 @@ class Home(ListView):
         random.shuffle(older_tv_pool)
         daily_tv_ids = (recent_tv_pool[:8] + older_tv_pool[:4])[:12]
 
-        context['daily_shows'] = Media.objects.filter(id__in=daily_tv_ids).order_by('-release_date')
+        context['daily_shows'] = Media.objects.filter(id__in=daily_tv_ids).prefetch_related('genre').order_by('-release_date')
 
         # Popular by rating — excludes today's picks
-        context['popular_movies'] = movies.exclude(id__in=daily_movie_ids).order_by('-rating')[:15]
-        context['popular_shows'] = tv.exclude(id__in=daily_tv_ids).order_by('-rating')[:15]
+        context['popular_movies'] = movies.exclude(id__in=daily_movie_ids).prefetch_related('genre').order_by('-rating')[:15]
+        context['popular_shows'] = tv.exclude(id__in=daily_tv_ids).prefetch_related('genre').order_by('-rating')[:15]
 
         # Latest — excludes today's picks
-        context['latest_movies'] = movies.exclude(id__in=daily_movie_ids).order_by('-release_date')[:10]
-        context['latest_shows'] = tv.exclude(id__in=daily_tv_ids).order_by('-release_date')[:10]
+        context['latest_movies'] = movies.exclude(id__in=daily_movie_ids).prefetch_related('genre').order_by('-release_date')[:10]
+        context['latest_shows'] = tv.exclude(id__in=daily_tv_ids).prefetch_related('genre').order_by('-release_date')[:10]
 
         def trending_score(media):
             # Recency bias: newer DB entries (higher id) rank higher when additions are equal
@@ -96,7 +96,7 @@ class Home(ListView):
                 user__added_at__gte=timezone.now() - timedelta(days=14)
             ).annotate(
                 recent_additions=Count('user', distinct=True)
-            ).order_by('-recent_additions')[:30]
+            ).prefetch_related('genre').order_by('-recent_additions')[:30]
         )
         trending_movies = sorted(raw_trending_movies, key=trending_score, reverse=True)[:10]
 
@@ -106,16 +106,16 @@ class Home(ListView):
                 user__added_at__gte=timezone.now() - timedelta(days=14)
             ).annotate(
                 recent_additions=Count('user', distinct=True)
-            ).order_by('-recent_additions')[:30]
+            ).prefetch_related('genre').order_by('-recent_additions')[:30]
         )
         trending_shows = sorted(raw_trending_shows, key=trending_score, reverse=True)[:10]
 
         # Fallback: no user activity yet — use most recently added media to the DB
         if not trending_movies:
-            trending_movies = list(movies.order_by('-id')[:10])
+            trending_movies = list(movies.prefetch_related('genre').order_by('-id')[:10])
 
         if not trending_shows:
-            trending_shows = list(tv.order_by('-id')[:10])
+            trending_shows = list(tv.prefetch_related('genre').order_by('-id')[:10])
 
         context['trending_movies'] = trending_movies
         context['trending_shows'] = trending_shows
@@ -239,7 +239,7 @@ class ModeratorViews(LoginRequiredMixin,PermissionRequiredMixin,ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        queryset = UserMedia.objects.all().order_by('-added_at')
+        queryset = UserMedia.objects.all().select_related('user', 'user__profile', 'media').prefetch_related('media__genre').order_by('-added_at')
         status = self.request.GET.get('status')
         type = self.request.GET.get('type')
         search = self.request.GET.get('q')
@@ -713,7 +713,7 @@ class UserMediaListView(LoginRequiredMixin, ListView):
             user=target_user,
             status=status,
             media__type=media_type
-        ).order_by('-added_at').select_related('media')
+        ).order_by('-added_at').select_related('media').prefetch_related('media__genre')
 
         # GENRE filter
         if genres:
@@ -793,7 +793,7 @@ class DiscoverPeople(LoginRequiredMixin, ListView):
             queryset = queryset.filter(username__icontains=search)
         else:
             queryset = queryset.order_by('?')
-        return queryset
+        return queryset.select_related('profile')
 
 
 
@@ -803,7 +803,7 @@ class FavoriteListView(LoginRequiredMixin,ListView):
     context_object_name = 'favorites'
     def get_queryset(self):
         media_type = self.kwargs.get('type')
-        return Favorite.objects.filter(user=self.request.user,media__type=media_type).select_related('media')
+        return Favorite.objects.filter(user=self.request.user,media__type=media_type).select_related('media').prefetch_related('media__genre')
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         media_type = self.kwargs.get('type')
